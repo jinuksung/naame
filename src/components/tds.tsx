@@ -62,11 +62,13 @@ export function TdsField({
   onChange,
   error
 }: FieldProps): JSX.Element {
+  const typeClass = type === "date" ? " tds-input-date" : type === "time" ? " tds-input-time" : "";
+
   return (
     <label className="tds-field">
       <span className="tds-label">{label}</span>
       <input
-        className={`tds-input${error ? " is-error" : ""}`}
+        className={`tds-input${typeClass}${error ? " is-error" : ""}`}
         type={type}
         value={value}
         maxLength={maxLength}

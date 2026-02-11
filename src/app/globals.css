@@ -73,6 +73,7 @@ a {
 .tds-field {
   display: grid;
   gap: 8px;
+  min-width: 0;
 }
 
 .tds-label {
@@ -82,7 +83,10 @@ a {
 }
 
 .tds-input {
+  display: block;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 12px 14px;
@@ -91,6 +95,24 @@ a {
   color: var(--text-primary);
   outline: none;
   background: #fff;
+  overflow: hidden;
+}
+
+.tds-input-date,
+.tds-input-time {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 48px;
+}
+
+.tds-input-date::-webkit-date-and-time-value,
+.tds-input-time::-webkit-date-and-time-value {
+  text-align: left;
+}
+
+.tds-input-date::-webkit-calendar-picker-indicator,
+.tds-input-time::-webkit-calendar-picker-indicator {
+  margin: 0;
 }
 
 .tds-input:focus {
