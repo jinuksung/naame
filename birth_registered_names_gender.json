@@ -1,0 +1,724 @@
+{
+  "sourceRepo": "https://github.com/sanginchun/names",
+  "sourceFile": "/tmp/names_repo_check/data/data.json",
+  "generatedAt": "2026-02-11T12:28:18.454Z",
+  "note": "연도별 상위권 통계 기반 고유 (name, gender) 목록",
+  "counts": {
+    "M": 67,
+    "F": 74,
+    "total": 141
+  },
+  "byGender": {
+    "M": [
+      "건우",
+      "도윤",
+      "도준",
+      "도하",
+      "도현",
+      "동현",
+      "로운",
+      "민규",
+      "민석",
+      "민성",
+      "민재",
+      "민준",
+      "서준",
+      "서진",
+      "선우",
+      "성민",
+      "성현",
+      "수현",
+      "수호",
+      "승민",
+      "승우",
+      "승현",
+      "시온",
+      "시우",
+      "시윤",
+      "시후",
+      "연우",
+      "예준",
+      "우빈",
+      "우주",
+      "우진",
+      "유준",
+      "유찬",
+      "윤우",
+      "은우",
+      "은찬",
+      "은호",
+      "이도",
+      "이든",
+      "이안",
+      "이준",
+      "이한",
+      "이현",
+      "재민",
+      "재원",
+      "정우",
+      "주원",
+      "준서",
+      "준영",
+      "준우",
+      "준혁",
+      "지민",
+      "지안",
+      "지우",
+      "지원",
+      "지한",
+      "지호",
+      "지환",
+      "지후",
+      "지훈",
+      "진우",
+      "태오",
+      "하준",
+      "하진",
+      "한결",
+      "현우",
+      "현준"
+    ],
+    "F": [
+      "가은",
+      "나경",
+      "나윤",
+      "나은",
+      "다온",
+      "다은",
+      "다인",
+      "도아",
+      "로아",
+      "리아",
+      "민서",
+      "민지",
+      "봄",
+      "서아",
+      "서연",
+      "서영",
+      "서우",
+      "서윤",
+      "서하",
+      "서현",
+      "설아",
+      "소윤",
+      "소율",
+      "소이",
+      "수민",
+      "수빈",
+      "수아",
+      "수연",
+      "시아",
+      "시연",
+      "시은",
+      "아린",
+      "아윤",
+      "아인",
+      "연서",
+      "연우",
+      "예나",
+      "예린",
+      "예서",
+      "예원",
+      "예은",
+      "예진",
+      "유나",
+      "유주",
+      "유진",
+      "유하",
+      "윤서",
+      "윤슬",
+      "윤아",
+      "은서",
+      "이나",
+      "이서",
+      "이솔",
+      "이현",
+      "재이",
+      "주아",
+      "지민",
+      "지아",
+      "지안",
+      "지우",
+      "지원",
+      "지유",
+      "지윤",
+      "채아",
+      "채원",
+      "채은",
+      "채이",
+      "태리",
+      "하린",
+      "하연",
+      "하윤",
+      "하율",
+      "하은",
+      "현서"
+    ]
+  },
+  "items": [
+    {
+      "name": "가은",
+      "gender": "F"
+    },
+    {
+      "name": "건우",
+      "gender": "M"
+    },
+    {
+      "name": "나경",
+      "gender": "F"
+    },
+    {
+      "name": "나윤",
+      "gender": "F"
+    },
+    {
+      "name": "나은",
+      "gender": "F"
+    },
+    {
+      "name": "다온",
+      "gender": "F"
+    },
+    {
+      "name": "다은",
+      "gender": "F"
+    },
+    {
+      "name": "다인",
+      "gender": "F"
+    },
+    {
+      "name": "도아",
+      "gender": "F"
+    },
+    {
+      "name": "도윤",
+      "gender": "M"
+    },
+    {
+      "name": "도준",
+      "gender": "M"
+    },
+    {
+      "name": "도하",
+      "gender": "M"
+    },
+    {
+      "name": "도현",
+      "gender": "M"
+    },
+    {
+      "name": "동현",
+      "gender": "M"
+    },
+    {
+      "name": "로아",
+      "gender": "F"
+    },
+    {
+      "name": "로운",
+      "gender": "M"
+    },
+    {
+      "name": "리아",
+      "gender": "F"
+    },
+    {
+      "name": "민규",
+      "gender": "M"
+    },
+    {
+      "name": "민서",
+      "gender": "F"
+    },
+    {
+      "name": "민석",
+      "gender": "M"
+    },
+    {
+      "name": "민성",
+      "gender": "M"
+    },
+    {
+      "name": "민재",
+      "gender": "M"
+    },
+    {
+      "name": "민준",
+      "gender": "M"
+    },
+    {
+      "name": "민지",
+      "gender": "F"
+    },
+    {
+      "name": "봄",
+      "gender": "F"
+    },
+    {
+      "name": "서아",
+      "gender": "F"
+    },
+    {
+      "name": "서연",
+      "gender": "F"
+    },
+    {
+      "name": "서영",
+      "gender": "F"
+    },
+    {
+      "name": "서우",
+      "gender": "F"
+    },
+    {
+      "name": "서윤",
+      "gender": "F"
+    },
+    {
+      "name": "서준",
+      "gender": "M"
+    },
+    {
+      "name": "서진",
+      "gender": "M"
+    },
+    {
+      "name": "서하",
+      "gender": "F"
+    },
+    {
+      "name": "서현",
+      "gender": "F"
+    },
+    {
+      "name": "선우",
+      "gender": "M"
+    },
+    {
+      "name": "설아",
+      "gender": "F"
+    },
+    {
+      "name": "성민",
+      "gender": "M"
+    },
+    {
+      "name": "성현",
+      "gender": "M"
+    },
+    {
+      "name": "소윤",
+      "gender": "F"
+    },
+    {
+      "name": "소율",
+      "gender": "F"
+    },
+    {
+      "name": "소이",
+      "gender": "F"
+    },
+    {
+      "name": "수민",
+      "gender": "F"
+    },
+    {
+      "name": "수빈",
+      "gender": "F"
+    },
+    {
+      "name": "수아",
+      "gender": "F"
+    },
+    {
+      "name": "수연",
+      "gender": "F"
+    },
+    {
+      "name": "수현",
+      "gender": "M"
+    },
+    {
+      "name": "수호",
+      "gender": "M"
+    },
+    {
+      "name": "승민",
+      "gender": "M"
+    },
+    {
+      "name": "승우",
+      "gender": "M"
+    },
+    {
+      "name": "승현",
+      "gender": "M"
+    },
+    {
+      "name": "시아",
+      "gender": "F"
+    },
+    {
+      "name": "시연",
+      "gender": "F"
+    },
+    {
+      "name": "시온",
+      "gender": "M"
+    },
+    {
+      "name": "시우",
+      "gender": "M"
+    },
+    {
+      "name": "시윤",
+      "gender": "M"
+    },
+    {
+      "name": "시은",
+      "gender": "F"
+    },
+    {
+      "name": "시후",
+      "gender": "M"
+    },
+    {
+      "name": "아린",
+      "gender": "F"
+    },
+    {
+      "name": "아윤",
+      "gender": "F"
+    },
+    {
+      "name": "아인",
+      "gender": "F"
+    },
+    {
+      "name": "연서",
+      "gender": "F"
+    },
+    {
+      "name": "연우",
+      "gender": "F"
+    },
+    {
+      "name": "연우",
+      "gender": "M"
+    },
+    {
+      "name": "예나",
+      "gender": "F"
+    },
+    {
+      "name": "예린",
+      "gender": "F"
+    },
+    {
+      "name": "예서",
+      "gender": "F"
+    },
+    {
+      "name": "예원",
+      "gender": "F"
+    },
+    {
+      "name": "예은",
+      "gender": "F"
+    },
+    {
+      "name": "예준",
+      "gender": "M"
+    },
+    {
+      "name": "예진",
+      "gender": "F"
+    },
+    {
+      "name": "우빈",
+      "gender": "M"
+    },
+    {
+      "name": "우주",
+      "gender": "M"
+    },
+    {
+      "name": "우진",
+      "gender": "M"
+    },
+    {
+      "name": "유나",
+      "gender": "F"
+    },
+    {
+      "name": "유주",
+      "gender": "F"
+    },
+    {
+      "name": "유준",
+      "gender": "M"
+    },
+    {
+      "name": "유진",
+      "gender": "F"
+    },
+    {
+      "name": "유찬",
+      "gender": "M"
+    },
+    {
+      "name": "유하",
+      "gender": "F"
+    },
+    {
+      "name": "윤서",
+      "gender": "F"
+    },
+    {
+      "name": "윤슬",
+      "gender": "F"
+    },
+    {
+      "name": "윤아",
+      "gender": "F"
+    },
+    {
+      "name": "윤우",
+      "gender": "M"
+    },
+    {
+      "name": "은서",
+      "gender": "F"
+    },
+    {
+      "name": "은우",
+      "gender": "M"
+    },
+    {
+      "name": "은찬",
+      "gender": "M"
+    },
+    {
+      "name": "은호",
+      "gender": "M"
+    },
+    {
+      "name": "이나",
+      "gender": "F"
+    },
+    {
+      "name": "이도",
+      "gender": "M"
+    },
+    {
+      "name": "이든",
+      "gender": "M"
+    },
+    {
+      "name": "이서",
+      "gender": "F"
+    },
+    {
+      "name": "이솔",
+      "gender": "F"
+    },
+    {
+      "name": "이안",
+      "gender": "M"
+    },
+    {
+      "name": "이준",
+      "gender": "M"
+    },
+    {
+      "name": "이한",
+      "gender": "M"
+    },
+    {
+      "name": "이현",
+      "gender": "F"
+    },
+    {
+      "name": "이현",
+      "gender": "M"
+    },
+    {
+      "name": "재민",
+      "gender": "M"
+    },
+    {
+      "name": "재원",
+      "gender": "M"
+    },
+    {
+      "name": "재이",
+      "gender": "F"
+    },
+    {
+      "name": "정우",
+      "gender": "M"
+    },
+    {
+      "name": "주아",
+      "gender": "F"
+    },
+    {
+      "name": "주원",
+      "gender": "M"
+    },
+    {
+      "name": "준서",
+      "gender": "M"
+    },
+    {
+      "name": "준영",
+      "gender": "M"
+    },
+    {
+      "name": "준우",
+      "gender": "M"
+    },
+    {
+      "name": "준혁",
+      "gender": "M"
+    },
+    {
+      "name": "지민",
+      "gender": "F"
+    },
+    {
+      "name": "지민",
+      "gender": "M"
+    },
+    {
+      "name": "지아",
+      "gender": "F"
+    },
+    {
+      "name": "지안",
+      "gender": "F"
+    },
+    {
+      "name": "지안",
+      "gender": "M"
+    },
+    {
+      "name": "지우",
+      "gender": "F"
+    },
+    {
+      "name": "지우",
+      "gender": "M"
+    },
+    {
+      "name": "지원",
+      "gender": "F"
+    },
+    {
+      "name": "지원",
+      "gender": "M"
+    },
+    {
+      "name": "지유",
+      "gender": "F"
+    },
+    {
+      "name": "지윤",
+      "gender": "F"
+    },
+    {
+      "name": "지한",
+      "gender": "M"
+    },
+    {
+      "name": "지호",
+      "gender": "M"
+    },
+    {
+      "name": "지환",
+      "gender": "M"
+    },
+    {
+      "name": "지후",
+      "gender": "M"
+    },
+    {
+      "name": "지훈",
+      "gender": "M"
+    },
+    {
+      "name": "진우",
+      "gender": "M"
+    },
+    {
+      "name": "채아",
+      "gender": "F"
+    },
+    {
+      "name": "채원",
+      "gender": "F"
+    },
+    {
+      "name": "채은",
+      "gender": "F"
+    },
+    {
+      "name": "채이",
+      "gender": "F"
+    },
+    {
+      "name": "태리",
+      "gender": "F"
+    },
+    {
+      "name": "태오",
+      "gender": "M"
+    },
+    {
+      "name": "하린",
+      "gender": "F"
+    },
+    {
+      "name": "하연",
+      "gender": "F"
+    },
+    {
+      "name": "하윤",
+      "gender": "F"
+    },
+    {
+      "name": "하율",
+      "gender": "F"
+    },
+    {
+      "name": "하은",
+      "gender": "F"
+    },
+    {
+      "name": "하준",
+      "gender": "M"
+    },
+    {
+      "name": "하진",
+      "gender": "M"
+    },
+    {
+      "name": "한결",
+      "gender": "M"
+    },
+    {
+      "name": "현서",
+      "gender": "F"
+    },
+    {
+      "name": "현우",
+      "gender": "M"
+    },
+    {
+      "name": "현준",
+      "gender": "M"
+    }
+  ]
+}

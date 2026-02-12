@@ -1,0 +1,26 @@
+{
+  "name": "@namefit/engine",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pure TypeScript recommendation engine shared by toss/web apps",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*"
+  },
+  "scripts": {
+    "recommend": "ts-node -P tsconfig.scripts.json src/run.ts",
+    "test:saju": "ts-node -P tsconfig.scripts.json src/engine/scoring/sajuElements.test.ts",
+    "test:prior": "ts-node -P tsconfig.scripts.json src/lib/namefit/prior/namePrior.test.ts",
+    "test:surname": "ts-node -P tsconfig.scripts.json src/engine/scoring/surnameInfluence.test.ts",
+    "test:sensitivity": "ts-node -P tsconfig.scripts.json src/engine/recommendSurnameSensitivity.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.57",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -11,7 +11,7 @@ const DATA_PATH = join(CACHE_REPO_PATH, "data");
 const OUTPUT_JSON_PATH =
   process.env.SYLLABLE_WHITELIST_JSON_OUTPUT?.trim() || "/mnt/data/name_syllable_whitelist.json";
 const FALLBACK_JSON_PATH = resolve(".cache/name_syllable_whitelist.json");
-const OUTPUT_TS_PATH = resolve("src/engine/whitelist/allowSyllables.ts");
+const OUTPUT_TS_PATH = resolve("packages/name-engine/src/engine/whitelist/allowSyllables.ts");
 const KOREAN_TWO_SYLLABLE_PATTERN = /^[가-힣]{2}$/;
 
 const NAME_FIELD_HINT = /name|value|title|label|text|이름|성명/i;

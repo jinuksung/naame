@@ -1,0 +1,30 @@
+{
+  "name": "@namefit/toss",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Toss miniapp dedicated frontend",
+  "scripts": {
+    "dev": "NEXT_PUBLIC_BASE_PATH=/toss next dev",
+    "build": "NEXT_PUBLIC_BASE_PATH=/toss next build",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@namefit/engine": "*",
+    "next": "^14.2.25",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.57",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.25",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

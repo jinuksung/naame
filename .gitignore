@@ -1,5 +1,6 @@
 node_modules/
 .next/
+apps/*/.next/
 dist/
 .cache/
 .DS_Store
@@ -12,4 +13,5 @@ pnpm-debug.log*
 .env.local
 .env.*.local
 tsconfig.tsbuildinfo
+apps/*/tsconfig.tsbuildinfo
 recommend_sample.json
