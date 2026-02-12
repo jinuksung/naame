@@ -392,7 +392,8 @@ input {
   padding: 0;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  grid-template-columns: repeat(2, minmax(96px, 132px));
+  justify-content: flex-start;
   gap: 8px;
 }
 
