@@ -379,16 +379,47 @@ input {
   font-weight: 700;
 }
 
-.nf-name-title {
-  margin: 4px 0 0;
-  font-size: 1.45rem;
-  letter-spacing: -0.02em;
+.nf-pron-emphasis {
+  margin: 12px 0 0;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: #075985;
 }
 
-.nf-hanja-sub {
-  margin: 6px 0 0;
-  color: hsl(var(--muted-foreground));
+.nf-hanja-detail-list {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 8px;
+}
+
+.nf-hanja-detail-item {
+  border: 1px solid rgb(14 165 233 / 22%);
+  border-radius: 12px;
+  background: rgb(14 165 233 / 7%);
+  padding: 10px 8px;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 3px;
+}
+
+.nf-hanja-char {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.nf-hanja-reading {
   font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.nf-hanja-meaning {
+  font-size: 0.76rem;
+  color: hsl(var(--muted-foreground));
 }
 
 .nf-reason-list {
@@ -457,6 +488,10 @@ input {
 
   .nf-segmented {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .nf-pron-emphasis {
+    font-size: 1.72rem;
   }
 }
 

@@ -332,6 +332,8 @@ function toFreeResultItem(
   return {
     nameHangul: item.nameHangul,
     hanjaPair: item.hanjaPair,
+    readingPair: item.readingPair,
+    meaningKwPair: item.meaningKwPair,
     score: clamp(Math.round(score), DISPLAY_SCORE_MIN, 99),
     reasons: buildFriendlyReasonsByRank(item, rank, totalCount)
   };

@@ -17,6 +17,11 @@ function displayScore(score: unknown): string {
   return "--";
 }
 
+function displayMeaning(meaning: string): string {
+  const normalized = meaning.trim();
+  return normalized.length > 0 ? normalized : "뜻 정보 없음";
+}
+
 export default function ResultPage(): JSX.Element {
   const router = useRouter();
   const input = useRecommendStore((state) => state.input);
@@ -61,26 +66,51 @@ export default function ResultPage(): JSX.Element {
       ) : (
         <>
           <section className="result-list">
-            {top5.map((item, index) => (
-              <TdsCard
-                key={`${item.nameHangul}-${item.hanjaPair.join("")}-${index}`}
-              >
-                <div className="result-header-row">
-                  <span className="score-chip">
-                    추천 적합도 {displayScore(item.score)}
-                  </span>
-                </div>
-                <h2 className="name-title">{item.nameHangul}</h2>
-                <p className="hanja-sub">
-                  {item.hanjaPair[0]} {item.hanjaPair[1]}
-                </p>
-                <ul className="reason-list">
-                  {item.reasons.slice(0, 3).map((reason, reasonIndex) => (
-                    <li key={`${reason}-${reasonIndex}`}>{reason}</li>
-                  ))}
-                </ul>
-              </TdsCard>
-            ))}
+            {top5.map((item, index) => {
+              const pronunciation = `${input.surnameHangul} ${item.readingPair[0]} ${item.readingPair[1]}`;
+              const hanjaDetails = [
+                {
+                  hanja: item.hanjaPair[0],
+                  reading: item.readingPair[0],
+                  meaning: displayMeaning(item.meaningKwPair[0])
+                },
+                {
+                  hanja: item.hanjaPair[1],
+                  reading: item.readingPair[1],
+                  meaning: displayMeaning(item.meaningKwPair[1])
+                }
+              ];
+
+              return (
+                <TdsCard
+                  key={`${item.nameHangul}-${item.hanjaPair.join("")}-${index}`}
+                >
+                  <div className="result-header-row">
+                    <span className="score-chip">
+                      추천 적합도 {displayScore(item.score)}
+                    </span>
+                  </div>
+                  <p className="pron-emphasis">{pronunciation}</p>
+                  <ul className="hanja-detail-list">
+                    {hanjaDetails.map((detail, detailIndex) => (
+                      <li
+                        key={`${detail.hanja}-${detail.reading}-${detailIndex}`}
+                        className="hanja-detail-item"
+                      >
+                        <span className="hanja-char">{detail.hanja}</span>
+                        <span className="hanja-reading">{detail.reading}</span>
+                        <span className="hanja-meaning">{detail.meaning}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <ul className="reason-list">
+                    {item.reasons.slice(0, 3).map((reason, reasonIndex) => (
+                      <li key={`${reason}-${reasonIndex}`}>{reason}</li>
+                    ))}
+                  </ul>
+                </TdsCard>
+              );
+            })}
           </section>
 
           <section className="premium-teaser">

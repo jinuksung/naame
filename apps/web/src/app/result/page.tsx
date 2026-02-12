@@ -12,6 +12,11 @@ function displayScore(score: unknown): string {
   return "--";
 }
 
+function displayMeaning(meaning: string): string {
+  const normalized = meaning.trim();
+  return normalized.length > 0 ? normalized : "뜻 정보 없음";
+}
+
 export default function ResultPage(): JSX.Element {
   const router = useRouter();
   const input = useRecommendStore((state) => state.input);
@@ -51,22 +56,47 @@ export default function ResultPage(): JSX.Element {
       ) : (
         <>
           <section className="nf-result-list">
-            {top5.map((item, index) => (
-              <Card key={`${item.nameHangul}-${item.hanjaPair.join("")}-${index}`}>
-                <div className="nf-result-header-row">
-                  <span className="nf-score-chip">추천 적합도 {displayScore(item.score)}</span>
-                </div>
-                <h2 className="nf-name-title">{item.nameHangul}</h2>
-                <p className="nf-hanja-sub">
-                  {item.hanjaPair[0]} {item.hanjaPair[1]}
-                </p>
-                <ul className="nf-reason-list">
-                  {item.reasons.slice(0, 3).map((reason, reasonIndex) => (
-                    <li key={`${reason}-${reasonIndex}`}>{reason}</li>
-                  ))}
-                </ul>
-              </Card>
-            ))}
+            {top5.map((item, index) => {
+              const pronunciation = `${input.surnameHangul} ${item.readingPair[0]} ${item.readingPair[1]}`;
+              const hanjaDetails = [
+                {
+                  hanja: item.hanjaPair[0],
+                  reading: item.readingPair[0],
+                  meaning: displayMeaning(item.meaningKwPair[0])
+                },
+                {
+                  hanja: item.hanjaPair[1],
+                  reading: item.readingPair[1],
+                  meaning: displayMeaning(item.meaningKwPair[1])
+                }
+              ];
+
+              return (
+                <Card key={`${item.nameHangul}-${item.hanjaPair.join("")}-${index}`}>
+                  <div className="nf-result-header-row">
+                    <span className="nf-score-chip">추천 적합도 {displayScore(item.score)}</span>
+                  </div>
+                  <p className="nf-pron-emphasis">{pronunciation}</p>
+                  <ul className="nf-hanja-detail-list">
+                    {hanjaDetails.map((detail, detailIndex) => (
+                      <li
+                        key={`${detail.hanja}-${detail.reading}-${detailIndex}`}
+                        className="nf-hanja-detail-item"
+                      >
+                        <span className="nf-hanja-char">{detail.hanja}</span>
+                        <span className="nf-hanja-reading">{detail.reading}</span>
+                        <span className="nf-hanja-meaning">{detail.meaning}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <ul className="nf-reason-list">
+                    {item.reasons.slice(0, 3).map((reason, reasonIndex) => (
+                      <li key={`${reason}-${reasonIndex}`}>{reason}</li>
+                    ))}
+                  </ul>
+                </Card>
+              );
+            })}
           </section>
 
           <section className="nf-premium-teaser">

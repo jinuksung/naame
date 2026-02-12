@@ -26,6 +26,8 @@ export interface SurnameHanjaOptionsResponse {
 export interface FreeRecommendResultItem {
   nameHangul: string;
   hanjaPair: [string, string];
+  readingPair: [string, string];
+  meaningKwPair: [string, string];
   score: number;
   reasons: string[];
 }

@@ -346,17 +346,47 @@ a {
   font-weight: 700;
 }
 
-.name-title {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
+.pron-emphasis {
+  margin: 12px 0 0;
+  color: #1749aa;
+  font-size: 33px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
 }
 
-.hanja-sub {
-  margin: 6px 0 0;
-  color: var(--text-secondary);
+.hanja-detail-list {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 8px;
+}
+
+.hanja-detail-item {
+  border: 1px solid #d6e4ff;
+  border-radius: 12px;
+  background: #f6f9ff;
+  padding: 10px 8px;
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  text-align: center;
+}
+
+.hanja-char {
+  font-size: 29px;
+  font-weight: 700;
+}
+
+.hanja-reading {
   font-size: 14px;
+  font-weight: 700;
+}
+
+.hanja-meaning {
+  color: var(--text-secondary);
+  font-size: 12px;
 }
 
 .reason-list {
@@ -402,5 +432,9 @@ a {
 
   .tds-title {
     font-size: 22px;
+  }
+
+  .pron-emphasis {
+    font-size: 30px;
   }
 }

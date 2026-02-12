@@ -29,6 +29,14 @@ function isValidResponse(value: unknown): value is FreeRecommendResponse {
       result.hanjaPair.length === 2 &&
       typeof result.hanjaPair[0] === "string" &&
       typeof result.hanjaPair[1] === "string" &&
+      Array.isArray(result.readingPair) &&
+      result.readingPair.length === 2 &&
+      typeof result.readingPair[0] === "string" &&
+      typeof result.readingPair[1] === "string" &&
+      Array.isArray(result.meaningKwPair) &&
+      result.meaningKwPair.length === 2 &&
+      typeof result.meaningKwPair[0] === "string" &&
+      typeof result.meaningKwPair[1] === "string" &&
       typeof result.score === "number" &&
       Number.isFinite(result.score) &&
       Array.isArray(result.reasons)
