@@ -14,7 +14,9 @@ export default function RootLayout({
 }>): JSX.Element {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        {children}
+      </body>
     </html>
   );
 }
