@@ -40,7 +40,7 @@ export async function generateMetadata({
   const label = genderLabel(normalizedGender);
 
   return buildSeoMetadata({
-    title: `${label} 아기 이름 추천 | 네임핏`,
+    title: `${label} 이름 추천 | 네임핏`,
     description: `${label} 이름 추천 흐름을 네임핏 랜딩에서 확인하세요. 성씨와 생년월일 정보를 함께 입력해 이름 후보를 비교하는 방법과 관련 상세 페이지 이동 경로를 안내합니다.`,
     pathname: `/gender/${normalizedGender}`,
   });

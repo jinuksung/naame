@@ -52,13 +52,23 @@ const relatedLinks: InternalLinkCard[] = [
   },
   {
     href: "/gender/M",
-    title: "남아 추천 페이지",
-    description: "남아 기준 이름 샘플과 관련 링크를 확인합니다.",
+    title: "남자 이름 추천",
+    description: "남자 기준 이름 샘플과 관련 링크를 확인합니다.",
   },
   {
     href: "/gender/F",
-    title: "여아 추천 페이지",
-    description: "여아 기준 이름 샘플과 관련 링크를 확인합니다.",
+    title: "여자 이름 추천",
+    description: "여자 기준 이름 샘플과 관련 링크를 확인합니다.",
+  },
+  {
+    href: "/trends/2026",
+    title: "2026 최신 이름 트렌드",
+    description: "2026년 키워드 기반 탐색 흐름을 확인합니다.",
+  },
+  {
+    href: "/pretty",
+    title: "예쁜 이름 추천",
+    description: "예쁜 이름 키워드로 시작하는 비교 흐름을 확인합니다.",
   },
   ...guideLinks,
 ];

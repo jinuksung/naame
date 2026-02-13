@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import { buildSeoMetadata } from "./buildMeta";
 import {
+  SEO_STATIC_PATHS,
   TOP_SURNAMES,
+  genderLabel,
   isIndexableSurname,
   isValidSurnameParam,
   normalizeGenderParam,
@@ -22,6 +24,8 @@ function testGenderNormalization(): void {
   assert.equal(normalizeGenderParam("F"), "F");
   assert.equal(normalizeGenderParam("female"), "F");
   assert.equal(normalizeGenderParam("unknown"), null);
+  assert.equal(genderLabel("M"), "남자");
+  assert.equal(genderLabel("F"), "여자");
 }
 
 function testDeterministicPick(): void {
@@ -53,6 +57,8 @@ function testIndexablePolicy(): void {
   const topSurname = TOP_SURNAMES[0];
   assert.equal(isIndexableSurname(topSurname), true);
   assert.equal(isIndexableSurname("남궁"), false);
+  assert.ok(SEO_STATIC_PATHS.includes("/trends/2026"));
+  assert.ok(SEO_STATIC_PATHS.includes("/pretty"));
 }
 
 function testMetadataBuilder(): void {

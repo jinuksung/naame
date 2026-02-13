@@ -34,7 +34,7 @@ export async function generateMetadata({
   }
 
   return buildSeoMetadata({
-    title: `${surname} 아기 이름 추천 | 네임핏`,
+    title: `${surname}씨 이름 추천 | 네임핏`,
     description: `${surname} 성씨와 어울리는 이름 추천 흐름을 네임핏 랜딩에서 확인하세요. 성별, 생년월일 정보와 함께 이름 후보를 비교하는 방법과 관련 페이지 이동 경로를 안내합니다.`,
     pathname: `/surname/${surname}`,
     noIndex: !isIndexableSurname(surname),
@@ -54,12 +54,12 @@ export default function SurnameLandingPage({
   const faqItems: FaqItem[] = [
     {
       question: `${surname} 성씨 페이지는 어떤 정보를 제공하나요?`,
-      answer: `${surname} 성씨를 기준으로 이름 추천을 읽는 방법, 남아/여아 조합 페이지 이동 링크, 대표 이름 샘플을 제공합니다. 성씨 중심으로 후보를 비교하고 다음 단계로 이동하기 쉽도록 구성했습니다.`,
+      answer: `${surname} 성씨를 기준으로 이름 추천을 읽는 방법, 남자/여자 조합 페이지 이동 링크, 대표 이름 샘플을 제공합니다. 성씨 중심으로 후보를 비교하고 다음 단계로 이동하기 쉽도록 구성했습니다.`,
     },
     {
       question: `${surname} 성씨와 성별 정보를 함께 봐야 하나요?`,
       answer:
-        "네. 성씨 페이지는 출발점이며, 성별 조합 페이지로 이동하면 같은 성씨에서 남아/여아 기준을 나눠 더 구체적으로 확인할 수 있습니다.",
+        "네. 성씨 페이지는 출발점이며, 성별 조합 페이지로 이동하면 같은 성씨에서 남자/여자 기준을 나눠 더 구체적으로 확인할 수 있습니다.",
     },
     {
       question: "생년월일 정보는 어디서 반영되나요?",
@@ -83,7 +83,7 @@ export default function SurnameLandingPage({
   return (
     <SeoPageShell
       title={`${surname} 성씨와 어울리는 이름 추천`}
-      description={`${surname} 성씨 기준으로 이름 추천을 읽는 방법과 남아/여아 조합 페이지 이동 경로를 함께 안내합니다.`}
+      description={`${surname} 성씨 기준으로 이름 추천을 읽는 방법과 남자/여자 조합 페이지 이동 경로를 함께 안내합니다.`}
     >
       <ParagraphSection
         title={`${surname} 성씨 기준 추천 흐름`}

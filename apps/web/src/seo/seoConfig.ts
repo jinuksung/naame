@@ -1,11 +1,26 @@
 export const SITE_NAME = "네임핏";
 
+function normalizeAbsoluteUrl(value: string): string {
+  const withProtocol = /^https?:\/\//.test(value) ? value : `https://${value}`;
+  return withProtocol.replace(/\/+$/, "");
+}
+
 function resolveSiteUrl(raw?: string): string {
   const fallback = "http://localhost:3000";
   if (!raw || raw.trim().length === 0) {
+    const vercelProductionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+    if (vercelProductionUrl && vercelProductionUrl.trim().length > 0) {
+      return normalizeAbsoluteUrl(vercelProductionUrl.trim());
+    }
+
+    const vercelDeploymentUrl = process.env.VERCEL_URL;
+    if (vercelDeploymentUrl && vercelDeploymentUrl.trim().length > 0) {
+      return normalizeAbsoluteUrl(vercelDeploymentUrl.trim());
+    }
+
     return fallback;
   }
-  return raw.replace(/\/+$/, "");
+  return normalizeAbsoluteUrl(raw.trim());
 }
 
 export const SITE_URL = resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
@@ -57,6 +72,8 @@ export const SEO_STATIC_PATHS = [
   "/seo",
   "/names",
   "/birth",
+  "/trends/2026",
+  "/pretty",
   "/guides/how-it-works",
   "/guides/namefit-vs-naming-office",
 ] as const;
@@ -71,7 +88,7 @@ export function normalizeGenderParam(gender: string): NormalizedGender | null {
 }
 
 export function genderLabel(gender: NormalizedGender): string {
-  return gender === "M" ? "남아" : "여아";
+  return gender === "M" ? "남자" : "여자";
 }
 
 export function isIndexableSurname(surname: string): boolean {

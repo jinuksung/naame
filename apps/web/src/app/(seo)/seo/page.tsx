@@ -51,6 +51,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function SeoHubPage(): JSX.Element {
   const popularSurnames = TOP_SURNAMES.slice(0, 20);
+  const keywordLinks = [
+    { href: "/trends/2026", label: "2026 최신 이름 트렌드" },
+    { href: "/gender/M", label: "남자 이름 추천" },
+    { href: "/gender/F", label: "여자 이름 추천" },
+    { href: "/pretty", label: "예쁜 이름 추천" },
+  ];
 
   return (
     <SeoPageShell
@@ -60,10 +66,23 @@ export default function SeoHubPage(): JSX.Element {
       <ParagraphSection
         title="허브 이용 안내"
         paragraphs={[
-          "이 페이지는 네임핏의 검색용 랜딩을 한 번에 탐색할 수 있도록 구성한 허브입니다. 이름 추천을 처음 접하는 사용자도 어떤 페이지부터 보면 되는지 바로 판단할 수 있도록 카테고리를 단순하게 나눴습니다. 성씨 중심 페이지에서는 특정 성씨와 어울리는 이름 후보를 확인하고, 성별 페이지에서는 남아·여아 기준의 대표 샘플을 비교할 수 있습니다.",
+          "이 페이지는 네임핏의 검색용 랜딩을 한 번에 탐색할 수 있도록 구성한 허브입니다. 이름 추천을 처음 접하는 사용자도 어떤 페이지부터 보면 되는지 바로 판단할 수 있도록 카테고리를 단순하게 나눴습니다. 성씨 중심 페이지에서는 특정 성씨와 어울리는 이름 후보를 확인하고, 성별 페이지에서는 남자·여자 기준의 대표 샘플을 비교할 수 있습니다.",
           "또한 생년월일 기반 설명 페이지와 가이드 문서를 함께 배치해 입력값의 의미를 이해한 뒤 추천을 시작할 수 있도록 했습니다. 각 페이지는 서로 내부 링크로 연결되어 있어 한 번 방문한 뒤에도 다음 단계로 자연스럽게 이동할 수 있습니다. 실제 추천이 필요하면 일반 이름 추천 페이지로 이동해 성씨, 성별, 생년월일을 입력하고 결과를 확인하면 됩니다.",
         ]}
       />
+
+      <section className="seo-section">
+        <h2 className="seo-h2">주요 검색 키워드 페이지</h2>
+        <ul className="seo-surname-list">
+          {keywordLinks.map((item) => (
+            <li key={item.label}>
+              <Link className="seo-surname-link" href={item.href}>
+                {item.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <LinkCardGrid title="카테고리 바로가기" links={seoHubCategoryLinks} />
 

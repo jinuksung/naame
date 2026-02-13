@@ -19,13 +19,23 @@ export const seoHubCategoryLinks: InternalLinkCard[] = [
   },
   {
     href: "/gender/M",
-    title: "남아 이름 추천",
-    description: "남아 이름 추천 페이지로 이동해 예시 후보를 확인합니다.",
+    title: "남자 이름 추천",
+    description: "남자 이름 추천 페이지로 이동해 예시 후보를 확인합니다.",
   },
   {
     href: "/gender/F",
-    title: "여아 이름 추천",
-    description: "여아 이름 추천 페이지로 이동해 예시 후보를 확인합니다.",
+    title: "여자 이름 추천",
+    description: "여자 이름 추천 페이지로 이동해 예시 후보를 확인합니다.",
+  },
+  {
+    href: "/trends/2026",
+    title: "2026 최신 이름 트렌드",
+    description: "2026년 기준으로 자주 찾는 이름 탐색 흐름을 소개합니다.",
+  },
+  {
+    href: "/pretty",
+    title: "예쁜 이름 추천",
+    description: "발음과 의미를 함께 보기 좋은 예쁜 이름 추천 페이지로 이동합니다.",
   },
 ];
 
@@ -47,13 +57,13 @@ export function buildSurnameRelatedLinks(surname: string): InternalLinkCard[] {
   return [
     {
       href: `/combo/${encodedSurname}/M`,
-      title: `${surname} 성 + 남아 추천`,
-      description: `${surname} 성씨 기준으로 남아 이름 추천 흐름을 확인합니다.`,
+      title: `${surname}씨 남자 이름 추천`,
+      description: `${surname}씨 기준으로 남자 이름 추천 흐름을 확인합니다.`,
     },
     {
       href: `/combo/${encodedSurname}/F`,
-      title: `${surname} 성 + 여아 추천`,
-      description: `${surname} 성씨 기준으로 여아 이름 추천 흐름을 확인합니다.`,
+      title: `${surname}씨 여자 이름 추천`,
+      description: `${surname}씨 기준으로 여자 이름 추천 흐름을 확인합니다.`,
     },
     {
       href: `/surname/${encodedSurname}`,
@@ -103,7 +113,7 @@ export function buildComboRelatedLinks(
   return [
     {
       href: `/combo/${encodedSurname}/${opposite}`,
-      title: `${surname} 성 ${genderLabel(opposite)} 페이지`,
+      title: `${surname}씨 ${genderLabel(opposite)} 이름 추천`,
       description: `같은 성씨에서 다른 성별 기준의 추천 흐름을 함께 비교합니다.`,
     },
     {
