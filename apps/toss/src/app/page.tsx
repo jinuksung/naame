@@ -9,6 +9,7 @@ import {
   TdsSegmentedControl,
   TdsSwitch,
 } from "@/components/tds";
+import { normalizeHangulReadingWithLimit } from "@namefit/engine/lib/korean/normalizeHangulReading";
 import { fetchSurnameHanjaOptions } from "@/lib/api";
 import { genderOptions, useRecommendStore } from "@/store/useRecommendStore";
 import { FreeRecommendInput, SurnameHanjaOption } from "@/types/recommend";
@@ -49,7 +50,9 @@ export default function InputPage(): JSX.Element {
   const setInput = useRecommendStore((state) => state.setInput);
   const setResults = useRecommendStore((state) => state.setResults);
 
-  const [surnameHangul, setSurnameHangul] = useState(storeInput.surnameHangul);
+  const [surnameHangul, setSurnameHangul] = useState(() =>
+    normalizeHangulReadingWithLimit(storeInput.surnameHangul, 2),
+  );
   const [surnameHanja, setSurnameHanja] = useState(storeInput.surnameHanja);
   const [surnameOptions, setSurnameOptions] = useState<SurnameHanjaOption[]>([]);
   const [surnameOptionsLoading, setSurnameOptionsLoading] = useState(false);
@@ -63,7 +66,7 @@ export default function InputPage(): JSX.Element {
   const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
-    const reading = surnameHangul.trim();
+    const reading = normalizeHangulReadingWithLimit(surnameHangul, 2);
     if (!reading) {
       setSurnameOptions([]);
       setSurnameHanja("");
@@ -134,7 +137,7 @@ export default function InputPage(): JSX.Element {
     event.preventDefault();
 
     const nextInput: FreeRecommendInput = {
-      surnameHangul: surnameHangul.trim(),
+      surnameHangul: normalizeHangulReadingWithLimit(surnameHangul, 2),
       surnameHanja: surnameHanja.trim(),
       birth: {
         calendar: "SOLAR",
@@ -168,10 +171,9 @@ export default function InputPage(): JSX.Element {
               className={`tds-input surname-inline-input${errors.surnameHangul ? " is-error" : ""}`}
               type="text"
               value={surnameHangul}
-              maxLength={2}
               placeholder="김"
               onChange={(event) => {
-                setSurnameHangul(event.target.value);
+                setSurnameHangul(normalizeHangulReadingWithLimit(event.target.value, 2));
                 setErrors((prev) => ({ ...prev, surnameHangul: undefined, surnameHanja: undefined }));
               }}
             />

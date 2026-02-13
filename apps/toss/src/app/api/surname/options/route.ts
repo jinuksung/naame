@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import {
+  normalizeHangulReading,
   resolveSurnameHanjaSelection,
   SurnameHanjaOptionsResponse
 } from "@namefit/engine";
@@ -12,7 +13,8 @@ function countChars(text: string): number {
 }
 
 export async function GET(request: Request): Promise<NextResponse> {
-  const reading = new URL(request.url).searchParams.get("reading")?.trim() ?? "";
+  const rawReading = new URL(request.url).searchParams.get("reading") ?? "";
+  const reading = normalizeHangulReading(rawReading);
   if (!reading) {
     return NextResponse.json({
       surnameReading: "",

@@ -1,6 +1,7 @@
 import { access, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { SurnameHanjaOption } from "../types/recommend";
+import { normalizeHangulReading } from "../lib/korean/normalizeHangulReading";
 
 interface RawSurnameMapRow {
   surnameReading?: unknown;
@@ -67,7 +68,7 @@ function normalizeReading(value: unknown): string {
   if (typeof value !== "string") {
     return "";
   }
-  return value.trim().normalize("NFC");
+  return normalizeHangulReading(value);
 }
 
 function normalizeHanja(value: unknown): string {

@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { loadHanjaDataset } from "../data/loadHanjaDataset";
 import { resolveSurnameHanjaSelection } from "../data/loadSurnameMap";
 import { recommendNames } from "../engine/recommend";
+import { normalizeHangulReading } from "../lib/korean/normalizeHangulReading";
 import { buildMockResults } from "../mock";
 import {
   FreeRecommendInput,
@@ -73,8 +74,9 @@ function countChars(text: string): number {
 }
 
 function toInput(payload: RawPayload): FreeRecommendInput | null {
-  const surnameHangul =
-    typeof payload.surnameHangul === "string" ? payload.surnameHangul.trim() : "";
+  const surnameHangul = normalizeHangulReading(
+    typeof payload.surnameHangul === "string" ? payload.surnameHangul : ""
+  );
   const surnameHanja =
     typeof payload.surnameHanja === "string" ? payload.surnameHanja.trim() : "";
   const calendar = payload.birth?.calendar;
