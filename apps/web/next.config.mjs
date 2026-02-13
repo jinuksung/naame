@@ -3,7 +3,10 @@ const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ["@namefit/engine"],
   experimental: {
-    externalDir: true
+    externalDir: true,
+    outputFileTracingIncludes: {
+      "/*": ["../../surname_map.jsonl"]
+    }
   }
 };
 

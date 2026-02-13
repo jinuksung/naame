@@ -4,7 +4,10 @@ const nextConfig = {
   basePath: "/toss",
   transpilePackages: ["@namefit/engine"],
   experimental: {
-    externalDir: true
+    externalDir: true,
+    outputFileTracingIncludes: {
+      "/*": ["../../surname_map.jsonl"]
+    }
   }
 };
 
