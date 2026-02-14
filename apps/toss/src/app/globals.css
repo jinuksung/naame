@@ -398,6 +398,44 @@ a {
   line-height: 1.45;
 }
 
+.feedback-row {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.feedback-btn {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.feedback-btn:hover:not(:disabled) {
+  border-color: var(--brand);
+  color: var(--text-primary);
+}
+
+.feedback-btn.is-selected {
+  border-color: var(--brand);
+  background: rgb(49 130 246 / 10%);
+  color: var(--brand-strong);
+}
+
+.feedback-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .premium-teaser {
   margin-top: 18px;
   padding: 16px;

@@ -8,6 +8,10 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/cli.js --input /tmp/names_repo_check/data/data.json --out out",
+    "start:local": "node dist/cli.js --input birth_registered_names_gender.json --out out",
+    "test:name-pool": "npx ts-node -P tsconfig.scripts.json src/tests/namePoolGenerator.test.ts",
     "dev:web": "npm run dev --workspace @namefit/web",
     "dev:toss": "npm run dev --workspace @namefit/toss",
     "build:web": "npm run build --workspace @namefit/web",

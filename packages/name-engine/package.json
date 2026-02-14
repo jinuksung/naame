@@ -10,10 +10,13 @@
   },
   "scripts": {
     "recommend": "ts-node -P tsconfig.scripts.json src/run.ts",
+    "recommend:cli": "ts-node -P tsconfig.scripts.json src/cli.ts",
     "test:saju": "ts-node -P tsconfig.scripts.json src/engine/scoring/sajuElements.test.ts",
     "test:prior": "ts-node -P tsconfig.scripts.json src/lib/namefit/prior/namePrior.test.ts",
     "test:surname": "ts-node -P tsconfig.scripts.json src/engine/scoring/surnameInfluence.test.ts",
-    "test:sensitivity": "ts-node -P tsconfig.scripts.json src/engine/recommendSurnameSensitivity.test.ts"
+    "test:sensitivity": "ts-node -P tsconfig.scripts.json src/engine/recommendSurnameSensitivity.test.ts",
+    "test:soft-prior": "ts-node -P tsconfig.scripts.json src/core/softPriorRerank.test.ts",
+    "test:preselect": "ts-node -P tsconfig.scripts.json src/core/preselect.test.ts"
   },
   "devDependencies": {
     "@types/node": "^20.17.57",

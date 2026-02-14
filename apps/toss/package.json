@@ -7,10 +7,12 @@
     "dev": "NEXT_PUBLIC_BASE_PATH=/toss next dev",
     "build": "NEXT_PUBLIC_BASE_PATH=/toss next build",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test:feedback-scoring": "ts-node -P tsconfig.scripts.json src/server/feedback/feedbackScoring.test.ts"
   },
   "dependencies": {
     "@namefit/engine": "*",
+    "@vercel/analytics": "^1.6.1",
     "next": "^14.2.25",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

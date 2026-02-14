@@ -2,6 +2,7 @@ export type Gender = "MALE" | "FEMALE" | "ANY";
 export type CalendarType = "SOLAR" | "LUNAR";
 export type SajuPrecision = "DATE_ONLY" | "DATE_TIME";
 export type FiveElement = "WOOD" | "FIRE" | "EARTH" | "METAL" | "WATER";
+export type PoolTier = "A" | "B" | "C" | "None";
 
 export interface BirthInput {
   calendar: CalendarType;
@@ -94,6 +95,8 @@ export interface RecommendationScores {
   balance3?: number;
   engine?: number;
   prior?: number;
+  pool?: number;
+  tierBonus?: number;
   total: number;
 }
 
@@ -107,6 +110,20 @@ export interface RecommendationReasons {
   surnamePronFlow?: string[];
   balance3?: string[];
   prior?: string[];
+  pool?: string[];
+}
+
+export interface SoftPriorDebugInfo {
+  poolIncluded: boolean;
+  tier: PoolTier;
+  engineScore01: number;
+  poolScore01: number;
+  tierBonus01: number;
+  finalScore01: number;
+}
+
+export interface RecommendationDebugInfo {
+  softPrior?: SoftPriorDebugInfo;
 }
 
 export interface RecommendationItem {
@@ -123,6 +140,7 @@ export interface RecommendationItem {
   meaningTags: string[];
   scores: RecommendationScores;
   reasons: RecommendationReasons;
+  debug?: RecommendationDebugInfo;
 }
 
 export interface RecommendMeta {
@@ -139,6 +157,11 @@ export interface RecommendMeta {
     FAIL_BLACKLIST: number;
     FAIL_PATTERN: number;
   };
+  softPriorApplied?: boolean;
+  preselectUniqueNameCount?: number;
+  preselectSelectedNameCount?: number;
+  preselectPoolSelectedCount?: number;
+  preselectExplorationSelectedCount?: number;
 }
 
 export interface RecommendResult {

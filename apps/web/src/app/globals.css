@@ -459,6 +459,41 @@ input {
   gap: 10px;
 }
 
+.nf-feedback-row {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.nf-feedback-btn {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
+  background: hsl(var(--card));
+  color: hsl(var(--muted-foreground));
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+}
+
+.nf-feedback-btn:hover:not(:disabled) {
+  border-color: hsl(var(--accent));
+  color: hsl(var(--foreground));
+}
+
+.nf-feedback-btn.is-selected {
+  border-color: hsl(var(--accent));
+  background: rgb(14 165 233 / 10%);
+  color: #075985;
+}
+
+.nf-feedback-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .seo-shell {
   min-height: 100vh;
   padding: 30px 16px 38px;

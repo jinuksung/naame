@@ -133,3 +133,23 @@ export async function fetchFreeRecommendations(
     results: data.results.slice(0, 5)
   };
 }
+
+export async function submitNameFeedback(input: {
+  nameHangul: string;
+  hanjaPair: [string, string];
+  vote: "like" | "dislike";
+}): Promise<void> {
+  const response = await fetch(withBasePath("/api/feedback/name"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    cache: "no-store",
+    body: JSON.stringify(input)
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`[api] feedback submit failed: ${response.status} ${text}`);
+  }
+}

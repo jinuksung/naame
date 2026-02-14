@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, PrimaryButton, Screen, SecondaryButton } from "@/components/ui";
+import { submitNameFeedback } from "@/lib/api";
 import { useRecommendStore } from "@/store/useRecommendStore";
+import type { FreeRecommendResultItem } from "@/types/recommend";
 
 function displayScore(score: unknown): string {
   if (typeof score === "number" && Number.isFinite(score)) {
@@ -17,11 +19,17 @@ function displayMeaning(meaning: string): string {
   return normalized.length > 0 ? normalized : "뜻 정보 없음";
 }
 
+function buildNameKey(item: Pick<FreeRecommendResultItem, "nameHangul" | "hanjaPair">): string {
+  return `${item.nameHangul}:${item.hanjaPair[0]}${item.hanjaPair[1]}`;
+}
+
 export default function ResultPage(): JSX.Element {
   const router = useRouter();
   const input = useRecommendStore((state) => state.input);
   const results = useRecommendStore((state) => state.results);
   const reset = useRecommendStore((state) => state.reset);
+  const [feedbackStatus, setFeedbackStatus] = useState<Record<string, "idle" | "pending" | "done">>({});
+  const [feedbackVote, setFeedbackVote] = useState<Record<string, "like" | "dislike" | undefined>>({});
 
   const hasInput =
     input.surnameHangul.trim().length > 0 &&
@@ -34,11 +42,54 @@ export default function ResultPage(): JSX.Element {
     }
   }, [hasInput, router]);
 
+  const top5 = results.slice(0, 5);
+  const top5Keys = useMemo(() => top5.map((item) => buildNameKey(item)), [top5]);
+
+  useEffect(() => {
+    setFeedbackStatus((prev) => {
+      const next: Record<string, "idle" | "pending" | "done"> = {};
+      for (const key of top5Keys) {
+        next[key] = prev[key] ?? "idle";
+      }
+      return next;
+    });
+    setFeedbackVote((prev) => {
+      const next: Record<string, "like" | "dislike" | undefined> = {};
+      for (const key of top5Keys) {
+        next[key] = prev[key];
+      }
+      return next;
+    });
+  }, [top5Keys]);
+
   if (!hasInput) {
     return <></>;
   }
 
-  const top5 = results.slice(0, 5);
+  const handleFeedbackClick = async (
+    item: FreeRecommendResultItem,
+    vote: "like" | "dislike",
+  ): Promise<void> => {
+    const key = buildNameKey(item);
+    if (feedbackStatus[key] === "pending" || feedbackStatus[key] === "done") {
+      return;
+    }
+
+    setFeedbackStatus((prev) => ({ ...prev, [key]: "pending" }));
+    setFeedbackVote((prev) => ({ ...prev, [key]: vote }));
+    try {
+      await submitNameFeedback({
+        nameHangul: item.nameHangul,
+        hanjaPair: item.hanjaPair,
+        vote,
+      });
+      setFeedbackStatus((prev) => ({ ...prev, [key]: "done" }));
+    } catch (error) {
+      console.error("[result] feedback submit failed", error);
+      setFeedbackStatus((prev) => ({ ...prev, [key]: "idle" }));
+      setFeedbackVote((prev) => ({ ...prev, [key]: undefined }));
+    }
+  };
 
   return (
     <Screen title="추천 이름 TOP 5" description="입력하신 정보를 바탕으로 선별했습니다">
@@ -57,6 +108,7 @@ export default function ResultPage(): JSX.Element {
         <>
           <section className="nf-result-list">
             {top5.map((item, index) => {
+              const itemKey = buildNameKey(item);
               const pronunciation = `${input.surnameHangul} ${item.readingPair[0]} ${item.readingPair[1]}`;
               const hanjaDetails = [
                 {
@@ -94,6 +146,28 @@ export default function ResultPage(): JSX.Element {
                       <li key={`${reason}-${reasonIndex}`}>{reason}</li>
                     ))}
                   </ul>
+                  <div className="nf-feedback-row">
+                    <button
+                      type="button"
+                      className={`nf-feedback-btn${feedbackVote[itemKey] === "like" ? " is-selected" : ""}`}
+                      disabled={feedbackStatus[itemKey] === "pending" || feedbackStatus[itemKey] === "done"}
+                      onClick={() => {
+                        void handleFeedbackClick(item, "like");
+                      }}
+                    >
+                      좋아요
+                    </button>
+                    <button
+                      type="button"
+                      className={`nf-feedback-btn${feedbackVote[itemKey] === "dislike" ? " is-selected" : ""}`}
+                      disabled={feedbackStatus[itemKey] === "pending" || feedbackStatus[itemKey] === "done"}
+                      onClick={() => {
+                        void handleFeedbackClick(item, "dislike");
+                      }}
+                    >
+                      싫어요
+                    </button>
+                  </div>
                 </Card>
               );
             })}

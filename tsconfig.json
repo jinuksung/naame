@@ -5,13 +5,15 @@
     "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
-    "noEmit": true,
     "esModuleInterop": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "types": ["node"]
+    "types": ["node"],
+    "rootDir": "src",
+    "outDir": "dist"
   },
-  "exclude": ["node_modules", ".next"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", ".next", "dist"]
 }

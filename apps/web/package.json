@@ -8,7 +8,8 @@
     "build": "next build",
     "lint": "next lint",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test:seo-utils": "ts-node -P tsconfig.scripts.json src/seo/seoUtils.test.ts"
+    "test:seo-utils": "ts-node -P tsconfig.scripts.json src/seo/seoUtils.test.ts",
+    "test:feedback-scoring": "ts-node -P tsconfig.scripts.json src/server/feedback/feedbackScoring.test.ts"
   },
   "dependencies": {
     "@namefit/engine": "*",

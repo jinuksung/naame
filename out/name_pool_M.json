@@ -1,0 +1,9008 @@
+{
+  "generatedAt": "2026-02-13T11:56:42.148Z",
+  "input": "/tmp/names_repo_check/data/data.json",
+  "gender": "M",
+  "count": 600,
+  "items": [
+    {
+      "name": "유찬",
+      "tier": "A",
+      "score": 5.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 1,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "유",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "건후",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "건",
+        "end": "후"
+      }
+    },
+    {
+      "name": "동후",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "동",
+        "end": "후"
+      }
+    },
+    {
+      "name": "로안",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "로",
+        "end": "안"
+      }
+    },
+    {
+      "name": "로찬",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "로",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "로한",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "로",
+        "end": "한"
+      }
+    },
+    {
+      "name": "수안",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "수",
+        "end": "안"
+      }
+    },
+    {
+      "name": "수찬",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "수",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "수한",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "수",
+        "end": "한"
+      }
+    },
+    {
+      "name": "유안",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "유",
+        "end": "안"
+      }
+    },
+    {
+      "name": "유한",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "유",
+        "end": "한"
+      }
+    },
+    {
+      "name": "은후",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "은",
+        "end": "후"
+      }
+    },
+    {
+      "name": "건규",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "규"
+      }
+    },
+    {
+      "name": "동규",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "규"
+      }
+    },
+    {
+      "name": "은규",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "규"
+      }
+    },
+    {
+      "name": "재결",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "결"
+      }
+    },
+    {
+      "name": "재든",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "든"
+      }
+    },
+    {
+      "name": "재윤",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "재",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "하결",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "결"
+      }
+    },
+    {
+      "name": "하든",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "든"
+      }
+    },
+    {
+      "name": "우주",
+      "tier": "A",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0.5,
+        "stabilityScore": 1.5,
+        "genderFitScore": 1.5
+      },
+      "features": {
+        "start": "우",
+        "end": "주"
+      }
+    },
+    {
+      "name": "한결",
+      "tier": "A",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0.5,
+        "stabilityScore": 1.5,
+        "genderFitScore": 1.5
+      },
+      "features": {
+        "start": "한",
+        "end": "결"
+      }
+    },
+    {
+      "name": "건도",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "도"
+      }
+    },
+    {
+      "name": "동도",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "도"
+      }
+    },
+    {
+      "name": "서든",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "서",
+        "end": "든"
+      }
+    },
+    {
+      "name": "우윤",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "우",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "은도",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "도"
+      }
+    },
+    {
+      "name": "하빈",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "빈"
+      }
+    },
+    {
+      "name": "우빈",
+      "tier": "A",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0,
+        "stabilityScore": 1.5,
+        "genderFitScore": 1.5
+      },
+      "features": {
+        "start": "우",
+        "end": "빈"
+      }
+    },
+    {
+      "name": "서석",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "서",
+        "end": "석"
+      }
+    },
+    {
+      "name": "서성",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "서",
+        "end": "성"
+      }
+    },
+    {
+      "name": "성서",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "성",
+        "end": "서"
+      }
+    },
+    {
+      "name": "성윤",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": -0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "성",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "결재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "결",
+        "end": "재"
+      }
+    },
+    {
+      "name": "결주",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "결",
+        "end": "주"
+      }
+    },
+    {
+      "name": "결하",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "결",
+        "end": "하"
+      }
+    },
+    {
+      "name": "규재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "규",
+        "end": "재"
+      }
+    },
+    {
+      "name": "규주",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "규",
+        "end": "주"
+      }
+    },
+    {
+      "name": "규하",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "규",
+        "end": "하"
+      }
+    },
+    {
+      "name": "든재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "든",
+        "end": "재"
+      }
+    },
+    {
+      "name": "든하",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "든",
+        "end": "하"
+      }
+    },
+    {
+      "name": "주건",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "건"
+      }
+    },
+    {
+      "name": "주동",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "동"
+      }
+    },
+    {
+      "name": "주수",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "수"
+      }
+    },
+    {
+      "name": "태오",
+      "tier": "A",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0,
+        "stabilityScore": 1,
+        "genderFitScore": 1.5
+      },
+      "features": {
+        "start": "태",
+        "end": "오"
+      }
+    },
+    {
+      "name": "성석",
+      "tier": "B",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": -0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "성",
+        "end": "석"
+      }
+    },
+    {
+      "name": "현빈",
+      "tier": "B",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": -0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "현",
+        "end": "빈"
+      }
+    },
+    {
+      "name": "현석",
+      "tier": "B",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": -0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "현",
+        "end": "석"
+      }
+    },
+    {
+      "name": "현성",
+      "tier": "B",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": -0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "현",
+        "end": "성"
+      }
+    },
+    {
+      "name": "든서",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "든",
+        "end": "서"
+      }
+    },
+    {
+      "name": "선로",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "선",
+        "end": "로"
+      }
+    },
+    {
+      "name": "선수",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "선",
+        "end": "수"
+      }
+    },
+    {
+      "name": "선유",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "선",
+        "end": "유"
+      }
+    },
+    {
+      "name": "안서",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "안",
+        "end": "서"
+      }
+    },
+    {
+      "name": "윤로",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "윤",
+        "end": "로"
+      }
+    },
+    {
+      "name": "윤수",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "윤",
+        "end": "수"
+      }
+    },
+    {
+      "name": "윤유",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "윤",
+        "end": "유"
+      }
+    },
+    {
+      "name": "진유",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "진",
+        "end": "유"
+      }
+    },
+    {
+      "name": "호성",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "호",
+        "end": "성"
+      }
+    },
+    {
+      "name": "진우",
+      "tier": "A",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1.5,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "진",
+        "end": "우"
+      }
+    },
+    {
+      "name": "안오",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "안",
+        "end": "오"
+      }
+    },
+    {
+      "name": "안호",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "안",
+        "end": "호"
+      }
+    },
+    {
+      "name": "연로",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "연",
+        "end": "로"
+      }
+    },
+    {
+      "name": "예건",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "예",
+        "end": "건"
+      }
+    },
+    {
+      "name": "예동",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "예",
+        "end": "동"
+      }
+    },
+    {
+      "name": "진건",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "진",
+        "end": "건"
+      }
+    },
+    {
+      "name": "찬오",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "찬",
+        "end": "오"
+      }
+    },
+    {
+      "name": "찬호",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "찬",
+        "end": "호"
+      }
+    },
+    {
+      "name": "한호",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "한",
+        "end": "호"
+      }
+    },
+    {
+      "name": "호영",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "호",
+        "end": "영"
+      }
+    },
+    {
+      "name": "호온",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "호",
+        "end": "온"
+      }
+    },
+    {
+      "name": "후영",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "후",
+        "end": "영"
+      }
+    },
+    {
+      "name": "후온",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "후",
+        "end": "온"
+      }
+    },
+    {
+      "name": "후운",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "후",
+        "end": "운"
+      }
+    },
+    {
+      "name": "예준",
+      "tier": "A",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1.5,
+        "stabilityScore": 1,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "예",
+        "end": "준"
+      }
+    },
+    {
+      "name": "정우",
+      "tier": "A",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1.5,
+        "stabilityScore": 1,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "정",
+        "end": "우"
+      }
+    },
+    {
+      "name": "연동",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "연",
+        "end": "동"
+      }
+    },
+    {
+      "name": "연시",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "연",
+        "end": "시"
+      }
+    },
+    {
+      "name": "오영",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "오",
+        "end": "영"
+      }
+    },
+    {
+      "name": "오온",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "오",
+        "end": "온"
+      }
+    },
+    {
+      "name": "오운",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "오",
+        "end": "운"
+      }
+    },
+    {
+      "name": "정시",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "정",
+        "end": "시"
+      }
+    },
+    {
+      "name": "정예",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "정",
+        "end": "예"
+      }
+    },
+    {
+      "name": "찬우",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "찬",
+        "end": "우"
+      }
+    },
+    {
+      "name": "태운",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "태",
+        "end": "운"
+      }
+    },
+    {
+      "name": "한혁",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "한",
+        "end": "혁"
+      }
+    },
+    {
+      "name": "지환",
+      "tier": "A",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1.5,
+        "stabilityScore": 1,
+        "genderFitScore": 1.5
+      },
+      "features": {
+        "start": "지",
+        "end": "환"
+      }
+    },
+    {
+      "name": "지훈",
+      "tier": "A",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1.5,
+        "stabilityScore": 1,
+        "genderFitScore": 1.5
+      },
+      "features": {
+        "start": "지",
+        "end": "훈"
+      }
+    },
+    {
+      "name": "빈혁",
+      "tier": "C",
+      "score": 1.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "빈",
+        "end": "혁"
+      }
+    },
+    {
+      "name": "석혁",
+      "tier": "C",
+      "score": 1.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "석",
+        "end": "혁"
+      }
+    },
+    {
+      "name": "도준",
+      "tier": "A",
+      "score": 1.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -3,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "도",
+        "end": "준"
+      }
+    },
+    {
+      "name": "도현",
+      "tier": "A",
+      "score": 1.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -3,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "도",
+        "end": "현"
+      }
+    },
+    {
+      "name": "이준",
+      "tier": "A",
+      "score": 1.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -3,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "이",
+        "end": "준"
+      }
+    },
+    {
+      "name": "도선",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "도",
+        "end": "선"
+      }
+    },
+    {
+      "name": "민시",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "민",
+        "end": "시"
+      }
+    },
+    {
+      "name": "민이",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "민",
+        "end": "이"
+      }
+    },
+    {
+      "name": "빈민",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "빈",
+        "end": "민"
+      }
+    },
+    {
+      "name": "빈원",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "빈",
+        "end": "원"
+      }
+    },
+    {
+      "name": "석민",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "석",
+        "end": "민"
+      }
+    },
+    {
+      "name": "석원",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "석",
+        "end": "원"
+      }
+    },
+    {
+      "name": "승이",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "승",
+        "end": "이"
+      }
+    },
+    {
+      "name": "승지",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "승",
+        "end": "지"
+      }
+    },
+    {
+      "name": "시선",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "시",
+        "end": "선"
+      }
+    },
+    {
+      "name": "시승",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "시",
+        "end": "승"
+      }
+    },
+    {
+      "name": "시이",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "시",
+        "end": "이"
+      }
+    },
+    {
+      "name": "원민",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "원",
+        "end": "민"
+      }
+    },
+    {
+      "name": "원진",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "원",
+        "end": "진"
+      }
+    },
+    {
+      "name": "원현",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "원",
+        "end": "현"
+      }
+    },
+    {
+      "name": "이선",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "이",
+        "end": "선"
+      }
+    },
+    {
+      "name": "이승",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "이",
+        "end": "승"
+      }
+    },
+    {
+      "name": "준지",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "준",
+        "end": "지"
+      }
+    },
+    {
+      "name": "지승",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "지",
+        "end": "승"
+      }
+    },
+    {
+      "name": "태원",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "태",
+        "end": "원"
+      }
+    },
+    {
+      "name": "승현",
+      "tier": "A",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -3.5,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "승",
+        "end": "현"
+      }
+    },
+    {
+      "name": "민예",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "민",
+        "end": "예"
+      }
+    },
+    {
+      "name": "영진",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "영",
+        "end": "진"
+      }
+    },
+    {
+      "name": "온진",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "온",
+        "end": "진"
+      }
+    },
+    {
+      "name": "준예",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "준",
+        "end": "예"
+      }
+    },
+    {
+      "name": "준은",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": -0.5
+      },
+      "features": {
+        "start": "준",
+        "end": "은"
+      }
+    },
+    {
+      "name": "가은",
+      "tier": "A",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0.5,
+        "stabilityScore": 1,
+        "genderFitScore": -2
+      },
+      "features": {
+        "start": "가",
+        "end": "은"
+      }
+    },
+    {
+      "name": "나은",
+      "tier": "A",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0.5,
+        "stabilityScore": 1,
+        "genderFitScore": -2
+      },
+      "features": {
+        "start": "나",
+        "end": "은"
+      }
+    },
+    {
+      "name": "나경",
+      "tier": "A",
+      "score": -0.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": -1.5
+      },
+      "features": {
+        "start": "나",
+        "end": "경"
+      }
+    },
+    {
+      "name": "다인",
+      "tier": "A",
+      "score": -0.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": -1.5
+      },
+      "features": {
+        "start": "다",
+        "end": "인"
+      }
+    },
+    {
+      "name": "소율",
+      "tier": "A",
+      "score": -0.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": -1.5
+      },
+      "features": {
+        "start": "소",
+        "end": "율"
+      }
+    },
+    {
+      "name": "아인",
+      "tier": "A",
+      "score": -0.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": -1.5
+      },
+      "features": {
+        "start": "아",
+        "end": "인"
+      }
+    },
+    {
+      "name": "리아",
+      "tier": "A",
+      "score": -1,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": -2
+      },
+      "features": {
+        "start": "리",
+        "end": "아"
+      }
+    },
+    {
+      "name": "설아",
+      "tier": "A",
+      "score": -1,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": -2
+      },
+      "features": {
+        "start": "설",
+        "end": "아"
+      }
+    },
+    {
+      "name": "아린",
+      "tier": "A",
+      "score": -1,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": -2
+      },
+      "features": {
+        "start": "아",
+        "end": "린"
+      }
+    },
+    {
+      "name": "채아",
+      "tier": "A",
+      "score": -1,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": -2
+      },
+      "features": {
+        "start": "채",
+        "end": "아"
+      }
+    },
+    {
+      "name": "로후",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "로",
+        "end": "후"
+      }
+    },
+    {
+      "name": "재안",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "재",
+        "end": "안"
+      }
+    },
+    {
+      "name": "하찬",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "하",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "건한",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "건",
+        "end": "한"
+      }
+    },
+    {
+      "name": "수결",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "결"
+      }
+    },
+    {
+      "name": "유규",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "규"
+      }
+    },
+    {
+      "name": "동든",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "든"
+      }
+    },
+    {
+      "name": "은윤",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "은",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "서도",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "서",
+        "end": "도"
+      }
+    },
+    {
+      "name": "우서",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "우",
+        "end": "서"
+      }
+    },
+    {
+      "name": "든주",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "든",
+        "end": "주"
+      }
+    },
+    {
+      "name": "안재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "안",
+        "end": "재"
+      }
+    },
+    {
+      "name": "주유",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "유"
+      }
+    },
+    {
+      "name": "찬하",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "찬",
+        "end": "하"
+      }
+    },
+    {
+      "name": "규빈",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "규",
+        "end": "빈"
+      }
+    },
+    {
+      "name": "성로",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "성",
+        "end": "로"
+      }
+    },
+    {
+      "name": "진수",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "진",
+        "end": "수"
+      }
+    },
+    {
+      "name": "호석",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "호",
+        "end": "석"
+      }
+    },
+    {
+      "name": "후성",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "후",
+        "end": "성"
+      }
+    },
+    {
+      "name": "선우",
+      "tier": "A",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1.5,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "선",
+        "end": "우"
+      }
+    },
+    {
+      "name": "현영",
+      "tier": "B",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": -0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "현",
+        "end": "영"
+      }
+    },
+    {
+      "name": "결오",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "결",
+        "end": "오"
+      }
+    },
+    {
+      "name": "윤건",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "윤",
+        "end": "건"
+      }
+    },
+    {
+      "name": "빈호",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "빈",
+        "end": "호"
+      }
+    },
+    {
+      "name": "연예",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "연",
+        "end": "예"
+      }
+    },
+    {
+      "name": "예선",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "예",
+        "end": "선"
+      }
+    },
+    {
+      "name": "오혁",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "오",
+        "end": "혁"
+      }
+    },
+    {
+      "name": "정동",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "정",
+        "end": "동"
+      }
+    },
+    {
+      "name": "태온",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "태",
+        "end": "온"
+      }
+    },
+    {
+      "name": "한운",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "한",
+        "end": "운"
+      }
+    },
+    {
+      "name": "도승",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "도",
+        "end": "승"
+      }
+    },
+    {
+      "name": "석준",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "석",
+        "end": "준"
+      }
+    },
+    {
+      "name": "승시",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "승",
+        "end": "시"
+      }
+    },
+    {
+      "name": "시지",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "시",
+        "end": "지"
+      }
+    },
+    {
+      "name": "이은",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1,
+        "stabilityScore": 0.5,
+        "genderFitScore": -0.5
+      },
+      "features": {
+        "start": "이",
+        "end": "은"
+      }
+    },
+    {
+      "name": "준이",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "준",
+        "end": "이"
+      }
+    },
+    {
+      "name": "민태",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "민",
+        "end": "태"
+      }
+    },
+    {
+      "name": "영민",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "영",
+        "end": "민"
+      }
+    },
+    {
+      "name": "영원",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "영",
+        "end": "원"
+      }
+    },
+    {
+      "name": "영현",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "영",
+        "end": "현"
+      }
+    },
+    {
+      "name": "운진",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "운",
+        "end": "진"
+      }
+    },
+    {
+      "name": "지정",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "지",
+        "end": "정"
+      }
+    },
+    {
+      "name": "수후",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "수",
+        "end": "후"
+      }
+    },
+    {
+      "name": "재찬",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "재",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "하안",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "하",
+        "end": "안"
+      }
+    },
+    {
+      "name": "동한",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "동",
+        "end": "한"
+      }
+    },
+    {
+      "name": "로결",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "결"
+      }
+    },
+    {
+      "name": "유든",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "든"
+      }
+    },
+    {
+      "name": "건서",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "서"
+      }
+    },
+    {
+      "name": "서규",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "서",
+        "end": "규"
+      }
+    },
+    {
+      "name": "은호",
+      "tier": "A",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -0.5,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "은",
+        "end": "호"
+      }
+    },
+    {
+      "name": "성도",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "성",
+        "end": "도"
+      }
+    },
+    {
+      "name": "우석",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "우",
+        "end": "석"
+      }
+    },
+    {
+      "name": "현윤",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": -0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "현",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "안주",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "안",
+        "end": "주"
+      }
+    },
+    {
+      "name": "주재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "재"
+      }
+    },
+    {
+      "name": "한하",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "한",
+        "end": "하"
+      }
+    },
+    {
+      "name": "규성",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "규",
+        "end": "성"
+      }
+    },
+    {
+      "name": "호빈",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "호",
+        "end": "빈"
+      }
+    },
+    {
+      "name": "윤우",
+      "tier": "A",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1.5,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "윤",
+        "end": "우"
+      }
+    },
+    {
+      "name": "든오",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "든",
+        "end": "오"
+      }
+    },
+    {
+      "name": "선건",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "선",
+        "end": "건"
+      }
+    },
+    {
+      "name": "연수",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "연",
+        "end": "수"
+      }
+    },
+    {
+      "name": "예로",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "예",
+        "end": "로"
+      }
+    },
+    {
+      "name": "정유",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "정",
+        "end": "유"
+      }
+    },
+    {
+      "name": "진동",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "진",
+        "end": "동"
+      }
+    },
+    {
+      "name": "후혁",
+      "tier": "C",
+      "score": 2.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "후",
+        "end": "혁"
+      }
+    },
+    {
+      "name": "결영",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "결",
+        "end": "영"
+      }
+    },
+    {
+      "name": "찬온",
+      "tier": "C",
+      "score": 2,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "찬",
+        "end": "온"
+      }
+    },
+    {
+      "name": "빈운",
+      "tier": "C",
+      "score": 1.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "빈",
+        "end": "운"
+      }
+    },
+    {
+      "name": "도시",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "도",
+        "end": "시"
+      }
+    },
+    {
+      "name": "석진",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "석",
+        "end": "진"
+      }
+    },
+    {
+      "name": "오민",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "오",
+        "end": "민"
+      }
+    },
+    {
+      "name": "원준",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "원",
+        "end": "준"
+      }
+    },
+    {
+      "name": "이지",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "이",
+        "end": "지"
+      }
+    },
+    {
+      "name": "지선",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "지",
+        "end": "선"
+      }
+    },
+    {
+      "name": "태현",
+      "tier": "C",
+      "score": 1,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "태",
+        "end": "현"
+      }
+    },
+    {
+      "name": "민승",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "민",
+        "end": "승"
+      }
+    },
+    {
+      "name": "승예",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "승",
+        "end": "예"
+      }
+    },
+    {
+      "name": "시정",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "시",
+        "end": "정"
+      }
+    },
+    {
+      "name": "온원",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -2,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "온",
+        "end": "원"
+      }
+    },
+    {
+      "name": "준태",
+      "tier": "C",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": -1.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "준",
+        "end": "태"
+      }
+    },
+    {
+      "name": "다은",
+      "tier": "A",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0.5,
+        "stabilityScore": 1,
+        "genderFitScore": -2
+      },
+      "features": {
+        "start": "다",
+        "end": "은"
+      }
+    },
+    {
+      "name": "소이",
+      "tier": "A",
+      "score": 0.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0,
+        "stabilityScore": 1,
+        "genderFitScore": -1.5
+      },
+      "features": {
+        "start": "소",
+        "end": "이"
+      }
+    },
+    {
+      "name": "유후",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "유",
+        "end": "후"
+      }
+    },
+    {
+      "name": "재한",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "재",
+        "end": "한"
+      }
+    },
+    {
+      "name": "재후",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "재",
+        "end": "후"
+      }
+    },
+    {
+      "name": "하한",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "하",
+        "end": "한"
+      }
+    },
+    {
+      "name": "하후",
+      "tier": "B",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "하",
+        "end": "후"
+      }
+    },
+    {
+      "name": "은찬",
+      "tier": "A",
+      "score": 5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0.5,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "은",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "건안",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "건",
+        "end": "안"
+      }
+    },
+    {
+      "name": "건찬",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "건",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "동안",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "동",
+        "end": "안"
+      }
+    },
+    {
+      "name": "동찬",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "동",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "로규",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "규"
+      }
+    },
+    {
+      "name": "로든",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "든"
+      }
+    },
+    {
+      "name": "로윤",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "로",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "서안",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "서",
+        "end": "안"
+      }
+    },
+    {
+      "name": "서찬",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "서",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "서한",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "서",
+        "end": "한"
+      }
+    },
+    {
+      "name": "서후",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "서",
+        "end": "후"
+      }
+    },
+    {
+      "name": "성후",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "성",
+        "end": "후"
+      }
+    },
+    {
+      "name": "수규",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "규"
+      }
+    },
+    {
+      "name": "수든",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "든"
+      }
+    },
+    {
+      "name": "수윤",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "수",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "우안",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "우",
+        "end": "안"
+      }
+    },
+    {
+      "name": "우찬",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "우",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "우한",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "우",
+        "end": "한"
+      }
+    },
+    {
+      "name": "우후",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "우",
+        "end": "후"
+      }
+    },
+    {
+      "name": "유결",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "결"
+      }
+    },
+    {
+      "name": "유윤",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "유",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "은안",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "은",
+        "end": "안"
+      }
+    },
+    {
+      "name": "은한",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "은",
+        "end": "한"
+      }
+    },
+    {
+      "name": "재규",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "규"
+      }
+    },
+    {
+      "name": "하규",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "규"
+      }
+    },
+    {
+      "name": "현후",
+      "tier": "B",
+      "score": 4.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "현",
+        "end": "후"
+      }
+    },
+    {
+      "name": "건결",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "결"
+      }
+    },
+    {
+      "name": "건든",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "든"
+      }
+    },
+    {
+      "name": "건윤",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "건",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "동결",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "결"
+      }
+    },
+    {
+      "name": "동서",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "서"
+      }
+    },
+    {
+      "name": "동윤",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "동",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "로도",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "도"
+      }
+    },
+    {
+      "name": "로빈",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "빈"
+      }
+    },
+    {
+      "name": "로서",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "서"
+      }
+    },
+    {
+      "name": "로석",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "석"
+      }
+    },
+    {
+      "name": "로성",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "성"
+      }
+    },
+    {
+      "name": "서결",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "서",
+        "end": "결"
+      }
+    },
+    {
+      "name": "성규",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "성",
+        "end": "규"
+      }
+    },
+    {
+      "name": "성안",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "성",
+        "end": "안"
+      }
+    },
+    {
+      "name": "성찬",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "성",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "성한",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "성",
+        "end": "한"
+      }
+    },
+    {
+      "name": "수도",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "도"
+      }
+    },
+    {
+      "name": "수서",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "서"
+      }
+    },
+    {
+      "name": "수석",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "석"
+      }
+    },
+    {
+      "name": "수성",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "성"
+      }
+    },
+    {
+      "name": "우결",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "우",
+        "end": "결"
+      }
+    },
+    {
+      "name": "우규",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "우",
+        "end": "규"
+      }
+    },
+    {
+      "name": "우든",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "우",
+        "end": "든"
+      }
+    },
+    {
+      "name": "유도",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "도"
+      }
+    },
+    {
+      "name": "유빈",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "빈"
+      }
+    },
+    {
+      "name": "유서",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "서"
+      }
+    },
+    {
+      "name": "유석",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "석"
+      }
+    },
+    {
+      "name": "유성",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "성"
+      }
+    },
+    {
+      "name": "은결",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "결"
+      }
+    },
+    {
+      "name": "은든",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "든"
+      }
+    },
+    {
+      "name": "재도",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "도"
+      }
+    },
+    {
+      "name": "재빈",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "빈"
+      }
+    },
+    {
+      "name": "재서",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "서"
+      }
+    },
+    {
+      "name": "재석",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "석"
+      }
+    },
+    {
+      "name": "재성",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "성"
+      }
+    },
+    {
+      "name": "하도",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "도"
+      }
+    },
+    {
+      "name": "하서",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "서"
+      }
+    },
+    {
+      "name": "하석",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "석"
+      }
+    },
+    {
+      "name": "하성",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "성"
+      }
+    },
+    {
+      "name": "현규",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "현",
+        "end": "규"
+      }
+    },
+    {
+      "name": "현안",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "현",
+        "end": "안"
+      }
+    },
+    {
+      "name": "현찬",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "현",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "현한",
+      "tier": "B",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "현",
+        "end": "한"
+      }
+    },
+    {
+      "name": "결후",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "결",
+        "end": "후"
+      }
+    },
+    {
+      "name": "규안",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "규",
+        "end": "안"
+      }
+    },
+    {
+      "name": "규찬",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "규",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "규한",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "규",
+        "end": "한"
+      }
+    },
+    {
+      "name": "규후",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "규",
+        "end": "후"
+      }
+    },
+    {
+      "name": "든후",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "든",
+        "end": "후"
+      }
+    },
+    {
+      "name": "안후",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "안",
+        "end": "후"
+      }
+    },
+    {
+      "name": "주안",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "주",
+        "end": "안"
+      }
+    },
+    {
+      "name": "주찬",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "주",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "주한",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "주",
+        "end": "한"
+      }
+    },
+    {
+      "name": "주후",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "주",
+        "end": "후"
+      }
+    },
+    {
+      "name": "찬후",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "찬",
+        "end": "후"
+      }
+    },
+    {
+      "name": "한후",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "한",
+        "end": "후"
+      }
+    },
+    {
+      "name": "호안",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "호",
+        "end": "안"
+      }
+    },
+    {
+      "name": "호찬",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "호",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "호한",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "호",
+        "end": "한"
+      }
+    },
+    {
+      "name": "호후",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "호",
+        "end": "후"
+      }
+    },
+    {
+      "name": "후안",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "후",
+        "end": "안"
+      }
+    },
+    {
+      "name": "후찬",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "후",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "후한",
+      "tier": "C",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "후",
+        "end": "한"
+      }
+    },
+    {
+      "name": "로운",
+      "tier": "A",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": 0.5,
+        "stabilityScore": 1,
+        "genderFitScore": 1.5
+      },
+      "features": {
+        "start": "로",
+        "end": "운"
+      }
+    },
+    {
+      "name": "수호",
+      "tier": "A",
+      "score": 4,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -0.5,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "수",
+        "end": "호"
+      }
+    },
+    {
+      "name": "건빈",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "빈"
+      }
+    },
+    {
+      "name": "건석",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "석"
+      }
+    },
+    {
+      "name": "건성",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "성"
+      }
+    },
+    {
+      "name": "동빈",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "빈"
+      }
+    },
+    {
+      "name": "동석",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "석"
+      }
+    },
+    {
+      "name": "동성",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "성"
+      }
+    },
+    {
+      "name": "로영",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "영"
+      }
+    },
+    {
+      "name": "성결",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "성",
+        "end": "결"
+      }
+    },
+    {
+      "name": "성든",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "성",
+        "end": "든"
+      }
+    },
+    {
+      "name": "수영",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "영"
+      }
+    },
+    {
+      "name": "우도",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "우",
+        "end": "도"
+      }
+    },
+    {
+      "name": "우성",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "우",
+        "end": "성"
+      }
+    },
+    {
+      "name": "유영",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "영"
+      }
+    },
+    {
+      "name": "은빈",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "빈"
+      }
+    },
+    {
+      "name": "은석",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "석"
+      }
+    },
+    {
+      "name": "은성",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "성"
+      }
+    },
+    {
+      "name": "재영",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "영"
+      }
+    },
+    {
+      "name": "하영",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "영"
+      }
+    },
+    {
+      "name": "현결",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "현",
+        "end": "결"
+      }
+    },
+    {
+      "name": "현도",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "현",
+        "end": "도"
+      }
+    },
+    {
+      "name": "현든",
+      "tier": "B",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "현",
+        "end": "든"
+      }
+    },
+    {
+      "name": "건로",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "로"
+      }
+    },
+    {
+      "name": "건수",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "수"
+      }
+    },
+    {
+      "name": "건유",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "유"
+      }
+    },
+    {
+      "name": "건재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "재"
+      }
+    },
+    {
+      "name": "건주",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "주"
+      }
+    },
+    {
+      "name": "건하",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "하"
+      }
+    },
+    {
+      "name": "결규",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "결",
+        "end": "규"
+      }
+    },
+    {
+      "name": "결안",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "결",
+        "end": "안"
+      }
+    },
+    {
+      "name": "결찬",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "결",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "결한",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "결",
+        "end": "한"
+      }
+    },
+    {
+      "name": "규결",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "규",
+        "end": "결"
+      }
+    },
+    {
+      "name": "규든",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "규",
+        "end": "든"
+      }
+    },
+    {
+      "name": "규윤",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "규",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "동로",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "로"
+      }
+    },
+    {
+      "name": "동수",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "수"
+      }
+    },
+    {
+      "name": "동유",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "유"
+      }
+    },
+    {
+      "name": "동재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "재"
+      }
+    },
+    {
+      "name": "동주",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "주"
+      }
+    },
+    {
+      "name": "동하",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "하"
+      }
+    },
+    {
+      "name": "든규",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "든",
+        "end": "규"
+      }
+    },
+    {
+      "name": "든안",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "든",
+        "end": "안"
+      }
+    },
+    {
+      "name": "든찬",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "든",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "든한",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "든",
+        "end": "한"
+      }
+    },
+    {
+      "name": "로건",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "건"
+      }
+    },
+    {
+      "name": "로동",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "동"
+      }
+    },
+    {
+      "name": "로수",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "수"
+      }
+    },
+    {
+      "name": "로유",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "유"
+      }
+    },
+    {
+      "name": "로재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "재"
+      }
+    },
+    {
+      "name": "로주",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "주"
+      }
+    },
+    {
+      "name": "로하",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "하"
+      }
+    },
+    {
+      "name": "빈후",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "빈",
+        "end": "후"
+      }
+    },
+    {
+      "name": "석후",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "석",
+        "end": "후"
+      }
+    },
+    {
+      "name": "선후",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "선",
+        "end": "후"
+      }
+    },
+    {
+      "name": "수건",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "건"
+      }
+    },
+    {
+      "name": "수동",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "동"
+      }
+    },
+    {
+      "name": "수로",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "로"
+      }
+    },
+    {
+      "name": "수유",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "유"
+      }
+    },
+    {
+      "name": "수재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "재"
+      }
+    },
+    {
+      "name": "수주",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "주"
+      }
+    },
+    {
+      "name": "수하",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "하"
+      }
+    },
+    {
+      "name": "안규",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "안",
+        "end": "규"
+      }
+    },
+    {
+      "name": "안찬",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "안",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "안하",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "안",
+        "end": "하"
+      }
+    },
+    {
+      "name": "안한",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "안",
+        "end": "한"
+      }
+    },
+    {
+      "name": "원후",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "원",
+        "end": "후"
+      }
+    },
+    {
+      "name": "유건",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "건"
+      }
+    },
+    {
+      "name": "유동",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "동"
+      }
+    },
+    {
+      "name": "유로",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "로"
+      }
+    },
+    {
+      "name": "유수",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "수"
+      }
+    },
+    {
+      "name": "유재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "재"
+      }
+    },
+    {
+      "name": "윤후",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "윤",
+        "end": "후"
+      }
+    },
+    {
+      "name": "은로",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "로"
+      }
+    },
+    {
+      "name": "은수",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "수"
+      }
+    },
+    {
+      "name": "은유",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "유"
+      }
+    },
+    {
+      "name": "은재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "재"
+      }
+    },
+    {
+      "name": "은주",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "주"
+      }
+    },
+    {
+      "name": "은하",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "하"
+      }
+    },
+    {
+      "name": "재건",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "건"
+      }
+    },
+    {
+      "name": "재동",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "동"
+      }
+    },
+    {
+      "name": "재수",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "수"
+      }
+    },
+    {
+      "name": "재유",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "유"
+      }
+    },
+    {
+      "name": "재주",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "주"
+      }
+    },
+    {
+      "name": "재하",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "하"
+      }
+    },
+    {
+      "name": "주결",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "결"
+      }
+    },
+    {
+      "name": "주규",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "규"
+      }
+    },
+    {
+      "name": "주든",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "든"
+      }
+    },
+    {
+      "name": "주윤",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "주",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "주하",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "하"
+      }
+    },
+    {
+      "name": "진후",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "진",
+        "end": "후"
+      }
+    },
+    {
+      "name": "찬규",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "찬",
+        "end": "규"
+      }
+    },
+    {
+      "name": "찬안",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "찬",
+        "end": "안"
+      }
+    },
+    {
+      "name": "찬재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "찬",
+        "end": "재"
+      }
+    },
+    {
+      "name": "찬주",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "찬",
+        "end": "주"
+      }
+    },
+    {
+      "name": "찬한",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "찬",
+        "end": "한"
+      }
+    },
+    {
+      "name": "하건",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "건"
+      }
+    },
+    {
+      "name": "하동",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "동"
+      }
+    },
+    {
+      "name": "하로",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "로"
+      }
+    },
+    {
+      "name": "하수",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "수"
+      }
+    },
+    {
+      "name": "하유",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "유"
+      }
+    },
+    {
+      "name": "하재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "재"
+      }
+    },
+    {
+      "name": "하주",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "주"
+      }
+    },
+    {
+      "name": "한규",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "한",
+        "end": "규"
+      }
+    },
+    {
+      "name": "한안",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "한",
+        "end": "안"
+      }
+    },
+    {
+      "name": "한재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "한",
+        "end": "재"
+      }
+    },
+    {
+      "name": "한주",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "한",
+        "end": "주"
+      }
+    },
+    {
+      "name": "한찬",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "한",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "호결",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "호",
+        "end": "결"
+      }
+    },
+    {
+      "name": "호규",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "호",
+        "end": "규"
+      }
+    },
+    {
+      "name": "호든",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "호",
+        "end": "든"
+      }
+    },
+    {
+      "name": "호윤",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "호",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "호재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "호",
+        "end": "재"
+      }
+    },
+    {
+      "name": "호주",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "호",
+        "end": "주"
+      }
+    },
+    {
+      "name": "호하",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "호",
+        "end": "하"
+      }
+    },
+    {
+      "name": "후결",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "후",
+        "end": "결"
+      }
+    },
+    {
+      "name": "후규",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "후",
+        "end": "규"
+      }
+    },
+    {
+      "name": "후든",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "후",
+        "end": "든"
+      }
+    },
+    {
+      "name": "후윤",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "후",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "후재",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "후",
+        "end": "재"
+      }
+    },
+    {
+      "name": "후주",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "후",
+        "end": "주"
+      }
+    },
+    {
+      "name": "후하",
+      "tier": "C",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "후",
+        "end": "하"
+      }
+    },
+    {
+      "name": "건우",
+      "tier": "A",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "건",
+        "end": "우"
+      }
+    },
+    {
+      "name": "수현",
+      "tier": "A",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "수",
+        "end": "현"
+      }
+    },
+    {
+      "name": "시후",
+      "tier": "A",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "시",
+        "end": "후"
+      }
+    },
+    {
+      "name": "유준",
+      "tier": "A",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "유",
+        "end": "준"
+      }
+    },
+    {
+      "name": "은우",
+      "tier": "A",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "은",
+        "end": "우"
+      }
+    },
+    {
+      "name": "이안",
+      "tier": "A",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "이",
+        "end": "안"
+      }
+    },
+    {
+      "name": "이한",
+      "tier": "A",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "이",
+        "end": "한"
+      }
+    },
+    {
+      "name": "재민",
+      "tier": "A",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "재",
+        "end": "민"
+      }
+    },
+    {
+      "name": "재원",
+      "tier": "A",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "재",
+        "end": "원"
+      }
+    },
+    {
+      "name": "주원",
+      "tier": "A",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "주",
+        "end": "원"
+      }
+    },
+    {
+      "name": "지한",
+      "tier": "A",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "지",
+        "end": "한"
+      }
+    },
+    {
+      "name": "지후",
+      "tier": "A",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "지",
+        "end": "후"
+      }
+    },
+    {
+      "name": "하준",
+      "tier": "A",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "하",
+        "end": "준"
+      }
+    },
+    {
+      "name": "하진",
+      "tier": "A",
+      "score": 3.5,
+      "scoreBreakdown": {
+        "baseBonus": 1,
+        "styleScore": -1,
+        "stabilityScore": 1.5,
+        "genderFitScore": 2
+      },
+      "features": {
+        "start": "하",
+        "end": "진"
+      }
+    },
+    {
+      "name": "건영",
+      "tier": "B",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "영"
+      }
+    },
+    {
+      "name": "동영",
+      "tier": "B",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "영"
+      }
+    },
+    {
+      "name": "우영",
+      "tier": "B",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "우",
+        "end": "영"
+      }
+    },
+    {
+      "name": "은영",
+      "tier": "B",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 3,
+        "styleScore": 0,
+        "stabilityScore": 0,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "영"
+      }
+    },
+    {
+      "name": "건동",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "동"
+      }
+    },
+    {
+      "name": "건시",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "시"
+      }
+    },
+    {
+      "name": "건이",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "이"
+      }
+    },
+    {
+      "name": "건지",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "건",
+        "end": "지"
+      }
+    },
+    {
+      "name": "결도",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "결",
+        "end": "도"
+      }
+    },
+    {
+      "name": "결든",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "결",
+        "end": "든"
+      }
+    },
+    {
+      "name": "결서",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "결",
+        "end": "서"
+      }
+    },
+    {
+      "name": "결윤",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "결",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "규도",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "규",
+        "end": "도"
+      }
+    },
+    {
+      "name": "규서",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "규",
+        "end": "서"
+      }
+    },
+    {
+      "name": "규석",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "규",
+        "end": "석"
+      }
+    },
+    {
+      "name": "동건",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "건"
+      }
+    },
+    {
+      "name": "동시",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "시"
+      }
+    },
+    {
+      "name": "동이",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "이"
+      }
+    },
+    {
+      "name": "동지",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "동",
+        "end": "지"
+      }
+    },
+    {
+      "name": "든결",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "든",
+        "end": "결"
+      }
+    },
+    {
+      "name": "든도",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "든",
+        "end": "도"
+      }
+    },
+    {
+      "name": "든윤",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "든",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "로선",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "선"
+      }
+    },
+    {
+      "name": "로승",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "승"
+      }
+    },
+    {
+      "name": "로시",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "시"
+      }
+    },
+    {
+      "name": "로은",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": -0.5
+      },
+      "features": {
+        "start": "로",
+        "end": "은"
+      }
+    },
+    {
+      "name": "로이",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "이"
+      }
+    },
+    {
+      "name": "로지",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "로",
+        "end": "지"
+      }
+    },
+    {
+      "name": "빈규",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "빈",
+        "end": "규"
+      }
+    },
+    {
+      "name": "빈안",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "빈",
+        "end": "안"
+      }
+    },
+    {
+      "name": "빈재",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "빈",
+        "end": "재"
+      }
+    },
+    {
+      "name": "빈주",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "빈",
+        "end": "주"
+      }
+    },
+    {
+      "name": "빈찬",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "빈",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "빈하",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "빈",
+        "end": "하"
+      }
+    },
+    {
+      "name": "빈한",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "빈",
+        "end": "한"
+      }
+    },
+    {
+      "name": "서건",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "서",
+        "end": "건"
+      }
+    },
+    {
+      "name": "서동",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "서",
+        "end": "동"
+      }
+    },
+    {
+      "name": "서로",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "서",
+        "end": "로"
+      }
+    },
+    {
+      "name": "서수",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "서",
+        "end": "수"
+      }
+    },
+    {
+      "name": "서유",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "서",
+        "end": "유"
+      }
+    },
+    {
+      "name": "서재",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "서",
+        "end": "재"
+      }
+    },
+    {
+      "name": "서주",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "서",
+        "end": "주"
+      }
+    },
+    {
+      "name": "석규",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "석",
+        "end": "규"
+      }
+    },
+    {
+      "name": "석안",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "석",
+        "end": "안"
+      }
+    },
+    {
+      "name": "석재",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "석",
+        "end": "재"
+      }
+    },
+    {
+      "name": "석주",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "석",
+        "end": "주"
+      }
+    },
+    {
+      "name": "석찬",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "석",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "석하",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "석",
+        "end": "하"
+      }
+    },
+    {
+      "name": "석한",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "석",
+        "end": "한"
+      }
+    },
+    {
+      "name": "선규",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "선",
+        "end": "규"
+      }
+    },
+    {
+      "name": "선안",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "선",
+        "end": "안"
+      }
+    },
+    {
+      "name": "선재",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "선",
+        "end": "재"
+      }
+    },
+    {
+      "name": "선주",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "선",
+        "end": "주"
+      }
+    },
+    {
+      "name": "선찬",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "선",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "선하",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "선",
+        "end": "하"
+      }
+    },
+    {
+      "name": "선한",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "선",
+        "end": "한"
+      }
+    },
+    {
+      "name": "성수",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "성",
+        "end": "수"
+      }
+    },
+    {
+      "name": "성유",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "성",
+        "end": "유"
+      }
+    },
+    {
+      "name": "성재",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "성",
+        "end": "재"
+      }
+    },
+    {
+      "name": "성주",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "성",
+        "end": "주"
+      }
+    },
+    {
+      "name": "성하",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "성",
+        "end": "하"
+      }
+    },
+    {
+      "name": "수선",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "선"
+      }
+    },
+    {
+      "name": "수승",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "승"
+      }
+    },
+    {
+      "name": "수시",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "시"
+      }
+    },
+    {
+      "name": "수은",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": -0.5
+      },
+      "features": {
+        "start": "수",
+        "end": "은"
+      }
+    },
+    {
+      "name": "수이",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "이"
+      }
+    },
+    {
+      "name": "수지",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "수",
+        "end": "지"
+      }
+    },
+    {
+      "name": "안결",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "안",
+        "end": "결"
+      }
+    },
+    {
+      "name": "안도",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "안",
+        "end": "도"
+      }
+    },
+    {
+      "name": "안든",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "안",
+        "end": "든"
+      }
+    },
+    {
+      "name": "안윤",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "안",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "연후",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "연",
+        "end": "후"
+      }
+    },
+    {
+      "name": "영후",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "영",
+        "end": "후"
+      }
+    },
+    {
+      "name": "예안",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "예",
+        "end": "안"
+      }
+    },
+    {
+      "name": "예찬",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "예",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "예한",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "예",
+        "end": "한"
+      }
+    },
+    {
+      "name": "예후",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "예",
+        "end": "후"
+      }
+    },
+    {
+      "name": "오안",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "오",
+        "end": "안"
+      }
+    },
+    {
+      "name": "오찬",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "오",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "오한",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "오",
+        "end": "한"
+      }
+    },
+    {
+      "name": "오후",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "오",
+        "end": "후"
+      }
+    },
+    {
+      "name": "온후",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "온",
+        "end": "후"
+      }
+    },
+    {
+      "name": "우건",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "우",
+        "end": "건"
+      }
+    },
+    {
+      "name": "우동",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "우",
+        "end": "동"
+      }
+    },
+    {
+      "name": "우로",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "우",
+        "end": "로"
+      }
+    },
+    {
+      "name": "우수",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "우",
+        "end": "수"
+      }
+    },
+    {
+      "name": "우유",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "우",
+        "end": "유"
+      }
+    },
+    {
+      "name": "우재",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "우",
+        "end": "재"
+      }
+    },
+    {
+      "name": "우하",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "우",
+        "end": "하"
+      }
+    },
+    {
+      "name": "운후",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "운",
+        "end": "후"
+      }
+    },
+    {
+      "name": "원규",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "원",
+        "end": "규"
+      }
+    },
+    {
+      "name": "원안",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "원",
+        "end": "안"
+      }
+    },
+    {
+      "name": "원재",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "원",
+        "end": "재"
+      }
+    },
+    {
+      "name": "원주",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "원",
+        "end": "주"
+      }
+    },
+    {
+      "name": "원찬",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "원",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "원하",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "원",
+        "end": "하"
+      }
+    },
+    {
+      "name": "원한",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "원",
+        "end": "한"
+      }
+    },
+    {
+      "name": "유선",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "선"
+      }
+    },
+    {
+      "name": "유승",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "승"
+      }
+    },
+    {
+      "name": "유시",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "시"
+      }
+    },
+    {
+      "name": "유은",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": -0.5
+      },
+      "features": {
+        "start": "유",
+        "end": "은"
+      }
+    },
+    {
+      "name": "유이",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "이"
+      }
+    },
+    {
+      "name": "유지",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "유",
+        "end": "지"
+      }
+    },
+    {
+      "name": "윤규",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "윤",
+        "end": "규"
+      }
+    },
+    {
+      "name": "윤안",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "윤",
+        "end": "안"
+      }
+    },
+    {
+      "name": "윤재",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "윤",
+        "end": "재"
+      }
+    },
+    {
+      "name": "윤주",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "윤",
+        "end": "주"
+      }
+    },
+    {
+      "name": "윤찬",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "윤",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "윤하",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "윤",
+        "end": "하"
+      }
+    },
+    {
+      "name": "윤한",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "윤",
+        "end": "한"
+      }
+    },
+    {
+      "name": "은건",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "건"
+      }
+    },
+    {
+      "name": "은동",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "동"
+      }
+    },
+    {
+      "name": "은시",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "시"
+      }
+    },
+    {
+      "name": "은이",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "이"
+      }
+    },
+    {
+      "name": "은지",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "은",
+        "end": "지"
+      }
+    },
+    {
+      "name": "재선",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "선"
+      }
+    },
+    {
+      "name": "재승",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "승"
+      }
+    },
+    {
+      "name": "재시",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "시"
+      }
+    },
+    {
+      "name": "재은",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": -0.5
+      },
+      "features": {
+        "start": "재",
+        "end": "은"
+      }
+    },
+    {
+      "name": "재지",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "재",
+        "end": "지"
+      }
+    },
+    {
+      "name": "정후",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "정",
+        "end": "후"
+      }
+    },
+    {
+      "name": "주도",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "도"
+      }
+    },
+    {
+      "name": "주빈",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "빈"
+      }
+    },
+    {
+      "name": "주서",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "서"
+      }
+    },
+    {
+      "name": "주석",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "석"
+      }
+    },
+    {
+      "name": "주선",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "선"
+      }
+    },
+    {
+      "name": "주성",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "성"
+      }
+    },
+    {
+      "name": "주승",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "승"
+      }
+    },
+    {
+      "name": "주시",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "시"
+      }
+    },
+    {
+      "name": "주은",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 1,
+        "stabilityScore": 0.5,
+        "genderFitScore": -0.5
+      },
+      "features": {
+        "start": "주",
+        "end": "은"
+      }
+    },
+    {
+      "name": "주이",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "이"
+      }
+    },
+    {
+      "name": "주지",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "주",
+        "end": "지"
+      }
+    },
+    {
+      "name": "진규",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "진",
+        "end": "규"
+      }
+    },
+    {
+      "name": "진안",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "진",
+        "end": "안"
+      }
+    },
+    {
+      "name": "진재",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "진",
+        "end": "재"
+      }
+    },
+    {
+      "name": "진주",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "진",
+        "end": "주"
+      }
+    },
+    {
+      "name": "진찬",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "진",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "진하",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "진",
+        "end": "하"
+      }
+    },
+    {
+      "name": "진한",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "진",
+        "end": "한"
+      }
+    },
+    {
+      "name": "찬결",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "찬",
+        "end": "결"
+      }
+    },
+    {
+      "name": "찬도",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "찬",
+        "end": "도"
+      }
+    },
+    {
+      "name": "찬든",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "찬",
+        "end": "든"
+      }
+    },
+    {
+      "name": "찬서",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "찬",
+        "end": "서"
+      }
+    },
+    {
+      "name": "찬윤",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "찬",
+        "end": "윤"
+      }
+    },
+    {
+      "name": "태안",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "태",
+        "end": "안"
+      }
+    },
+    {
+      "name": "태찬",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "태",
+        "end": "찬"
+      }
+    },
+    {
+      "name": "태한",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "태",
+        "end": "한"
+      }
+    },
+    {
+      "name": "태후",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0,
+        "genderFitScore": 0.5
+      },
+      "features": {
+        "start": "태",
+        "end": "후"
+      }
+    },
+    {
+      "name": "하선",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "선"
+      }
+    },
+    {
+      "name": "하승",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "승"
+      }
+    },
+    {
+      "name": "하시",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "시"
+      }
+    },
+    {
+      "name": "하이",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "이"
+      }
+    },
+    {
+      "name": "하지",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "하",
+        "end": "지"
+      }
+    },
+    {
+      "name": "한도",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "한",
+        "end": "도"
+      }
+    },
+    {
+      "name": "한든",
+      "tier": "C",
+      "score": 3,
+      "scoreBreakdown": {
+        "baseBonus": 2,
+        "styleScore": 0.5,
+        "stabilityScore": 0.5,
+        "genderFitScore": 0
+      },
+      "features": {
+        "start": "한",
+        "end": "든"
+      }
+    }
+  ]
+}
