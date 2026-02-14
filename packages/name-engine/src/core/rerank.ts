@@ -22,6 +22,14 @@ function round6(value: number): number {
   return Number(value.toFixed(6));
 }
 
+function toTieBreak01(random: () => number): number {
+  const sampled = random();
+  if (!Number.isFinite(sampled)) {
+    return 0.5;
+  }
+  return round6(clamp01(sampled));
+}
+
 export function computeSoftPriorFinalScore(
   engineScore01: number,
   poolScore01: number,
@@ -39,7 +47,8 @@ export function rerankWithSoftPrior<TCandidate>(
   candidates: Array<SoftPriorInput<TCandidate>>,
   targetGender: PoolTargetGender,
   poolIndex: PoolIndex,
-  weights: SoftPriorWeights = DEFAULT_SOFT_PRIOR_WEIGHTS
+  weights: SoftPriorWeights = DEFAULT_SOFT_PRIOR_WEIGHTS,
+  random: () => number = Math.random
 ): Array<SoftPriorRerankedRow<TCandidate>> {
   const rows = candidates.map((candidate) => {
     const pool = attachPoolPrior(candidate.name, targetGender, poolIndex);
@@ -58,7 +67,8 @@ export function rerankWithSoftPrior<TCandidate>(
       name: candidate.name,
       candidate: (candidate.candidate ?? (candidate as unknown as TCandidate)) as TCandidate,
       pool,
-      breakdown
+      breakdown,
+      tieBreak01: toTieBreak01(random)
     };
   });
 
@@ -69,10 +79,13 @@ export function rerankWithSoftPrior<TCandidate>(
     if (b.breakdown.engineScore01 !== a.breakdown.engineScore01) {
       return b.breakdown.engineScore01 - a.breakdown.engineScore01;
     }
+    if (b.tieBreak01 !== a.tieBreak01) {
+      return b.tieBreak01 - a.tieBreak01;
+    }
     return a.name.localeCompare(b.name, "ko");
   });
 
-  return rows;
+  return rows.map(({ tieBreak01: _ignored, ...row }) => row);
 }
 
 export function formatSoftPriorTable<TCandidate>(

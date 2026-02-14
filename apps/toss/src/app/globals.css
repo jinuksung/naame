@@ -316,6 +316,98 @@ a {
   font-size: 15px;
 }
 
+.quick-combo {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid #d6e4ff;
+  border-radius: 14px;
+  background: linear-gradient(140deg, #f6fbff, #f1f7ff);
+  display: grid;
+  gap: 10px;
+}
+
+.quick-combo-head {
+  display: grid;
+  gap: 6px;
+}
+
+.quick-combo-title {
+  margin: 0;
+  font-size: 15px;
+}
+
+.quick-combo-description {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.quick-gender-row {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.quick-gender-btn {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.quick-gender-btn.is-selected {
+  border-color: var(--brand);
+  background: rgb(49 130 246 / 11%);
+  color: var(--brand-strong);
+}
+
+.quick-gender-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.quick-surname-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.quick-surname-btn {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.quick-surname-btn.is-selected {
+  border-color: var(--brand);
+  background: rgb(49 130 246 / 11%);
+  color: var(--brand-strong);
+}
+
+.quick-surname-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.quick-status {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.quick-status.is-error {
+  color: var(--error);
+}
+
 .result-list {
   margin-top: 18px;
   display: grid;

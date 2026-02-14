@@ -19,6 +19,7 @@ const DISPLAY_SCORE_TOP = 96;
 const DISPLAY_SCORE_MIN = 72;
 const DISPLAY_SPREAD_MIN = 6;
 const DISPLAY_SPREAD_MAX = 14;
+const EXPLORE_SEED_MOD = 0x7fffffff;
 
 let datasetPromise: Promise<HanjaDataset> | null = null;
 
@@ -31,6 +32,7 @@ interface RawPayload {
     time?: unknown;
   };
   gender?: unknown;
+  exploreSeed?: unknown;
 }
 
 export type FreeRecommendServiceResult =
@@ -73,6 +75,15 @@ function countChars(text: string): number {
   return Array.from(text).length;
 }
 
+function parseExploreSeed(value: unknown): number | undefined {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return undefined;
+  }
+  const integer = Math.max(1, Math.floor(value));
+  const normalized = integer % EXPLORE_SEED_MOD;
+  return normalized === 0 ? 1 : normalized;
+}
+
 function toInput(payload: RawPayload): FreeRecommendInput | null {
   const surnameHangul = normalizeHangulReading(
     typeof payload.surnameHangul === "string" ? payload.surnameHangul : ""
@@ -82,6 +93,7 @@ function toInput(payload: RawPayload): FreeRecommendInput | null {
   const calendar = payload.birth?.calendar;
   const date = typeof payload.birth?.date === "string" ? payload.birth.date : "";
   const time = typeof payload.birth?.time === "string" ? payload.birth.time : undefined;
+  const exploreSeed = parseExploreSeed(payload.exploreSeed);
 
   if (countChars(surnameHangul) < 1 || countChars(surnameHangul) > 2) {
     return null;
@@ -110,7 +122,8 @@ function toInput(payload: RawPayload): FreeRecommendInput | null {
       date,
       time
     },
-    gender: payload.gender
+    gender: payload.gender,
+    ...(exploreSeed ? { exploreSeed } : {})
   };
 }
 
@@ -372,7 +385,8 @@ export async function recommendFreeNames(payload: unknown): Promise<FreeRecommen
       timezone: DEFAULT_TIMEZONE
     },
     gender: mapGenderToEngine(resolvedInput.gender),
-    limit: FREE_LIMIT
+    limit: FREE_LIMIT,
+    ...(resolvedInput.exploreSeed ? { exploreSeed: resolvedInput.exploreSeed } : {})
   };
 
   try {

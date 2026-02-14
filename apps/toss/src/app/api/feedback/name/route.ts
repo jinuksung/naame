@@ -6,6 +6,8 @@ import {
 } from "@/server/feedback/supabaseFeedback";
 
 interface FeedbackPayload {
+  surnameHangul?: unknown;
+  surnameHanja?: unknown;
   nameHangul?: unknown;
   hanjaPair?: unknown;
   vote?: unknown;
@@ -16,6 +18,13 @@ function isVoteType(value: unknown): value is FeedbackVoteType {
 }
 
 function toSafeNameHangul(value: unknown): string {
+  if (typeof value !== "string") {
+    return "";
+  }
+  return value.trim();
+}
+
+function toSafeSurname(value: unknown): string {
   if (typeof value !== "string") {
     return "";
   }
@@ -53,15 +62,19 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   const nameHangul = toSafeNameHangul(payload.nameHangul);
+  const surnameHangul = toSafeSurname(payload.surnameHangul);
+  const surnameHanja = toSafeSurname(payload.surnameHanja);
   const hanjaPair = toSafeHanjaPair(payload.hanjaPair);
   const vote = payload.vote;
 
-  if (!nameHangul || !hanjaPair || !isVoteType(vote)) {
+  if (!surnameHangul || !surnameHanja || !nameHangul || !hanjaPair || !isVoteType(vote)) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
 
   try {
     await recordFeedbackVote({
+      surnameHangul,
+      surnameHanja,
       nameHangul,
       hanjaPair,
       vote,

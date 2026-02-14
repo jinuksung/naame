@@ -3,6 +3,15 @@ import { attachPoolPrior, createPoolIndex } from "./poolAttach";
 import { rerankWithSoftPrior } from "./rerank";
 import { diversifyByStartEnd } from "./diversify";
 
+function createSequenceRandom(sequence: number[]): () => number {
+  let index = 0;
+  return () => {
+    const value = sequence[index] ?? 0.5;
+    index += 1;
+    return value;
+  };
+}
+
 function testFinalScoreFormula(): void {
   const poolIndex = createPoolIndex({
     M: [{ name: "도윤", tier: "B" }],
@@ -46,7 +55,20 @@ function testTierPriorityAcrossPools(): void {
     F: [{ name: "지안", tier: "B" }]
   });
   const attached = attachPoolPrior("지안", "M", poolIndex);
-  assert.equal(attached.tier, "B");
+  assert.equal(attached.tier, "A");
+}
+
+function testNoCrossGenderPoolFallback(): void {
+  const poolIndex = createPoolIndex({
+    M: [],
+    F: [{ name: "나리", tier: "B" }]
+  });
+  const attachedM = attachPoolPrior("나리", "M", poolIndex);
+  const attachedF = attachPoolPrior("나리", "F", poolIndex);
+  assert.equal(attachedM.tier, "None");
+  assert.equal(attachedM.poolIncluded, false);
+  assert.equal(attachedF.tier, "B");
+  assert.equal(attachedF.poolIncluded, true);
 }
 
 function testDiversifyEndLimit(): void {
@@ -100,12 +122,45 @@ function testDiversifyNoDuplicateNames(): void {
   assert.equal(new Set(names).size, names.length);
 }
 
+function testTieBreakUsesRandomOrderWhenScoresEqual(): void {
+  const poolIndex = createPoolIndex({
+    M: [],
+    F: []
+  });
+  const candidates = [
+    { name: "가나", engineScore01: 0.9 },
+    { name: "나다", engineScore01: 0.9 },
+    { name: "다라", engineScore01: 0.9 }
+  ];
+
+  const runA = rerankWithSoftPrior(
+    candidates,
+    "M",
+    poolIndex,
+    undefined,
+    createSequenceRandom([0.1, 0.9, 0.3])
+  ).map((row) => row.name);
+  const runB = rerankWithSoftPrior(
+    candidates,
+    "M",
+    poolIndex,
+    undefined,
+    createSequenceRandom([0.9, 0.1, 0.3])
+  ).map((row) => row.name);
+
+  assert.notDeepEqual(runA, runB);
+  assert.deepEqual(runA, ["나다", "다라", "가나"]);
+  assert.deepEqual(runB, ["가나", "다라", "나다"]);
+}
+
 function run(): void {
   testFinalScoreFormula();
   testNonPoolCandidateNotDropped();
   testTierPriorityAcrossPools();
+  testNoCrossGenderPoolFallback();
   testDiversifyEndLimit();
   testDiversifyNoDuplicateNames();
+  testTieBreakUsesRandomOrderWhenScoresEqual();
   console.log("[test:soft-prior] all tests passed");
 }
 

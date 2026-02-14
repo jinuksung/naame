@@ -1,4 +1,5 @@
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
+import { dirname, resolve } from "node:path";
 import { HanjaDataset, HanjaRow } from "../types";
 
 interface RawHannameMasterRow {
@@ -15,7 +16,25 @@ interface RawHannameMasterRow {
   elementResource?: unknown;
 }
 
+interface RawHanjaTagRow {
+  char?: unknown;
+  tags?: unknown;
+  tagScores?: unknown;
+  riskFlags?: unknown;
+}
+
+interface HanjaTagMetadata {
+  tags: string[];
+  tagPriorityScore: number;
+  riskFlags: string[];
+}
+
+interface LoadHanjaDatasetOptions {
+  hanjaTagsPath?: string;
+}
+
 const SINGLE_HANGUL_SYLLABLE_PATTERN = /^[가-힣]$/;
+const DEFAULT_HANJA_TAGS_FILENAME = "hanja_tags.jsonl";
 
 function uniqueNonEmpty(values: readonly string[]): string[] {
   const seen = new Set<string>();
@@ -46,6 +65,157 @@ function toStringArray(value: unknown): string[] {
   }
 
   return [];
+}
+
+function uniquePaths(paths: string[]): string[] {
+  return Array.from(new Set(paths));
+}
+
+async function fileExists(path: string): Promise<boolean> {
+  try {
+    await access(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function buildSearchDirs(basePath: string): string[] {
+  return uniquePaths([
+    basePath,
+    resolve(basePath, ".."),
+    resolve(basePath, "../.."),
+    resolve(basePath, "../../.."),
+    process.cwd(),
+    resolve(process.cwd(), ".."),
+    resolve(process.cwd(), "../.."),
+    resolve(process.cwd(), "../../.."),
+  ]);
+}
+
+function toPositiveScore(value: unknown): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return 0;
+  }
+  return value > 0 ? value : 0;
+}
+
+function toTagPriorityScore(value: unknown): number {
+  if (!value || typeof value !== "object") {
+    return 0;
+  }
+
+  let max = 0;
+  for (const item of Object.values(value as Record<string, unknown>)) {
+    const score = toPositiveScore(item);
+    if (score > max) {
+      max = score;
+    }
+  }
+  return max;
+}
+
+function mergeTagMetadata(
+  previous: HanjaTagMetadata | undefined,
+  incoming: HanjaTagMetadata,
+): HanjaTagMetadata {
+  if (!previous) {
+    return incoming;
+  }
+
+  return {
+    tags: uniqueNonEmpty([...previous.tags, ...incoming.tags]),
+    riskFlags: uniqueNonEmpty([...previous.riskFlags, ...incoming.riskFlags]),
+    tagPriorityScore: Math.max(previous.tagPriorityScore, incoming.tagPriorityScore),
+  };
+}
+
+async function resolveHanjaTagsPath(
+  sourcePath: string,
+  options: LoadHanjaDatasetOptions,
+): Promise<string | null> {
+  const fromOption = options.hanjaTagsPath?.trim();
+  if (fromOption) {
+    const absolute = resolve(process.cwd(), fromOption);
+    if (await fileExists(absolute)) {
+      return absolute;
+    }
+    throw new Error(`[loadHanjaDataset] hanjaTagsPath 파일을 찾지 못했습니다: ${absolute}`);
+  }
+
+  const fromEnv = process.env.HANJA_TAGS_PATH?.trim();
+  if (fromEnv) {
+    const absolute = resolve(process.cwd(), fromEnv);
+    if (await fileExists(absolute)) {
+      return absolute;
+    }
+    throw new Error(`[loadHanjaDataset] HANJA_TAGS_PATH 파일을 찾지 못했습니다: ${absolute}`);
+  }
+
+  const sourceDir = dirname(sourcePath);
+  for (const dir of buildSearchDirs(sourceDir)) {
+    const candidate = resolve(dir, DEFAULT_HANJA_TAGS_FILENAME);
+    if (await fileExists(candidate)) {
+      return candidate;
+    }
+  }
+
+  return null;
+}
+
+async function loadHanjaTagMetadataMap(
+  sourcePath: string,
+  options: LoadHanjaDatasetOptions,
+): Promise<Map<string, HanjaTagMetadata>> {
+  const tagPath = await resolveHanjaTagsPath(sourcePath, options);
+  if (!tagPath) {
+    console.info("[loadHanjaDataset] hanja_tags.jsonl not found; continue without curated tags");
+    return new Map();
+  }
+
+  const text = await readFile(tagPath, "utf8");
+  const map = new Map<string, HanjaTagMetadata>();
+  let parseFailed = 0;
+  let skipped = 0;
+
+  for (const rawLine of text.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line) {
+      continue;
+    }
+
+    let raw: RawHanjaTagRow;
+    try {
+      raw = JSON.parse(line) as RawHanjaTagRow;
+    } catch {
+      parseFailed += 1;
+      continue;
+    }
+
+    const hanja = normalizeSingleHanja(raw.char);
+    if (!hanja) {
+      skipped += 1;
+      continue;
+    }
+
+    const metadata: HanjaTagMetadata = {
+      tags: toStringArray(raw.tags),
+      riskFlags: toStringArray(raw.riskFlags),
+      tagPriorityScore: toTagPriorityScore(raw.tagScores),
+    };
+
+    map.set(hanja, mergeTagMetadata(map.get(hanja), metadata));
+  }
+
+  if (parseFailed > 0) {
+    console.warn(`[loadHanjaDataset] hanja_tags 파싱 실패 라인 수: ${parseFailed}`);
+  }
+
+  console.info(
+    `[loadHanjaDataset] hanja_tags loaded=${map.size} skipped=${skipped} parseFailed=${parseFailed} path=${tagPath}`,
+  );
+
+  return map;
 }
 
 function normalizeSingleHanja(value: unknown): string {
@@ -118,7 +288,10 @@ function pushToReadingIndex(byReading: Map<string, HanjaRow[]>, row: HanjaRow): 
   byReading.set(row.reading, [row]);
 }
 
-export async function loadHanjaDataset(sourcePath: string): Promise<HanjaDataset> {
+export async function loadHanjaDataset(
+  sourcePath: string,
+  options: LoadHanjaDatasetOptions = {},
+): Promise<HanjaDataset> {
   let jsonlText: string;
   try {
     jsonlText = await readFile(sourcePath, "utf8");
@@ -132,6 +305,7 @@ export async function loadHanjaDataset(sourcePath: string): Promise<HanjaDataset
   const byReading = new Map<string, HanjaRow[]>();
   const byHanja = new Map<string, HanjaRow>();
   const dedupeRows = new Set<string>();
+  const tagMetadataByHanja = await loadHanjaTagMetadataMap(sourcePath, options);
 
   let parseFailed = 0;
   let skipped = 0;
@@ -171,9 +345,12 @@ export async function loadHanjaDataset(sourcePath: string): Promise<HanjaDataset
 
     const inmyongMeanings = toStringArray(raw.meanings?.inmyong);
     const dictionaryMeanings = toStringArray(raw.meanings?.dictionary);
-    const meaningTags = uniqueNonEmpty(
+    const baseMeaningTags = uniqueNonEmpty(
       inmyongMeanings.length > 0 ? inmyongMeanings : dictionaryMeanings.slice(0, 3)
     );
+    const tagMetadata = tagMetadataByHanja.get(hanja);
+    const curatedTags = tagMetadata?.tags ?? [];
+    const meaningTags = uniqueNonEmpty([...curatedTags, ...baseMeaningTags]);
     const meaningKw = meaningTags[0] ?? "";
 
     for (const rawReading of inmyongReadings) {
@@ -199,6 +376,9 @@ export async function loadHanjaDataset(sourcePath: string): Promise<HanjaDataset
         reading,
         meaningKw,
         meaningTags,
+        curatedTags,
+        tagPriorityScore: tagMetadata?.tagPriorityScore ?? 0,
+        riskFlags: tagMetadata?.riskFlags ?? [],
         elementPronunciation: toFiveElement(raw.elementPronunciation),
         elementResource: toFiveElement(raw.elementResource)
       };

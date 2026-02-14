@@ -191,17 +191,11 @@ function resolveTier(
   const tierF = index.F.get(name);
 
   if (targetGender === "M") {
-    if (tierM && tierF) {
-      return pickBetterTier(tierM, tierF);
-    }
-    return tierM ?? tierF ?? "None";
+    return tierM ?? "None";
   }
 
   if (targetGender === "F") {
-    if (tierF && tierM) {
-      return pickBetterTier(tierF, tierM);
-    }
-    return tierF ?? tierM ?? "None";
+    return tierF ?? "None";
   }
 
   if (tierM && tierF) {

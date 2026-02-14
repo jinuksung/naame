@@ -5,6 +5,11 @@ export interface StartEndDiversifyOptions<TCandidate> {
   getName?: (candidate: TCandidate) => string;
 }
 
+export interface SeededWindowOptions {
+  limit: number;
+  seed?: number;
+}
+
 function resolveName<TCandidate>(
   candidate: TCandidate,
   getName?: (candidate: TCandidate) => string
@@ -31,11 +36,48 @@ function splitStartEnd(name: string): { start: string; end: string } {
   return { start, end };
 }
 
+function normalizeLimit(limit: number): number {
+  if (!Number.isFinite(limit)) {
+    return 1;
+  }
+  return Math.max(1, Math.floor(limit));
+}
+
+function normalizeSeed(seed: number | undefined): number | null {
+  if (typeof seed !== "number" || !Number.isFinite(seed)) {
+    return null;
+  }
+  const parsed = Math.floor(seed);
+  if (parsed < 1) {
+    return null;
+  }
+  return parsed;
+}
+
+export function pickSeededWindow<TCandidate>(
+  sortedCandidates: TCandidate[],
+  options: SeededWindowOptions
+): TCandidate[] {
+  const limit = normalizeLimit(options.limit);
+  if (sortedCandidates.length <= limit) {
+    return sortedCandidates.slice(0, limit);
+  }
+
+  const seed = normalizeSeed(options.seed);
+  if (seed == null) {
+    return sortedCandidates.slice(0, limit);
+  }
+
+  const maxStart = sortedCandidates.length - limit;
+  const startIndex = seed % (maxStart + 1);
+  return sortedCandidates.slice(startIndex, startIndex + limit);
+}
+
 export function diversifyByStartEnd<TCandidate>(
   sortedCandidates: TCandidate[],
   options: StartEndDiversifyOptions<TCandidate>
 ): TCandidate[] {
-  const limit = Math.max(1, Math.floor(options.limit));
+  const limit = normalizeLimit(options.limit);
   const selected: TCandidate[] = [];
   const selectedIndex = new Set<number>();
   const selectedNames = new Set<string>();

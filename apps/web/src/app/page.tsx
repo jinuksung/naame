@@ -158,7 +158,7 @@ export default function InputPage(): JSX.Element {
 
   return (
     <Screen
-      title="네임핏: 좋은 이름 찾기"
+      title="네임핏: 우리 아이 이름 찾기"
       description="발음·의미·사용 데이터를 기준으로 조건에 맞는 이름을 찾습니다"
     >
       <form className="nf-form" onSubmit={handleSubmit}>
@@ -219,12 +219,9 @@ export default function InputPage(): JSX.Element {
           error={errors.date}
         />
 
-        <SegmentedControl
-          label="성별"
-          value={gender}
-          options={genderOptions}
-          onChange={setGender}
-        />
+        <p className="nf-helper-text">
+          생년월일, 출생시간은 참고용으로만 사용되며 결과에 큰 영향을 주지 않습니다.
+        </p>
 
         <Toggle
           label="출생시간 입력"
@@ -240,6 +237,13 @@ export default function InputPage(): JSX.Element {
         {useBirthTime ? (
           <Field label="출생시간" type="time" value={time} onChange={setTime} />
         ) : null}
+
+        <SegmentedControl
+          label="성별"
+          value={gender}
+          options={genderOptions}
+          onChange={setGender}
+        />
 
         <PrimaryButton type="submit" disabled={isSubmitDisabled}>
           이름 추천받기

@@ -20,6 +20,7 @@ import {
   scoreSurnamePronunciationFlow,
   scoreSurnameSynergy
 } from "./scoring/surnameInfluence";
+import { sortHanjaRowsByRecommendationPriority } from "./hanjaRowPriority";
 import { ALLOW_SYLLABLES } from "./whitelist/allowSyllables";
 import {
   buildPriorDiagnosticRows,
@@ -31,7 +32,7 @@ import {
   applyFinalScoreWithPrior,
   mapEngineGenderToPriorGender
 } from "../lib/namefit/rank/finalScore";
-import { diversifyByStartEnd } from "../core/diversify";
+import { diversifyByStartEnd, pickSeededWindow } from "../core/diversify";
 import { loadPoolIndex } from "../core/poolAttach";
 import { formatSoftPriorTable, rerankWithSoftPrior } from "../core/rerank";
 import { preselectNameSeeds } from "../core/preselect";
@@ -64,6 +65,8 @@ const PRESELECT_NAME_MULTIPLIER = 12;
 const PRESELECT_NAME_MIN = 120;
 const PRESELECT_EXPLORATION_MIN = 20;
 const PRESELECT_EXPLORATION_RATIO = 0.2;
+const DIVERSE_EXPLORE_MULTIPLIER = 6;
+const DIVERSE_EXPLORE_MIN = 20;
 
 function toFixed2(value: number): number {
   return Math.round(value * 100) / 100;
@@ -110,6 +113,35 @@ function parsePriorWeightEnv(value: string | undefined): number {
     return DEFAULT_PRIOR_WEIGHT;
   }
   return clamp01(parsed);
+}
+
+function normalizeSeed(seed: number | undefined): number | null {
+  if (typeof seed !== "number" || !Number.isFinite(seed)) {
+    return null;
+  }
+  const normalized = Math.floor(seed) >>> 0;
+  if (normalized === 0) {
+    return null;
+  }
+  return normalized;
+}
+
+function createSeededRandom(seed: number): () => number {
+  let state = seed >>> 0;
+  return () => {
+    state += 0x6d2b79f5;
+    let t = Math.imul(state ^ (state >>> 15), 1 | state);
+    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function resolveTieBreakRandom(exploreSeed: number | undefined): () => number {
+  const normalizedSeed = normalizeSeed(exploreSeed);
+  if (normalizedSeed == null) {
+    return Math.random;
+  }
+  return createSeededRandom(normalizedSeed);
 }
 
 function mapEngineGenderToPoolTargetGender(gender: RecommendRequest["gender"]): PoolTargetGender {
@@ -250,18 +282,7 @@ function resolveSurnameElements(dataset: HanjaDataset, surnameHanja?: string): F
 }
 
 function getTopHanjaRows(rows: HanjaRow[] | undefined, limit: number): HanjaRow[] {
-  if (!rows || rows.length === 0) {
-    return [];
-  }
-
-  return [...rows]
-    .sort((a, b) => {
-      if (b.meaningTags.length !== a.meaningTags.length) {
-        return b.meaningTags.length - a.meaningTags.length;
-      }
-      return a.hanja.localeCompare(b.hanja, "ko");
-    })
-    .slice(0, limit);
+  return sortHanjaRowsByRecommendationPriority(rows, limit);
 }
 
 function resolveResourceElement(row: HanjaRow | undefined): FiveElement | undefined {
@@ -365,17 +386,30 @@ function resolveNamePreselectLimit(limit: number): number {
   return Math.max(PRESELECT_NAME_MIN, limit * PRESELECT_NAME_MULTIPLIER);
 }
 
+function resolveDiversifyPoolLimit(limit: number, exploreSeed: number | undefined): number {
+  if (exploreSeed == null) {
+    return limit;
+  }
+  return Math.max(limit, Math.max(DIVERSE_EXPLORE_MIN, limit * DIVERSE_EXPLORE_MULTIPLIER));
+}
+
 function selectDiverseRecommendations(
   sorted: RecommendationItem[],
-  limit: number
+  limit: number,
+  exploreSeed: number | undefined
 ): RecommendationItem[] {
+  const diversifyLimit = resolveDiversifyPoolLimit(limit, exploreSeed);
   const diversified = diversifyByStartEnd(sorted, {
-    limit,
+    limit: diversifyLimit,
     maxSameStart: 2,
     maxSameEnd: 2,
     getName: (candidate) => candidate.nameHangul
   });
-  return diversified.map((candidate, index) => ({
+  const selected = pickSeededWindow(diversified, {
+    limit,
+    seed: exploreSeed
+  });
+  return selected.map((candidate, index) => ({
     ...candidate,
     rank: index + 1
   }));
@@ -717,6 +751,7 @@ export function recommendNames(dataset: HanjaDataset, request: RecommendRequest)
     console.warn("[recommend] prior gate removed all candidates; fallback to engine-only ranking");
   }
 
+  const tieBreakRandom = resolveTieBreakRandom(request.exploreSeed);
   const softRerankedRows = rerankWithSoftPrior(
     candidatesForRanking.map((candidate) => ({
       name: candidate.nameHangul,
@@ -724,7 +759,9 @@ export function recommendNames(dataset: HanjaDataset, request: RecommendRequest)
       candidate
     })),
     poolTargetGender,
-    poolIndex
+    poolIndex,
+    undefined,
+    tieBreakRandom
   );
 
   const poolDebugEnabled = parseBooleanEnv(
@@ -770,7 +807,11 @@ export function recommendNames(dataset: HanjaDataset, request: RecommendRequest)
     } satisfies RecommendationItem;
   });
 
-  const recommendations = selectDiverseRecommendations(rerankedCandidates, limit);
+  const recommendations = selectDiverseRecommendations(
+    rerankedCandidates,
+    limit,
+    request.exploreSeed
+  );
   if (poolDebugEnabled) {
     const finalRows = toSoftPriorRowsFromRecommendations(recommendations);
     console.info(`[recommend][soft-prior][top10]\n${formatSoftPriorTable(finalRows, 10)}`);

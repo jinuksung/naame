@@ -6,6 +6,22 @@ import { getFeedbackStatsMap } from "@/server/feedback/supabaseFeedback";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+function toFeedbackSurnameContext(payload: unknown): { surnameHangul: string; surnameHanja: string } | null {
+  if (!payload || typeof payload !== "object") {
+    return null;
+  }
+  const raw = payload as { surnameHangul?: unknown; surnameHanja?: unknown };
+  const surnameHangul = typeof raw.surnameHangul === "string" ? raw.surnameHangul.trim() : "";
+  const surnameHanja = typeof raw.surnameHanja === "string" ? raw.surnameHanja.trim() : "";
+  if (!surnameHangul || !surnameHanja) {
+    return null;
+  }
+  return {
+    surnameHangul,
+    surnameHanja,
+  };
+}
+
 export async function POST(request: Request): Promise<NextResponse> {
   let payload: unknown;
 
@@ -21,8 +37,13 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   try {
-    const statsMap = await getFeedbackStatsMap(result.response.results);
-    const adjustedResults = applyFeedbackScores(result.response.results, statsMap);
+    const surnameContext = toFeedbackSurnameContext(payload);
+    if (!surnameContext) {
+      return NextResponse.json(result.response);
+    }
+
+    const statsMap = await getFeedbackStatsMap(result.response.results, surnameContext);
+    const adjustedResults = applyFeedbackScores(result.response.results, statsMap, surnameContext);
     return NextResponse.json({ results: adjustedResults });
   } catch (error) {
     console.error("[api] feedback weight apply failed", error);

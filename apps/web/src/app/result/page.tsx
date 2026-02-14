@@ -1,11 +1,22 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, PrimaryButton, Screen, SecondaryButton } from "@/components/ui";
-import { submitNameFeedback } from "@/lib/api";
-import { useRecommendStore } from "@/store/useRecommendStore";
-import type { FreeRecommendResultItem } from "@/types/recommend";
+import {
+  fetchFreeRecommendations,
+  fetchSurnameHanjaOptions,
+  submitNameFeedback,
+} from "@/lib/api";
+import { syncFeedbackStatus, syncFeedbackVote } from "@/lib/feedbackState";
+import {
+  buildQuickExploreSeed,
+  buildQuickSurnameCandidates,
+  isQuickComboEnabled,
+  pickPreferredSurnameHanja,
+} from "@/lib/quickCombo";
+import { genderOptions, useRecommendStore } from "@/store/useRecommendStore";
+import type { FreeRecommendInput, FreeRecommendResultItem, RecommendGender } from "@/types/recommend";
 
 function displayScore(score: unknown): string {
   if (typeof score === "number" && Number.isFinite(score)) {
@@ -27,9 +38,16 @@ export default function ResultPage(): JSX.Element {
   const router = useRouter();
   const input = useRecommendStore((state) => state.input);
   const results = useRecommendStore((state) => state.results);
+  const setInput = useRecommendStore((state) => state.setInput);
+  const setResults = useRecommendStore((state) => state.setResults);
   const reset = useRecommendStore((state) => state.reset);
   const [feedbackStatus, setFeedbackStatus] = useState<Record<string, "idle" | "pending" | "done">>({});
   const [feedbackVote, setFeedbackVote] = useState<Record<string, "like" | "dislike" | undefined>>({});
+  const [quickGender, setQuickGender] = useState<RecommendGender>(input.gender);
+  const [quickLoadingKey, setQuickLoadingKey] = useState<string | null>(null);
+  const [quickError, setQuickError] = useState<string | null>(null);
+  const [surnameHanjaCache, setSurnameHanjaCache] = useState<Record<string, string>>({});
+  const quickExploreCounterRef = useRef(0);
 
   const hasInput =
     input.surnameHangul.trim().length > 0 &&
@@ -42,25 +60,40 @@ export default function ResultPage(): JSX.Element {
     }
   }, [hasInput, router]);
 
-  const top5 = results.slice(0, 5);
+  const top5 = useMemo(() => results.slice(0, 5), [results]);
   const top5Keys = useMemo(() => top5.map((item) => buildNameKey(item)), [top5]);
+  const quickSurnames = useMemo(
+    () => buildQuickSurnameCandidates(input.surnameHangul),
+    [input.surnameHangul],
+  );
+  const isQuickLoading = quickLoadingKey !== null;
+  const quickComboEnabled = isQuickComboEnabled();
 
   useEffect(() => {
-    setFeedbackStatus((prev) => {
-      const next: Record<string, "idle" | "pending" | "done"> = {};
-      for (const key of top5Keys) {
-        next[key] = prev[key] ?? "idle";
-      }
-      return next;
-    });
-    setFeedbackVote((prev) => {
-      const next: Record<string, "like" | "dislike" | undefined> = {};
-      for (const key of top5Keys) {
-        next[key] = prev[key];
-      }
-      return next;
-    });
+    setFeedbackStatus((prev) => syncFeedbackStatus(prev, top5Keys));
+    setFeedbackVote((prev) => syncFeedbackVote(prev, top5Keys));
   }, [top5Keys]);
+
+  useEffect(() => {
+    setQuickGender(input.gender);
+  }, [input.gender]);
+
+  useEffect(() => {
+    const surnameHangul = input.surnameHangul.trim();
+    const surnameHanja = input.surnameHanja.trim();
+    if (!surnameHangul || !surnameHanja) {
+      return;
+    }
+    setSurnameHanjaCache((prev) => {
+      if (prev[surnameHangul] === surnameHanja) {
+        return prev;
+      }
+      return {
+        ...prev,
+        [surnameHangul]: surnameHanja,
+      };
+    });
+  }, [input.surnameHangul, input.surnameHanja]);
 
   if (!hasInput) {
     return <></>;
@@ -79,6 +112,8 @@ export default function ResultPage(): JSX.Element {
     setFeedbackVote((prev) => ({ ...prev, [key]: vote }));
     try {
       await submitNameFeedback({
+        surnameHangul: input.surnameHangul,
+        surnameHanja: input.surnameHanja,
         nameHangul: item.nameHangul,
         hanjaPair: item.hanjaPair,
         vote,
@@ -88,6 +123,55 @@ export default function ResultPage(): JSX.Element {
       console.error("[result] feedback submit failed", error);
       setFeedbackStatus((prev) => ({ ...prev, [key]: "idle" }));
       setFeedbackVote((prev) => ({ ...prev, [key]: undefined }));
+    }
+  };
+
+  const handleQuickComboClick = async (surnameHangul: string): Promise<void> => {
+    const normalizedSurname = surnameHangul.trim();
+    if (!normalizedSurname || isQuickLoading) {
+      return;
+    }
+
+    const nextComboKey = `${normalizedSurname}:${quickGender}`;
+    setQuickError(null);
+    setQuickLoadingKey(nextComboKey);
+
+    try {
+      const cachedHanja = surnameHanjaCache[normalizedSurname];
+      let surnameHanja = cachedHanja;
+      if (!surnameHanja) {
+        const optionsResponse = await fetchSurnameHanjaOptions(normalizedSurname);
+        surnameHanja = pickPreferredSurnameHanja(optionsResponse);
+        if (!surnameHanja) {
+          throw new Error("해당 성씨의 한자를 찾지 못했습니다.");
+        }
+        setSurnameHanjaCache((prev) => ({
+          ...prev,
+          [normalizedSurname]: surnameHanja,
+        }));
+      }
+
+      const nextInput: FreeRecommendInput = {
+        surnameHangul: normalizedSurname,
+        surnameHanja,
+        birth: {
+          calendar: "SOLAR",
+          date: input.birth.date,
+          ...(input.birth.time ? { time: input.birth.time } : {}),
+        },
+        gender: quickGender,
+        exploreSeed: buildQuickExploreSeed((quickExploreCounterRef.current += 1)),
+      };
+      const response = await fetchFreeRecommendations(nextInput);
+      setInput(nextInput);
+      setResults(response.results);
+      setFeedbackStatus({});
+      setFeedbackVote({});
+    } catch (error) {
+      console.error("[result] quick combo failed", error);
+      setQuickError("조합 추천을 불러오지 못했어요. 다시 시도해 주세요.");
+    } finally {
+      setQuickLoadingKey(null);
     }
   };
 
@@ -106,6 +190,58 @@ export default function ResultPage(): JSX.Element {
         </div>
       ) : (
         <>
+          {quickComboEnabled ? (
+            <section className="nf-quick-combo">
+              <div className="nf-quick-combo-head">
+                <h3 className="nf-quick-combo-title">빠른 조합 보기</h3>
+                <p className="nf-quick-combo-description">
+                  성씨와 성별만 바꿔서 결과를 빠르게 넘겨보고, 안 예쁜 이름은 바로 싫어요를 눌러 정리하세요.
+                </p>
+              </div>
+              <div className="nf-quick-gender-row" role="tablist" aria-label="빠른 조합 성별">
+                {genderOptions.map((option) => (
+                  <button
+                    key={`quick-gender-${option.value}`}
+                    type="button"
+                    role="tab"
+                    aria-selected={quickGender === option.value}
+                    disabled={isQuickLoading}
+                    className={`nf-quick-gender-btn${quickGender === option.value ? " is-selected" : ""}`}
+                    onClick={() => {
+                      setQuickGender(option.value);
+                    }}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+              <div className="nf-quick-surname-row">
+                {quickSurnames.map((surname) => {
+                  const comboKey = `${surname}:${quickGender}`;
+                  const isSelected = surname === input.surnameHangul.trim() && quickGender === input.gender;
+                  const isLoadingThis = quickLoadingKey === comboKey;
+                  return (
+                    <button
+                      key={comboKey}
+                      type="button"
+                      disabled={isQuickLoading}
+                      className={`nf-quick-surname-btn${isSelected ? " is-selected" : ""}`}
+                      onClick={() => {
+                        void handleQuickComboClick(surname);
+                      }}
+                    >
+                      {surname}
+                      {isLoadingThis ? "…" : ""}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className={`nf-quick-status${quickError ? " is-error" : ""}`}>
+                {quickError ?? "자주 쓰는 성씨 조합을 한 번에 비교할 수 있어요."}
+              </p>
+            </section>
+          ) : null}
+
           <section className="nf-result-list">
             {top5.map((item, index) => {
               const itemKey = buildNameKey(item);

@@ -1,19 +1,24 @@
 import type { FreeRecommendResultItem } from "@/types/recommend";
 import {
+  buildFeedbackHangulKey,
   buildFeedbackNameKey,
+  type FeedbackSurnameContext,
   type NameFeedbackStatsMap,
 } from "./feedbackScoring";
 
 export type FeedbackVoteType = "like" | "dislike";
 
 interface RecordFeedbackVoteInput {
+  surnameHangul: string;
+  surnameHanja: string;
   nameHangul: string;
   hanjaPair: [string, string];
   vote: FeedbackVoteType;
 }
 
 interface FeedbackStatRow {
-  name_key: string;
+  surname_hangul: string | null;
+  name_hangul: string | null;
   likes: number | null;
   dislikes: number | null;
 }
@@ -75,26 +80,36 @@ async function callSupabaseRpc<ResponseShape>(
 
 export async function getFeedbackStatsMap(
   items: Array<Pick<FreeRecommendResultItem, "nameHangul" | "hanjaPair">>,
+  surnameContext: FeedbackSurnameContext,
 ): Promise<NameFeedbackStatsMap> {
-  const keySet = new Set<string>();
+  const nameHangulSet = new Set<string>();
   for (const item of items) {
-    keySet.add(buildFeedbackNameKey(item));
+    const nameHangul = item.nameHangul.trim();
+    if (!nameHangul) {
+      continue;
+    }
+    nameHangulSet.add(nameHangul);
   }
-  const keys = Array.from(keySet);
-  if (keys.length === 0 || !isSupabaseFeedbackEnabled()) {
+  const nameHanguls = Array.from(nameHangulSet);
+  if (nameHanguls.length === 0 || !isSupabaseFeedbackEnabled()) {
     return new Map();
   }
 
-  const rows = await callSupabaseRpc<FeedbackStatRow[]>("get_name_feedback_stats", {
-    name_keys: keys,
+  const rows = await callSupabaseRpc<FeedbackStatRow[]>("get_name_feedback_stats_by_hangul", {
+    p_surname_hangul: surnameContext.surnameHangul.trim(),
+    p_name_hanguls: nameHanguls,
   });
 
   const map: NameFeedbackStatsMap = new Map();
   for (const row of rows ?? []) {
-    if (!row || typeof row.name_key !== "string") {
+    if (!row || typeof row.surname_hangul !== "string" || typeof row.name_hangul !== "string") {
       continue;
     }
-    map.set(row.name_key, {
+    const key = buildFeedbackHangulKey({
+      surnameHangul: row.surname_hangul,
+      nameHangul: row.name_hangul,
+    });
+    map.set(key, {
       likes: toInt(row.likes),
       dislikes: toInt(row.dislikes),
     });
@@ -103,6 +118,8 @@ export async function getFeedbackStatsMap(
 }
 
 export async function recordFeedbackVote({
+  surnameHangul,
+  surnameHanja,
   nameHangul,
   hanjaPair,
   vote,
@@ -112,11 +129,15 @@ export async function recordFeedbackVote({
   }
 
   const item = {
+    surnameHangul,
+    surnameHanja,
     nameHangul,
     hanjaPair,
   };
   const nameKey = buildFeedbackNameKey(item);
   await callSupabaseRpc<unknown>("record_name_feedback_vote", {
+    p_surname_hangul: surnameHangul.trim(),
+    p_surname_hanja: surnameHanja.trim(),
     p_name_key: nameKey,
     p_name_hangul: nameHangul.trim(),
     p_vote: vote,

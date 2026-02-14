@@ -17,6 +17,7 @@ export interface RecommendRequest {
   birth: BirthInput;
   gender: Gender;
   limit: number;
+  exploreSeed?: number;
 }
 
 export interface HanjaRow {
@@ -27,6 +28,9 @@ export interface HanjaRow {
   meaningTags: string[];
   elementPronunciation?: FiveElement;
   elementResource?: FiveElement;
+  curatedTags?: string[];
+  tagPriorityScore?: number;
+  riskFlags?: string[];
 }
 
 export interface HanjaDataset {

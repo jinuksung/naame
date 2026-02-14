@@ -90,6 +90,7 @@ function testNextConfigFileTracingIncludesDatasetFiles(): void {
 
   assert.ok(nextConfigText.includes("../../surname_map.jsonl"));
   assert.ok(nextConfigText.includes("../../hanname_master.jsonl"));
+  assert.ok(nextConfigText.includes("../../hanja_tags.jsonl"));
 }
 
 function run(): void {

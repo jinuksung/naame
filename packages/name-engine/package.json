@@ -16,7 +16,8 @@
     "test:surname": "ts-node -P tsconfig.scripts.json src/engine/scoring/surnameInfluence.test.ts",
     "test:sensitivity": "ts-node -P tsconfig.scripts.json src/engine/recommendSurnameSensitivity.test.ts",
     "test:soft-prior": "ts-node -P tsconfig.scripts.json src/core/softPriorRerank.test.ts",
-    "test:preselect": "ts-node -P tsconfig.scripts.json src/core/preselect.test.ts"
+    "test:preselect": "ts-node -P tsconfig.scripts.json src/core/preselect.test.ts",
+    "test:hanja-tags": "ts-node -P tsconfig.scripts.json src/data/hanjaTagPriority.test.ts"
   },
   "devDependencies": {
     "@types/node": "^20.17.57",

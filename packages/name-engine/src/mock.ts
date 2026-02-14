@@ -60,7 +60,7 @@ const MOCK_POOL: FreeRecommendResultItem[] = [
 ];
 
 function hashSeed(input: FreeRecommendInput): number {
-  const seedText = `${input.surnameHangul}|${input.surnameHanja}|${input.birth.date}|${input.gender}|${input.birth.time ?? ""}`;
+  const seedText = `${input.surnameHangul}|${input.surnameHanja}|${input.birth.date}|${input.gender}|${input.birth.time ?? ""}|${input.exploreSeed ?? ""}`;
   let hash = 0;
   for (const ch of seedText) {
     hash = (hash * 31 + ch.charCodeAt(0)) % 1_000_000_007;

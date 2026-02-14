@@ -135,6 +135,8 @@ export async function fetchFreeRecommendations(
 }
 
 export async function submitNameFeedback(input: {
+  surnameHangul: string;
+  surnameHanja: string;
   nameHangul: string;
   hanjaPair: [string, string];
   vote: "like" | "dislike";

@@ -59,7 +59,8 @@ function makeRequest(surnameHangul: string, surnameHanja: string): RecommendRequ
       timezone: "Asia/Seoul"
     },
     gender: "ANY",
-    limit: 10
+    limit: 10,
+    exploreSeed: 20260214
   };
 }
 

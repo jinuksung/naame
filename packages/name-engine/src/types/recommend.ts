@@ -9,6 +9,7 @@ export interface FreeRecommendInput {
     time?: string;
   };
   gender: RecommendGender;
+  exploreSeed?: number;
 }
 
 export interface SurnameHanjaOption {
