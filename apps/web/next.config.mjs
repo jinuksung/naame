@@ -5,7 +5,7 @@ const nextConfig = {
   experimental: {
     externalDir: true,
     outputFileTracingIncludes: {
-      "/*": ["../../surname_map.jsonl"]
+      "/*": ["../../surname_map.jsonl", "../../hanname_master.jsonl"]
     }
   }
 };

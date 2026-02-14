@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { buildSeoMetadata } from "./buildMeta";
 import {
   SEO_STATIC_PATHS,
@@ -82,12 +84,21 @@ function testMetadataBuilder(): void {
   }
 }
 
+function testNextConfigFileTracingIncludesDatasetFiles(): void {
+  const nextConfigPath = resolve(__dirname, "../../next.config.mjs");
+  const nextConfigText = readFileSync(nextConfigPath, "utf8");
+
+  assert.ok(nextConfigText.includes("../../surname_map.jsonl"));
+  assert.ok(nextConfigText.includes("../../hanname_master.jsonl"));
+}
+
 function run(): void {
   testSurnameValidation();
   testGenderNormalization();
   testDeterministicPick();
   testIndexablePolicy();
   testMetadataBuilder();
+  testNextConfigFileTracingIncludesDatasetFiles();
   console.log("[test:seo-utils] all tests passed");
 }
 
