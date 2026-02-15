@@ -152,6 +152,9 @@ export async function submitNameFeedback(input: {
 
   if (!response.ok) {
     const text = await response.text();
+    if (response.status === 503 && text.includes("Feedback backend is not configured")) {
+      return;
+    }
     throw new Error(`[api] feedback submit failed: ${response.status} ${text}`);
   }
 }

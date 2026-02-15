@@ -10,13 +10,14 @@ import {
   NoteSection,
   ParagraphSection,
   SeoPageShell,
+  ServiceEntryCtaSection,
 } from "@/seo/seoComponents";
 
 const faqItems: FaqItem[] = [
   {
     question: "예쁜 이름 추천 페이지는 어떤 기준으로 보나요?",
     answer:
-      "예쁜 이름 추천은 발음의 자연스러움, 의미 해석, 일상 사용 편의를 함께 보며 후보를 비교하는 방식으로 안내합니다. 특정 기준 하나로 확정하기보다 균형 있게 검토하는 것이 핵심입니다.",
+      "예쁜 느낌만 보지 않고 발음, 의미, 실사용 편의를 함께 보는 기준으로 안내합니다. 핵심은 '첫인상'과 '평생 사용성'의 균형입니다.",
   },
   {
     question: "남자/여자 구분 없이 볼 수 있나요?",
@@ -72,7 +73,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildSeoMetadata({
     title: "예쁜 이름 추천 | 네임핏",
     description:
-      "예쁜 이름 추천 키워드로 발음과 의미를 함께 비교해 보세요. 성씨, 성별, 생년월일 기반 추천으로 이어지는 내부 링크와 탐색 흐름을 네임핏 랜딩에서 안내합니다.",
+      "예비 부모를 위한 예쁜 이름 가이드입니다. 감성만이 아니라 성씨 조합, 의미, 사용성까지 함께 비교해 네임핏에서 후보를 정리해 보세요.",
     pathname: "/pretty",
   });
 }
@@ -86,13 +87,13 @@ export default function PrettyNamesPage(): JSX.Element {
   return (
     <SeoPageShell
       title="예쁜 이름 추천"
-      description="발음과 의미를 함께 보며 예쁜 이름 후보를 비교할 수 있는 SEO 랜딩 페이지입니다."
+      description="예쁜 이름을 찾되, 실제로 오래 쓰기 좋은 이름을 고를 수 있도록 비교 기준을 정리한 가이드입니다."
     >
       <ParagraphSection
-        title="예쁜 이름을 찾을 때의 기본 흐름"
+        title="예쁜 이름, 느낌만으로 고르면 왜 후회할까?"
         paragraphs={[
-          "예쁜 이름 추천 키워드는 이름의 느낌을 먼저 살펴보고 싶은 사용자에게 자주 쓰입니다. 다만 느낌만으로 바로 확정하기보다 성씨 결합, 발음 자연스러움, 일상 사용 편의를 함께 보면 실제 만족도가 높아집니다. 이 페이지는 검색 유입 사용자가 그 흐름을 이해하고 다음 단계로 이동할 수 있도록 구성했습니다.",
-          "먼저 샘플 이름으로 분위기를 파악한 뒤, 남자/여자 페이지나 성씨 조합 페이지로 이동해 조건을 좁혀 보세요. 마지막에는 성씨, 성별, 생년월일을 입력하는 추천 화면으로 이어지며, 비교 가능한 후보를 확인할 수 있습니다. 이렇게 단계적으로 탐색하면 가족이 납득할 수 있는 기준으로 최종 후보를 정리하기 쉽습니다.",
+          "많은 부모가 '예쁜 이름'을 검색하면서 시작하지만, 마지막 결정에서 다시 막힙니다. 이유는 간단합니다. 예쁨은 출발점이지, 결정 기준이 아니기 때문입니다. 실제로는 성씨와의 조합, 매일 부를 때의 리듬, 뜻의 납득 가능성이 함께 맞아야 만족도가 높습니다.",
+          "좋은 방법은 먼저 분위기 후보를 넓게 보고, 그다음 기준으로 좁히는 것입니다. 감성으로 시작하되 기준으로 끝내야 합니다. 이 페이지는 그 과정을 빠르게 정리하고 바로 추천으로 연결되도록 설계했습니다.",
         ]}
       />
 
@@ -103,6 +104,8 @@ export default function PrettyNamesPage(): JSX.Element {
       <FaqSection items={faqItems} />
 
       <NoteSection text="예쁜 이름 추천은 후보 탐색을 위한 안내입니다. 최종 이름은 가족의 선호와 실제 사용감을 기준으로 신중히 결정해 주세요." />
+
+      <ServiceEntryCtaSection entryKey="pretty" />
     </SeoPageShell>
   );
 }

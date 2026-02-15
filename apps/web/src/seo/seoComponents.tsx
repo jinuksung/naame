@@ -24,6 +24,13 @@ interface NameChipListProps {
   names: string[];
 }
 
+interface ServiceEntryCtaSectionProps {
+  entryKey: string;
+  title?: string;
+  description?: string;
+  ctaLabel?: string;
+}
+
 export function SeoPageShell({
   title,
   description,
@@ -114,6 +121,25 @@ export function NoteSection({ text }: { text: string }): JSX.Element {
     <section className="seo-note">
       <h2 className="seo-h2">참고 및 주의</h2>
       <p className="seo-paragraph">{text}</p>
+    </section>
+  );
+}
+
+export function ServiceEntryCtaSection({
+  entryKey,
+  title = "네임핏 서비스 바로 시작",
+  description = "지금 성씨, 성별, 생년월일을 입력하고 이름 후보를 바로 확인해 보세요.",
+  ctaLabel = "네임핏 서비스 시작",
+}: ServiceEntryCtaSectionProps): JSX.Element {
+  const href = `/?ref=seo&entry=${encodeURIComponent(entryKey)}&cta=bottom`;
+
+  return (
+    <section className="seo-section">
+      <h2 className="seo-h2">{title}</h2>
+      <p className="seo-paragraph">{description}</p>
+      <Link href={href} className="seo-cta-button">
+        {ctaLabel}
+      </Link>
     </section>
   );
 }

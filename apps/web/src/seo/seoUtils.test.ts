@@ -93,6 +93,30 @@ function testNextConfigFileTracingIncludesDatasetFiles(): void {
   assert.ok(nextConfigText.includes("../../hanja_tags.jsonl"));
 }
 
+function testSeoPagesIncludeServiceEntryCta(): void {
+  const seoPagePaths = [
+    "../app/(seo)/seo/page.tsx",
+    "../app/(seo)/names/page.tsx",
+    "../app/(seo)/birth/page.tsx",
+    "../app/(seo)/trends/2026/page.tsx",
+    "../app/(seo)/pretty/page.tsx",
+    "../app/(seo)/guides/how-it-works/page.tsx",
+    "../app/(seo)/guides/namefit-vs-naming-office/page.tsx",
+    "../app/(seo)/surname/[surname]/page.tsx",
+    "../app/(seo)/gender/[gender]/page.tsx",
+    "../app/(seo)/combo/[surname]/[gender]/page.tsx",
+  ];
+
+  for (const relativePath of seoPagePaths) {
+    const pagePath = resolve(__dirname, relativePath);
+    const pageText = readFileSync(pagePath, "utf8");
+    assert.ok(
+      pageText.includes("<ServiceEntryCtaSection"),
+      `${relativePath} should include ServiceEntryCtaSection`,
+    );
+  }
+}
+
 function run(): void {
   testSurnameValidation();
   testGenderNormalization();
@@ -100,6 +124,7 @@ function run(): void {
   testIndexablePolicy();
   testMetadataBuilder();
   testNextConfigFileTracingIncludesDatasetFiles();
+  testSeoPagesIncludeServiceEntryCta();
   console.log("[test:seo-utils] all tests passed");
 }
 

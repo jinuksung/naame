@@ -5,6 +5,8 @@ import { ReactNode } from "react";
 interface ScreenProps {
   title?: string;
   description?: string;
+  titleIconSrc?: string;
+  titleIconAlt?: string;
   children: ReactNode;
 }
 
@@ -41,11 +43,31 @@ interface CardProps {
   children: ReactNode;
 }
 
-export function TdsScreen({ title, description, children }: ScreenProps): JSX.Element {
+export function TdsScreen({
+  title,
+  description,
+  titleIconSrc,
+  titleIconAlt,
+  children,
+}: ScreenProps): JSX.Element {
   return (
     <main className="tds-screen">
       <section className="tds-panel">
-        {title ? <h1 className="tds-title">{title}</h1> : null}
+        {title ? (
+          <h1 className="tds-title">
+            <span className="tds-title-row">
+              {titleIconSrc ? (
+                <img
+                  className="tds-title-icon"
+                  src={titleIconSrc}
+                  alt={titleIconAlt ?? ""}
+                  aria-hidden={titleIconAlt ? undefined : true}
+                />
+              ) : null}
+              <span>{title}</span>
+            </span>
+          </h1>
+        ) : null}
         {description ? <p className="tds-description">{description}</p> : null}
         {children}
       </section>

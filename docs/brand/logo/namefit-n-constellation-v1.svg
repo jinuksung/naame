@@ -1,0 +1,17 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Namefit N Constellation Logo V1</title>
+  <desc id="desc">Five circular nodes connected in an N-like constellation shape.</desc>
+
+  <g opacity="0.9" stroke="#DCE8F3" stroke-width="18" stroke-linecap="round">
+    <path d="M118 230L118 366"/>
+    <path d="M118 366L394 230"/>
+    <path d="M394 230L394 366"/>
+    <path d="M118 230L256 128L394 230"/>
+  </g>
+
+  <circle cx="256" cy="128" r="44" fill="#5C7897"/>
+  <circle cx="118" cy="230" r="44" fill="#E7B97D"/>
+  <circle cx="394" cy="230" r="44" fill="#63B6AF"/>
+  <circle cx="118" cy="366" r="44" fill="#DFAEA4"/>
+  <circle cx="394" cy="366" r="44" fill="#4F6D8A"/>
+</svg>

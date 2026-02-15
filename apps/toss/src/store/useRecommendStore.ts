@@ -14,10 +14,6 @@ interface RecommendStoreState {
 const initialInput: FreeRecommendInput = {
   surnameHangul: "",
   surnameHanja: "",
-  birth: {
-    calendar: "SOLAR",
-    date: ""
-  },
   gender: "UNISEX"
 };
 

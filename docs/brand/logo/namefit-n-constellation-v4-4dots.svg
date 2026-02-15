@@ -1,0 +1,15 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Namefit N Constellation Logo V4 4 Dots</title>
+  <desc id="desc">A four-dot N constellation mark with clear geometric structure.</desc>
+
+  <g stroke="#D1DEEA" stroke-width="22" stroke-linecap="round">
+    <path d="M132 214L132 380"/>
+    <path d="M132 380L380 214"/>
+    <path d="M380 214L380 380"/>
+  </g>
+
+  <circle cx="132" cy="214" r="48" fill="#CFA097"/>
+  <circle cx="132" cy="380" r="48" fill="#E7B97D"/>
+  <circle cx="380" cy="214" r="48" fill="#63B6AF"/>
+  <circle cx="380" cy="380" r="48" fill="#4F6D8A"/>
+</svg>

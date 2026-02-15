@@ -3,11 +3,9 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  TdsField,
   TdsPrimaryButton,
   TdsScreen,
   TdsSegmentedControl,
-  TdsSwitch,
 } from "@/components/tds";
 import { normalizeHangulReadingWithLimit } from "@namefit/engine/lib/korean/normalizeHangulReading";
 import { fetchSurnameHanjaOptions } from "@/lib/api";
@@ -17,8 +15,9 @@ import { FreeRecommendInput, SurnameHanjaOption } from "@/types/recommend";
 interface FormErrors {
   surnameHangul?: string;
   surnameHanja?: string;
-  date?: string;
 }
+
+const BRAND_TITLE_IMAGE_PATH = "/toss/namefit-mark-inline.svg";
 
 function countChars(value: string): number {
   return Array.from(value).length;
@@ -37,10 +36,6 @@ function validateInput(input: FreeRecommendInput): FormErrors {
     errors.surnameHanja = "성씨 한자를 선택해 주세요.";
   }
 
-  if (!input.birth.date) {
-    errors.date = "생년월일을 선택해 주세요.";
-  }
-
   return errors;
 }
 
@@ -54,15 +49,14 @@ export default function InputPage(): JSX.Element {
     normalizeHangulReadingWithLimit(storeInput.surnameHangul, 2),
   );
   const [surnameHanja, setSurnameHanja] = useState(storeInput.surnameHanja);
-  const [surnameOptions, setSurnameOptions] = useState<SurnameHanjaOption[]>([]);
-  const [surnameOptionsLoading, setSurnameOptionsLoading] = useState(false);
-  const [surnameOptionsError, setSurnameOptionsError] = useState<string | null>(null);
-  const [date, setDate] = useState(storeInput.birth.date);
-  const [gender, setGender] = useState(storeInput.gender);
-  const [useBirthTime, setUseBirthTime] = useState(
-    Boolean(storeInput.birth.time),
+  const [surnameOptions, setSurnameOptions] = useState<SurnameHanjaOption[]>(
+    [],
   );
-  const [time, setTime] = useState(storeInput.birth.time ?? "");
+  const [surnameOptionsLoading, setSurnameOptionsLoading] = useState(false);
+  const [surnameOptionsError, setSurnameOptionsError] = useState<string | null>(
+    null,
+  );
+  const [gender, setGender] = useState(storeInput.gender);
   const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
@@ -92,7 +86,9 @@ export default function InputPage(): JSX.Element {
 
         if (response.options.length === 0) {
           setSurnameHanja("");
-          setSurnameOptionsError("입력한 음과 일치하는 성씨 한자를 찾지 못했습니다.");
+          setSurnameOptionsError(
+            "입력한 음과 일치하는 성씨 한자를 찾지 못했습니다.",
+          );
           return;
         }
 
@@ -129,8 +125,9 @@ export default function InputPage(): JSX.Element {
   }, [surnameHangul]);
 
   const isSubmitDisabled = useMemo(
-    () => !surnameHangul.trim() || !surnameHanja.trim() || !date || surnameOptionsLoading,
-    [surnameHangul, surnameHanja, date, surnameOptionsLoading],
+    () =>
+      !surnameHangul.trim() || !surnameHanja.trim() || surnameOptionsLoading,
+    [surnameHangul, surnameHanja, surnameOptionsLoading],
   );
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
@@ -139,11 +136,6 @@ export default function InputPage(): JSX.Element {
     const nextInput: FreeRecommendInput = {
       surnameHangul: normalizeHangulReadingWithLimit(surnameHangul, 2),
       surnameHanja: surnameHanja.trim(),
-      birth: {
-        calendar: "SOLAR",
-        date,
-        time: useBirthTime && time ? time : undefined,
-      },
       gender,
     };
 
@@ -161,7 +153,8 @@ export default function InputPage(): JSX.Element {
   return (
     <TdsScreen
       title="네임핏: 우리 아이 이름 찾기"
-      description="발음·의미·사용 데이터를 기준으로 조건에 맞는 이름을 찾습니다"
+      titleIconSrc={BRAND_TITLE_IMAGE_PATH}
+      titleIconAlt="네임핏 로고"
     >
       <form className="tds-form" onSubmit={handleSubmit}>
         <div className="tds-field">
@@ -173,8 +166,14 @@ export default function InputPage(): JSX.Element {
               value={surnameHangul}
               placeholder="김"
               onChange={(event) => {
-                setSurnameHangul(normalizeHangulReadingWithLimit(event.target.value, 2));
-                setErrors((prev) => ({ ...prev, surnameHangul: undefined, surnameHanja: undefined }));
+                setSurnameHangul(
+                  normalizeHangulReadingWithLimit(event.target.value, 2),
+                );
+                setErrors((prev) => ({
+                  ...prev,
+                  surnameHangul: undefined,
+                  surnameHanja: undefined,
+                }));
               }}
             />
 
@@ -182,7 +181,11 @@ export default function InputPage(): JSX.Element {
               surnameOptionsLoading ? (
                 <p className="surname-inline-loading">한자 조회 중…</p>
               ) : surnameOptions.length > 0 ? (
-                <div className="tds-hanja-options" role="radiogroup" aria-label="성씨 한자 선택">
+                <div
+                  className="tds-hanja-options"
+                  role="radiogroup"
+                  aria-label="성씨 한자 선택"
+                >
                   {surnameOptions.map((option) => {
                     const isSelected = surnameHanja === option.hanja;
 
@@ -194,7 +197,10 @@ export default function InputPage(): JSX.Element {
                         aria-pressed={isSelected}
                         onClick={() => {
                           setSurnameHanja(option.hanja);
-                          setErrors((prev) => ({ ...prev, surnameHanja: undefined }));
+                          setErrors((prev) => ({
+                            ...prev,
+                            surnameHanja: undefined,
+                          }));
                         }}
                       >
                         <span className="tds-hanja-main">{option.hanja}</span>
@@ -209,41 +215,13 @@ export default function InputPage(): JSX.Element {
           {!surnameOptionsLoading && surnameOptionsError ? (
             <span className="tds-error">{surnameOptionsError}</span>
           ) : null}
-          {errors.surnameHangul ? <span className="tds-error">{errors.surnameHangul}</span> : null}
-          {errors.surnameHanja ? <span className="tds-error">{errors.surnameHanja}</span> : null}
+          {errors.surnameHangul ? (
+            <span className="tds-error">{errors.surnameHangul}</span>
+          ) : null}
+          {errors.surnameHanja ? (
+            <span className="tds-error">{errors.surnameHanja}</span>
+          ) : null}
         </div>
-
-        <TdsField
-          label="생년월일"
-          type="date"
-          value={date}
-          onChange={setDate}
-          error={errors.date}
-        />
-
-        <p className="tds-helper-text">
-          생년월일, 출생시간은 참고용으로만 사용되며 결과에 큰 영향을 주지 않습니다.
-        </p>
-
-        <TdsSwitch
-          label="출생시간 입력"
-          checked={useBirthTime}
-          onChange={(checked) => {
-            setUseBirthTime(checked);
-            if (!checked) {
-              setTime("");
-            }
-          }}
-        />
-
-        {useBirthTime ? (
-          <TdsField
-            label="출생시간"
-            type="time"
-            value={time}
-            onChange={setTime}
-          />
-        ) : null}
 
         <TdsSegmentedControl
           label="성별"
@@ -255,6 +233,30 @@ export default function InputPage(): JSX.Element {
         <TdsPrimaryButton type="submit" disabled={isSubmitDisabled}>
           이름 추천받기
         </TdsPrimaryButton>
+
+        <section
+          className="tds-basic-mode-guide"
+          aria-label="기본모드 이름 선정 기준"
+        >
+          <p className="tds-basic-mode-guide-title">
+            기본모드에서는 아래 기준으로 이름을 선정합니다.
+          </p>
+          <ul className="tds-basic-mode-guide-list">
+            <li>
+              발음오행: 성과 이름을 붙여 읽었을 때 발음 흐름과 소리 균형을
+              봅니다.
+            </li>
+            <li>의미: 한자 조합이 전달하는 의미의 조화와 선명도를 봅니다.</li>
+            <li>
+              오행 균형: 성씨와 이름의 오행 조합이 한쪽으로 치우치지 않는지
+              봅니다.
+            </li>
+          </ul>
+          <p className="tds-basic-mode-guide-note">
+            ※ 오행 균형은 사주가 반영된 결과가 아닌, 성+이름의 오행만
+            반영합니다.
+          </p>
+        </section>
       </form>
     </TdsScreen>
   );

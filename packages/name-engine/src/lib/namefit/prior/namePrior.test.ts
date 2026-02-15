@@ -34,7 +34,7 @@ function runTests(): void {
   assert.ok(priorIndex.syllableSetByGender.ALL.has("도"));
   assert.ok(priorIndex.syllableSetByGender.ALL.has("연"));
 
-  const blacklistCases = ["가지", "가나", "고지", "규도"] as const;
+  const blacklistCases = ["가지", "가나", "고지", "규도", "유도"] as const;
   for (const name of blacklistCases) {
     const scored = scoreNamePrior(name, "U", priorIndex);
     assert.equal(scored.gate, "FAIL_BLACKLIST", `${name} should fail by blacklist`);

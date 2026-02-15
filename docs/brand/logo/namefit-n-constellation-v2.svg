@@ -1,0 +1,18 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Namefit N Constellation Logo V2</title>
+  <desc id="desc">Geometric N constellation with stronger structure and three-color palette.</desc>
+
+  <g stroke="#D1DEEA" stroke-width="22" stroke-linecap="round">
+    <path d="M132 214L132 380"/>
+    <path d="M132 380L380 214"/>
+    <path d="M380 214L380 380"/>
+  </g>
+
+  <circle cx="132" cy="214" r="48" fill="#4F6D8A"/>
+  <circle cx="132" cy="380" r="48" fill="#E7B97D"/>
+  <circle cx="380" cy="214" r="48" fill="#63B6AF"/>
+  <circle cx="380" cy="380" r="48" fill="#4F6D8A"/>
+
+  <circle cx="256" cy="118" r="36" fill="#4F6D8A"/>
+  <path d="M182 171L256 118L330 171" stroke="#D1DEEA" stroke-width="16" stroke-linecap="round"/>
+</svg>

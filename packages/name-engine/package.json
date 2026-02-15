@@ -17,7 +17,8 @@
     "test:sensitivity": "ts-node -P tsconfig.scripts.json src/engine/recommendSurnameSensitivity.test.ts",
     "test:soft-prior": "ts-node -P tsconfig.scripts.json src/core/softPriorRerank.test.ts",
     "test:preselect": "ts-node -P tsconfig.scripts.json src/core/preselect.test.ts",
-    "test:hanja-tags": "ts-node -P tsconfig.scripts.json src/data/hanjaTagPriority.test.ts"
+    "test:hanja-tags": "ts-node -P tsconfig.scripts.json src/data/hanjaTagPriority.test.ts",
+    "test:ssot": "ts-node -P tsconfig.scripts.json src/data/supabaseSsotSnapshot.test.ts && ts-node -P tsconfig.scripts.json src/data/loadSurnameMap.ssot.test.ts && ts-node -P tsconfig.scripts.json src/service/freeRecommend.ssot.test.ts"
   },
   "devDependencies": {
     "@types/node": "^20.17.57",

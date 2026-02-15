@@ -2,7 +2,9 @@ import { access, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 import { loadHanjaDataset } from "../data/loadHanjaDataset";
 import { resolveSurnameHanjaSelection } from "../data/loadSurnameMap";
+import { ensureSupabaseSsotSnapshot } from "../data/supabaseSsotSnapshot";
 import { recommendNames } from "../engine/recommend";
+import { scoreSoundElement } from "../engine/scoring/soundElement";
 import { normalizeHangulReading } from "../lib/korean/normalizeHangulReading";
 import { buildMockResults } from "../mock";
 import {
@@ -10,10 +12,17 @@ import {
   FreeRecommendResponse,
   FreeRecommendResultItem
 } from "../types/recommend";
-import { Gender, HanjaDataset, RecommendationItem, RecommendRequest } from "../types";
+import {
+  FiveElement,
+  Gender,
+  HanjaDataset,
+  RecommendationItem,
+  RecommendRequest
+} from "../types";
 
 const DEFAULT_SOURCE_PATH = "hanname_master.jsonl";
 const DEFAULT_TIMEZONE = "Asia/Seoul";
+const DEFAULT_BASIC_MODE_BIRTH_DATE = "2000-01-01";
 const FREE_LIMIT = 5;
 const DISPLAY_SCORE_TOP = 96;
 const DISPLAY_SCORE_MIN = 72;
@@ -91,8 +100,10 @@ function toInput(payload: RawPayload): FreeRecommendInput | null {
   const surnameHanja =
     typeof payload.surnameHanja === "string" ? payload.surnameHanja.trim() : "";
   const calendar = payload.birth?.calendar;
-  const date = typeof payload.birth?.date === "string" ? payload.birth.date : "";
-  const time = typeof payload.birth?.time === "string" ? payload.birth.time : undefined;
+  const date =
+    typeof payload.birth?.date === "string" ? payload.birth.date.trim() : "";
+  const time =
+    typeof payload.birth?.time === "string" ? payload.birth.time.trim() : undefined;
   const exploreSeed = parseExploreSeed(payload.exploreSeed);
 
   if (countChars(surnameHangul) < 1 || countChars(surnameHangul) > 2) {
@@ -101,10 +112,10 @@ function toInput(payload: RawPayload): FreeRecommendInput | null {
   if (surnameHanja && (countChars(surnameHanja) < 1 || countChars(surnameHanja) > 2)) {
     return null;
   }
-  if (calendar !== "SOLAR") {
+  if (calendar !== undefined && calendar !== "SOLAR") {
     return null;
   }
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+  if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     return null;
   }
   if (!isGender(payload.gender)) {
@@ -113,15 +124,22 @@ function toInput(payload: RawPayload): FreeRecommendInput | null {
   if (time && !/^\d{2}:\d{2}$/.test(time)) {
     return null;
   }
+  if (time && !date) {
+    return null;
+  }
+
+  const birth = date
+    ? {
+        calendar: "SOLAR" as const,
+        date,
+        ...(time ? { time } : {})
+      }
+    : undefined;
 
   return {
     surnameHangul,
     surnameHanja,
-    birth: {
-      calendar: "SOLAR",
-      date,
-      time
-    },
+    ...(birth ? { birth } : {}),
     gender: payload.gender,
     ...(exploreSeed ? { exploreSeed } : {})
   };
@@ -238,60 +256,67 @@ function pickTemplate(templates: readonly string[], seed: number, offset: number
 function formatMeaningPiece(item: RecommendationItem): string {
   const [kw1, kw2] = item.meaningKwPair;
   if (item.meaningTags.length >= 2) {
-    return `${item.meaningTags.slice(0, 2).join("·")} 축 의미`;
+    return item.meaningTags.slice(0, 3).join(", ");
   }
   if (item.meaningTags.length === 1) {
-    return `${item.meaningTags[0]} 의미`;
+    return item.meaningTags[0];
   }
   if (kw1 && kw2) {
-    return `${kw1}·${kw2} 의미`;
+    return `${kw1}, ${kw2}`;
   }
-  return "긍정 의미";
+  return "긍정적";
 }
 
-function findDominantMetric(item: RecommendationItem): { label: string; score: number } {
-  const candidates = [
-    { label: "발음", score: item.scores.phonetic },
-    { label: "의미", score: item.scores.meaning },
-    { label: "초성 조화", score: item.scores.soundElement },
-    { label: "사주 균형", score: item.scores.saju }
-  ];
+const ELEMENT_LABELS: Record<FiveElement, string> = {
+  WOOD: "목",
+  FIRE: "화",
+  EARTH: "토",
+  METAL: "금",
+  WATER: "수"
+};
 
-  let best = candidates[0];
-  for (const metric of candidates.slice(1)) {
-    if (metric.score > best.score) {
-      best = metric;
-    }
+function getElementFlowText(item: RecommendationItem): string | null {
+  const uniqueElements = Array.from(new Set(scoreSoundElement(item.fullHangul).elements));
+  if (uniqueElements.length === 0) {
+    return null;
   }
-  return best;
+  return uniqueElements.map((element) => ELEMENT_LABELS[element]).join("/");
 }
 
-function buildFriendlyReasonsByRank(
-  item: RecommendationItem,
-  rank: number,
-  totalCount: number
-): string[] {
+function buildElementBalanceTemplates(item: RecommendationItem): readonly string[] {
+  const flow = getElementFlowText(item);
+  if (!flow) {
+    return [
+      "오행 균형: 성씨와 이름의 오행 흐름이 한쪽으로 치우치지 않아 안정적이에요",
+      "오행 균형: 성씨와 이름의 기운 배치가 고르게 이어져 조화로운 편이에요",
+      "오행 균형: 성씨와 이름 조합에서 오행의 흐름이 자연스럽게 맞물려요"
+    ] as const;
+  }
+
+  return [
+    `오행 균형: ${flow}의 오행 균형이 잘 맞아요`,
+    `오행 균형: 성씨와 이름에서 ${flow} 기운이 조화롭게 이어져요`,
+    `오행 균형: ${flow} 조합이 치우치지 않아 전체 흐름이 안정적이에요`
+  ] as const;
+}
+
+function buildFriendlyReasons(item: RecommendationItem): string[] {
   const seed = hashText(`${item.nameHangul}|${item.hanjaPair.join("")}|${item.readingPair.join("")}`);
   const meaningText = formatMeaningPiece(item);
-  const dominant = findDominantMetric(item);
 
   const meaningTemplates = [
-    `한자 ${item.hanjaPair[0]}${item.hanjaPair[1]} 조합이 ${meaningText}를 담고 있어요`,
-    `${item.hanjaPair[0]}·${item.hanjaPair[1]} 선택으로 ${meaningText} 방향이 또렷해요`,
-    `${item.nameHangul}은(는) ${meaningText} 해석이 자연스러워요`
+    `의미: ${meaningText}을(를) 의미하는 한자들의 조합이에요`,
+    `의미: ${item.hanjaPair[0]}·${item.hanjaPair[1]}는 ${meaningText}을(를) 의미하는 한자들의 조합이에요`,
+    `의미: ${item.nameHangul}은(는) ${meaningText}을(를) 의미하는 한자들의 조합이에요`
   ] as const;
 
   const phoneticTemplates = [
-    `${item.fullHangul}로 읽을 때 발음 점수 ${Math.round(item.scores.phonetic)}점으로 안정적이에요`,
-    `성씨와 붙여 읽은 "${item.fullHangul}" 흐름이 매끄러워요`,
-    "이름 소리 리듬이 부드러워 일상 호칭에서 쓰기 좋아요"
+    `발음오행: ${item.fullHangul}로 읽을 때 발음 점수 ${Math.round(item.scores.phonetic)}점으로 안정적이에요`,
+    `발음오행: 성씨와 붙여 읽은 "${item.fullHangul}" 흐름이 매끄러워요`,
+    "발음오행: 이름 소리 리듬이 부드러워 일상 호칭에서 쓰기 좋아요"
   ] as const;
 
-  const summaryTemplates = [
-    `전체 후보 ${totalCount}개 중 ${rank}위로 선별됐고 종합 점수 ${Math.round(item.scores.total)}점이에요`,
-    `${dominant.label} 지표가 특히 높게 나와 상위권에 올랐어요 (${Math.round(dominant.score)}점)`,
-    `무료 추천 상위 ${rank}위이며 항목별 균형 점수가 고르게 나왔어요`
-  ] as const;
+  const summaryTemplates = buildElementBalanceTemplates(item);
 
   return [
     pickTemplate(meaningTemplates, seed, 0),
@@ -338,19 +363,14 @@ function buildDisplayScores(items: RecommendationItem[]): number[] {
   return monotonicDescending.map((score) => clamp(score, DISPLAY_SCORE_MIN, 99));
 }
 
-function toFreeResultItem(
-  item: RecommendationItem,
-  score: number,
-  rank: number,
-  totalCount: number
-): FreeRecommendResultItem {
+function toFreeResultItem(item: RecommendationItem, score: number): FreeRecommendResultItem {
   return {
     nameHangul: item.nameHangul,
     hanjaPair: item.hanjaPair,
     readingPair: item.readingPair,
     meaningKwPair: item.meaningKwPair,
     score: clamp(Math.round(score), DISPLAY_SCORE_MIN, 99),
-    reasons: buildFriendlyReasonsByRank(item, rank, totalCount)
+    reasons: buildFriendlyReasons(item)
   };
 }
 
@@ -359,6 +379,8 @@ export async function recommendFreeNames(payload: unknown): Promise<FreeRecommen
   if (!input) {
     return { ok: false, status: 400, error: "Invalid request payload" };
   }
+
+  await ensureSupabaseSsotSnapshot();
 
   let resolvedInput: FreeRecommendInput;
   try {
@@ -379,9 +401,9 @@ export async function recommendFreeNames(payload: unknown): Promise<FreeRecommen
     surnameHangul: resolvedInput.surnameHangul,
     surnameHanja: resolvedInput.surnameHanja,
     birth: {
-      calendar: resolvedInput.birth.calendar,
-      date: resolvedInput.birth.date,
-      time: resolvedInput.birth.time,
+      calendar: "SOLAR",
+      date: resolvedInput.birth?.date ?? DEFAULT_BASIC_MODE_BIRTH_DATE,
+      ...(resolvedInput.birth?.time ? { time: resolvedInput.birth.time } : {}),
       timezone: DEFAULT_TIMEZONE
     },
     gender: mapGenderToEngine(resolvedInput.gender),
@@ -394,9 +416,7 @@ export async function recommendFreeNames(payload: unknown): Promise<FreeRecommen
     const recommended = recommendNames(dataset, engineRequest);
     const topItems = recommended.recommendations.slice(0, FREE_LIMIT);
     const displayScores = buildDisplayScores(topItems);
-    const results = topItems.map((item, index) =>
-      toFreeResultItem(item, displayScores[index], index + 1, topItems.length)
-    );
+    const results = topItems.map((item, index) => toFreeResultItem(item, displayScores[index]));
 
     if (results.length === 0) {
       console.warn("[recommendFree] 엔진 결과가 비어 mock fallback 사용");

@@ -49,8 +49,11 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request): Promise<NextResponse> {
   if (!isSupabaseFeedbackEnabled()) {
     return NextResponse.json(
-      { error: "Feedback backend is not configured" },
-      { status: 503 },
+      {
+        ok: true,
+        skipped: true,
+        reason: "feedback_backend_not_configured",
+      },
     );
   }
 

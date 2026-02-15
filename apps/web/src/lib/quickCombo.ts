@@ -19,9 +19,37 @@ export const QUICK_SURNAME_PRESETS = [
   "황",
   "안",
   "송",
+  "류",
   "전",
   "홍",
   "유",
+  "고",
+  "문",
+  "양",
+  "손",
+  "배",
+  "백",
+  "허",
+  "남",
+  "심",
+  "노",
+  "로",
+  "하",
+  "곽",
+  "성",
+  "차",
+  "주",
+  "우",
+  "구",
+  "나",
+  "남궁",
+  "제갈",
+  "선우",
+  "서문",
+  "황보",
+  "독고",
+  "사공",
+  "동방",
 ] as const;
 
 const SURNAME_PATTERN = /^[가-힣]{1,2}$/;
@@ -41,7 +69,7 @@ export function buildQuickExploreSeed(clickCount: number, nowMs = Date.now()): n
 
 function sanitizeLimit(limit: number): number {
   if (!Number.isFinite(limit)) {
-    return 1;
+    return Number.MAX_SAFE_INTEGER;
   }
   return Math.max(1, Math.floor(limit));
 }
@@ -58,7 +86,7 @@ function addUniqueSurname(target: string[], seen: Set<string>, raw: string): voi
 export function buildQuickSurnameCandidates(
   currentSurname: string,
   presets: readonly string[] = QUICK_SURNAME_PRESETS,
-  limit = 10,
+  limit = Number.POSITIVE_INFINITY,
 ): string[] {
   const max = sanitizeLimit(limit);
   const candidates: string[] = [];

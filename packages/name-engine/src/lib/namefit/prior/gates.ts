@@ -1,4 +1,5 @@
 import { PriorIndex } from "./buildNamePrior";
+import { BLACKLIST_WORD_PATTERNS } from "../../../../../../src/core/blacklist";
 
 export type PriorGate =
   | "PASS"
@@ -21,12 +22,7 @@ const TWO_SYLLABLE_HANGUL_PATTERN = /^[가-힣]{2}$/;
 const SUFFIX_DO_PATTERN = /도$/;
 
 export const DEFAULT_NAME_BLACKLIST = new Set<string>([
-  "가지",
-  "가나",
-  "고지",
-  "규도",
-  "가가",
-  "다다",
+  ...BLACKLIST_WORD_PATTERNS,
 ]);
 
 function clamp01(value: number): number {

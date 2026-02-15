@@ -3,9 +3,9 @@ export type RecommendGender = "MALE" | "FEMALE" | "UNISEX";
 export interface FreeRecommendInput {
   surnameHangul: string;
   surnameHanja: string;
-  birth: {
+  birth?: {
     calendar: "SOLAR";
-    date: string;
+    date?: string;
     time?: string;
   };
   gender: RecommendGender;

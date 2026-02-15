@@ -55,3 +55,9 @@ npm run build:toss
 - React/Next 의존 없음
 - Node + TypeScript 기반 순수 모듈
 - 두 앱이 동일 모듈을 import 해서 추천 결과를 생성
+
+## Supabase SSOT
+
+추천 데이터 파일을 Supabase를 SSOT로 운영하려면 아래 문서를 참고하세요.
+
+- `docs/ssot-supabase.md`

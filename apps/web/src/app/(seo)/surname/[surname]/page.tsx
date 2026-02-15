@@ -13,6 +13,7 @@ import {
   NoteSection,
   ParagraphSection,
   SeoPageShell,
+  ServiceEntryCtaSection,
 } from "@/seo/seoComponents";
 
 interface SurnamePageProps {
@@ -35,7 +36,7 @@ export async function generateMetadata({
 
   return buildSeoMetadata({
     title: `${surname}씨 이름 추천 | 네임핏`,
-    description: `${surname} 성씨와 어울리는 이름 추천 흐름을 네임핏 랜딩에서 확인하세요. 성별, 생년월일 정보와 함께 이름 후보를 비교하는 방법과 관련 페이지 이동 경로를 안내합니다.`,
+    description: `${surname} 성씨 이름 추천이 막막한 예비 부모를 위한 가이드입니다. 성별·생년월일 기준을 함께 확인하고 네임핏에서 후보를 빠르게 비교해 보세요.`,
     pathname: `/surname/${surname}`,
     noIndex: !isIndexableSurname(surname),
   });
@@ -54,27 +55,27 @@ export default function SurnameLandingPage({
   const faqItems: FaqItem[] = [
     {
       question: `${surname} 성씨 페이지는 어떤 정보를 제공하나요?`,
-      answer: `${surname} 성씨를 기준으로 이름 추천을 읽는 방법, 남자/여자 조합 페이지 이동 링크, 대표 이름 샘플을 제공합니다. 성씨 중심으로 후보를 비교하고 다음 단계로 이동하기 쉽도록 구성했습니다.`,
+      answer: `${surname} 성씨 기준으로 이름 후보를 좁히는 방법을 안내합니다. 대표 샘플, 남아/여아 조합 링크, 추천 시작 동선을 한 번에 확인할 수 있습니다.`,
     },
     {
       question: `${surname} 성씨와 성별 정보를 함께 봐야 하나요?`,
       answer:
-        "네. 성씨 페이지는 출발점이며, 성별 조합 페이지로 이동하면 같은 성씨에서 남자/여자 기준을 나눠 더 구체적으로 확인할 수 있습니다.",
+        "네. 같은 이름도 성별 기준에 따라 느낌과 선호가 달라집니다. 성씨 페이지에서 출발해 성별 조합으로 좁히면 결정 속도가 훨씬 빨라집니다.",
     },
     {
       question: "생년월일 정보는 어디서 반영되나요?",
       answer:
-        "실제 추천 화면에서 성씨와 성별 입력 후 생년월일 정보를 함께 입력하면, 후보 비교에 필요한 설명을 확인할 수 있습니다.",
+        "네임핏 추천 시작 화면에서 반영됩니다. 성씨와 성별을 먼저 정한 뒤 생년월일을 입력하면, 후보별 설명을 더 선명하게 비교할 수 있습니다.",
     },
     {
       question: "샘플 이름은 매번 바뀌나요?",
       answer:
-        "아니요. 이 페이지의 샘플 이름은 성씨 기준으로 고정 규칙에 따라 선정되어 같은 URL에서는 동일한 샘플을 보여줍니다.",
+        "아니요. 같은 URL에서는 동일한 샘플을 보여 줍니다. 다시 방문해도 같은 기준으로 후보를 비교할 수 있습니다.",
     },
     {
       question: "최종 이름은 어떻게 확정하면 좋을까요?",
       answer:
-        "랜딩 페이지와 추천 결과를 참고한 뒤 가족이 실제로 불러 보며 선호도를 확인해 결정하는 방식을 권장합니다.",
+        "후보를 2~3개로 압축한 뒤 가족이 직접 불러 보며 결정하는 방식을 권장합니다. 발음 편안함, 의미 납득도, 표기 편의성을 함께 확인하세요.",
     },
   ];
 
@@ -83,13 +84,13 @@ export default function SurnameLandingPage({
   return (
     <SeoPageShell
       title={`${surname} 성씨와 어울리는 이름 추천`}
-      description={`${surname} 성씨 기준으로 이름 추천을 읽는 방법과 남자/여자 조합 페이지 이동 경로를 함께 안내합니다.`}
+      description={`${surname} 성씨에서 시작해 우리 가족에게 맞는 이름 후보를 빠르게 정리할 수 있도록 실전 기준을 안내합니다.`}
     >
       <ParagraphSection
-        title={`${surname} 성씨 기준 추천 흐름`}
+        title={`${surname} 성씨, 먼저 무엇부터 보면 좋을까요?`}
         paragraphs={[
-          `${surname} 성씨 이름 추천 페이지는 성씨를 중심으로 추천 과정을 이해하려는 사용자를 위한 랜딩입니다. 먼저 성씨와 이름의 발음 연결을 확인하고, 같은 성씨에서 성별 기준을 나눠 후보를 비교할 수 있도록 내부 링크를 제공합니다. 성씨 기반으로 출발하면 추천 결과를 읽을 때 어떤 후보가 자연스럽게 느껴지는지 빠르게 정리할 수 있습니다.`,
-          `실제 추천 단계에서는 ${surname} 성씨와 함께 성별, 생년월일 정보를 순서대로 입력하면 됩니다. 성씨 페이지에서 미리 후보 분위기를 파악한 뒤 조합 페이지로 이동하면 비교가 더 수월합니다. 특정 후보를 단정하기보다 여러 이름을 나란히 놓고 발음, 의미, 사용 편의를 함께 보는 방식이 실사용에 적합합니다.`,
+          `${surname} 성씨로 시작하는 이름 추천에서 가장 중요한 건 '많이 보는 것'보다 '빨리 좁히는 것'입니다. 먼저 성과 이름이 붙었을 때 부르기 편한지를 확인하세요. 그다음 남아/여아 기준으로 나눠 보면 후보가 훨씬 선명해집니다.`,
+          `이후 네임핏에서 성씨·성별·생년월일을 입력하면 실제 비교 가능한 후보를 바로 확인할 수 있습니다. 핵심은 한 번에 정답을 찾는 것이 아니라, 가족이 납득할 수 있는 2~3개 후보를 만드는 것입니다.`,
         ]}
       />
 
@@ -100,6 +101,8 @@ export default function SurnameLandingPage({
       <FaqSection items={faqItems} />
 
       <NoteSection text="추천 결과와 샘플은 후보를 좁히기 위한 참고 자료입니다. 최종 이름은 가족이 직접 발음해 본 느낌과 선호를 중심으로 결정해 주세요." />
+
+      <ServiceEntryCtaSection entryKey={`surname-${surname}`} />
     </SeoPageShell>
   );
 }

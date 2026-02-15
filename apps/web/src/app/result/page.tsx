@@ -16,7 +16,11 @@ import {
   pickPreferredSurnameHanja,
 } from "@/lib/quickCombo";
 import { genderOptions, useRecommendStore } from "@/store/useRecommendStore";
-import type { FreeRecommendInput, FreeRecommendResultItem, RecommendGender } from "@/types/recommend";
+import type {
+  FreeRecommendInput,
+  FreeRecommendResultItem,
+  RecommendGender,
+} from "@/types/recommend";
 
 function displayScore(score: unknown): string {
   if (typeof score === "number" && Number.isFinite(score)) {
@@ -30,8 +34,61 @@ function displayMeaning(meaning: string): string {
   return normalized.length > 0 ? normalized : "뜻 정보 없음";
 }
 
-function buildNameKey(item: Pick<FreeRecommendResultItem, "nameHangul" | "hanjaPair">): string {
+function buildNameKey(
+  item: Pick<FreeRecommendResultItem, "nameHangul" | "hanjaPair">,
+): string {
   return `${item.nameHangul}:${item.hanjaPair[0]}${item.hanjaPair[1]}`;
+}
+
+function splitReasonLabel(reason: string): { label: string; body: string } {
+  const delimiterIndex = reason.indexOf(":");
+  if (delimiterIndex < 0) {
+    return { label: "", body: reason.trim() };
+  }
+
+  const label = reason.slice(0, delimiterIndex).trim();
+  const body = reason.slice(delimiterIndex + 1).trim();
+  return { label, body };
+}
+
+function ThumbUpIcon(): JSX.Element {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className="nf-feedback-icon"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M7 11v9M7 20H4a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h3m0 8h8.36a2 2 0 0 0 1.96-1.62l1.2-6A2 2 0 0 0 16.56 10H13V6.5A2.5 2.5 0 0 0 10.5 4L7 11Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function ThumbDownIcon(): JSX.Element {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className="nf-feedback-icon"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M7 13V4M7 4H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h3m0-8h8.36a2 2 0 0 1 1.96 1.62l1.2 6A2 2 0 0 1 16.56 14H13v3.5A2.5 2.5 0 0 1 10.5 20L7 13Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
 
 export default function ResultPage(): JSX.Element {
@@ -41,18 +98,23 @@ export default function ResultPage(): JSX.Element {
   const setInput = useRecommendStore((state) => state.setInput);
   const setResults = useRecommendStore((state) => state.setResults);
   const reset = useRecommendStore((state) => state.reset);
-  const [feedbackStatus, setFeedbackStatus] = useState<Record<string, "idle" | "pending" | "done">>({});
-  const [feedbackVote, setFeedbackVote] = useState<Record<string, "like" | "dislike" | undefined>>({});
+  const [feedbackStatus, setFeedbackStatus] = useState<
+    Record<string, "idle" | "pending" | "done">
+  >({});
+  const [feedbackVote, setFeedbackVote] = useState<
+    Record<string, "like" | "dislike" | undefined>
+  >({});
   const [quickGender, setQuickGender] = useState<RecommendGender>(input.gender);
   const [quickLoadingKey, setQuickLoadingKey] = useState<string | null>(null);
   const [quickError, setQuickError] = useState<string | null>(null);
-  const [surnameHanjaCache, setSurnameHanjaCache] = useState<Record<string, string>>({});
+  const [surnameHanjaCache, setSurnameHanjaCache] = useState<
+    Record<string, string>
+  >({});
   const quickExploreCounterRef = useRef(0);
 
   const hasInput =
     input.surnameHangul.trim().length > 0 &&
-    input.surnameHanja.trim().length > 0 &&
-    input.birth.date.length > 0;
+    input.surnameHanja.trim().length > 0;
 
   useEffect(() => {
     if (!hasInput) {
@@ -61,7 +123,10 @@ export default function ResultPage(): JSX.Element {
   }, [hasInput, router]);
 
   const top5 = useMemo(() => results.slice(0, 5), [results]);
-  const top5Keys = useMemo(() => top5.map((item) => buildNameKey(item)), [top5]);
+  const top5Keys = useMemo(
+    () => top5.map((item) => buildNameKey(item)),
+    [top5],
+  );
   const quickSurnames = useMemo(
     () => buildQuickSurnameCandidates(input.surnameHangul),
     [input.surnameHangul],
@@ -126,7 +191,9 @@ export default function ResultPage(): JSX.Element {
     }
   };
 
-  const handleQuickComboClick = async (surnameHangul: string): Promise<void> => {
+  const handleQuickComboClick = async (
+    surnameHangul: string,
+  ): Promise<void> => {
     const normalizedSurname = surnameHangul.trim();
     if (!normalizedSurname || isQuickLoading) {
       return;
@@ -140,7 +207,8 @@ export default function ResultPage(): JSX.Element {
       const cachedHanja = surnameHanjaCache[normalizedSurname];
       let surnameHanja = cachedHanja;
       if (!surnameHanja) {
-        const optionsResponse = await fetchSurnameHanjaOptions(normalizedSurname);
+        const optionsResponse =
+          await fetchSurnameHanjaOptions(normalizedSurname);
         surnameHanja = pickPreferredSurnameHanja(optionsResponse);
         if (!surnameHanja) {
           throw new Error("해당 성씨의 한자를 찾지 못했습니다.");
@@ -154,13 +222,10 @@ export default function ResultPage(): JSX.Element {
       const nextInput: FreeRecommendInput = {
         surnameHangul: normalizedSurname,
         surnameHanja,
-        birth: {
-          calendar: "SOLAR",
-          date: input.birth.date,
-          ...(input.birth.time ? { time: input.birth.time } : {}),
-        },
         gender: quickGender,
-        exploreSeed: buildQuickExploreSeed((quickExploreCounterRef.current += 1)),
+        exploreSeed: buildQuickExploreSeed(
+          (quickExploreCounterRef.current += 1),
+        ),
       };
       const response = await fetchFreeRecommendations(nextInput);
       setInput(nextInput);
@@ -176,10 +241,15 @@ export default function ResultPage(): JSX.Element {
   };
 
   return (
-    <Screen title="추천 이름 TOP 5" description="입력하신 정보를 바탕으로 선별했습니다">
+    <Screen
+      title="추천 이름 TOP 5"
+      description="입력하신 정보를 바탕으로 선별했습니다"
+    >
       {top5.length === 0 ? (
         <div className="nf-result-actions">
-          <p className="nf-description">추천 결과가 비어 있어요. 다시 시도해 주세요.</p>
+          <p className="nf-description">
+            추천 결과가 비어 있어요. 다시 시도해 주세요.
+          </p>
           <PrimaryButton
             onClick={() => {
               router.replace("/loading");
@@ -195,10 +265,15 @@ export default function ResultPage(): JSX.Element {
               <div className="nf-quick-combo-head">
                 <h3 className="nf-quick-combo-title">빠른 조합 보기</h3>
                 <p className="nf-quick-combo-description">
-                  성씨와 성별만 바꿔서 결과를 빠르게 넘겨보고, 안 예쁜 이름은 바로 싫어요를 눌러 정리하세요.
+                  성씨와 성별만 바꿔서 결과를 빠르게 넘겨보고, 안 예쁜 이름은
+                  바로 싫어요를 눌러 정리하세요.
                 </p>
               </div>
-              <div className="nf-quick-gender-row" role="tablist" aria-label="빠른 조합 성별">
+              <div
+                className="nf-quick-gender-row"
+                role="tablist"
+                aria-label="빠른 조합 성별"
+              >
                 {genderOptions.map((option) => (
                   <button
                     key={`quick-gender-${option.value}`}
@@ -218,7 +293,9 @@ export default function ResultPage(): JSX.Element {
               <div className="nf-quick-surname-row">
                 {quickSurnames.map((surname) => {
                   const comboKey = `${surname}:${quickGender}`;
-                  const isSelected = surname === input.surnameHangul.trim() && quickGender === input.gender;
+                  const isSelected =
+                    surname === input.surnameHangul.trim() &&
+                    quickGender === input.gender;
                   const isLoadingThis = quickLoadingKey === comboKey;
                   return (
                     <button
@@ -237,7 +314,8 @@ export default function ResultPage(): JSX.Element {
                 })}
               </div>
               <p className={`nf-quick-status${quickError ? " is-error" : ""}`}>
-                {quickError ?? "자주 쓰는 성씨 조합을 한 번에 비교할 수 있어요."}
+                {quickError ??
+                  "자주 쓰는 성씨 조합을 한 번에 비교할 수 있어요."}
               </p>
             </section>
           ) : null}
@@ -250,19 +328,23 @@ export default function ResultPage(): JSX.Element {
                 {
                   hanja: item.hanjaPair[0],
                   reading: item.readingPair[0],
-                  meaning: displayMeaning(item.meaningKwPair[0])
+                  meaning: displayMeaning(item.meaningKwPair[0]),
                 },
                 {
                   hanja: item.hanjaPair[1],
                   reading: item.readingPair[1],
-                  meaning: displayMeaning(item.meaningKwPair[1])
-                }
+                  meaning: displayMeaning(item.meaningKwPair[1]),
+                },
               ];
 
               return (
-                <Card key={`${item.nameHangul}-${item.hanjaPair.join("")}-${index}`}>
+                <Card
+                  key={`${item.nameHangul}-${item.hanjaPair.join("")}-${index}`}
+                >
                   <div className="nf-result-header-row">
-                    <span className="nf-score-chip">추천 적합도 {displayScore(item.score)}</span>
+                    <span className="nf-score-chip">
+                      추천 적합도 {displayScore(item.score)}
+                    </span>
                   </div>
                   <p className="nf-pron-emphasis">{pronunciation}</p>
                   <ul className="nf-hanja-detail-list">
@@ -272,36 +354,62 @@ export default function ResultPage(): JSX.Element {
                         className="nf-hanja-detail-item"
                       >
                         <span className="nf-hanja-char">{detail.hanja}</span>
-                        <span className="nf-hanja-reading">{detail.reading}</span>
-                        <span className="nf-hanja-meaning">{detail.meaning}</span>
+                        <span className="nf-hanja-reading">
+                          {detail.reading}
+                        </span>
+                        <span className="nf-hanja-meaning">
+                          {detail.meaning}
+                        </span>
                       </li>
                     ))}
                   </ul>
                   <ul className="nf-reason-list">
-                    {item.reasons.slice(0, 3).map((reason, reasonIndex) => (
-                      <li key={`${reason}-${reasonIndex}`}>{reason}</li>
-                    ))}
+                    {item.reasons.slice(0, 3).map((reason, reasonIndex) => {
+                      const { label, body } = splitReasonLabel(reason);
+                      if (!label) {
+                        return <li key={`${reason}-${reasonIndex}`}>{reason}</li>;
+                      }
+
+                      return (
+                        <li key={`${reason}-${reasonIndex}`}>
+                          <strong className="nf-reason-label">{label}:</strong>{" "}
+                          {body}
+                        </li>
+                      );
+                    })}
                   </ul>
-                  <div className="nf-feedback-row">
+                  <div className="nf-feedback-row is-split">
                     <button
                       type="button"
-                      className={`nf-feedback-btn${feedbackVote[itemKey] === "like" ? " is-selected" : ""}`}
-                      disabled={feedbackStatus[itemKey] === "pending" || feedbackStatus[itemKey] === "done"}
+                      className={`nf-feedback-btn is-like${feedbackVote[itemKey] === "like" ? " is-selected" : ""}`}
+                      disabled={
+                        feedbackStatus[itemKey] === "pending" ||
+                        feedbackStatus[itemKey] === "done"
+                      }
                       onClick={() => {
                         void handleFeedbackClick(item, "like");
                       }}
                     >
-                      좋아요
+                      <span className="nf-feedback-content">
+                        <ThumbUpIcon />
+                        <span>좋아요</span>
+                      </span>
                     </button>
                     <button
                       type="button"
-                      className={`nf-feedback-btn${feedbackVote[itemKey] === "dislike" ? " is-selected" : ""}`}
-                      disabled={feedbackStatus[itemKey] === "pending" || feedbackStatus[itemKey] === "done"}
+                      className={`nf-feedback-btn is-dislike${feedbackVote[itemKey] === "dislike" ? " is-selected" : ""}`}
+                      disabled={
+                        feedbackStatus[itemKey] === "pending" ||
+                        feedbackStatus[itemKey] === "done"
+                      }
                       onClick={() => {
                         void handleFeedbackClick(item, "dislike");
                       }}
                     >
-                      싫어요
+                      <span className="nf-feedback-content">
+                        <ThumbDownIcon />
+                        <span>싫어요</span>
+                      </span>
                     </button>
                   </div>
                 </Card>
@@ -310,11 +418,12 @@ export default function ResultPage(): JSX.Element {
           </section>
 
           <section className="nf-premium-teaser">
-            <h3 className="nf-premium-title">더 많은 기능을 준비 중이에요</h3>
+            <h3 className="nf-premium-title">유료 모드도 곧 오픈해요 ✨</h3>
             <ul className="nf-premium-list">
-              <li>좋은 이름 후보 더 보기</li>
-              <li>출생 정보 반영한 세부 분석</li>
-              <li>이름별 의미/오행 리포트</li>
+              <li>추천 이름 수를 20개로 확대</li>
+              <li>사주를 반영한 맞춤 결과 제공</li>
+              <li>이름 의미 심층 분석 리포트 제공</li>
+              <li>동일 이름의 다양한 한자 조합 제공</li>
             </ul>
           </section>
         </>

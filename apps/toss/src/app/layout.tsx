@@ -3,13 +3,19 @@ import type { ReactNode } from "react";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
+const BRAND_ICON_PATH = "/toss/namefit-mark.svg";
+
 export const metadata: Metadata = {
-  title: "토스 미니앱 | 무료 작명 추천",
-  description: "토스 미니앱 전용 무료 작명 추천"
+  title: "네임핏 | 우리 아이 이름 짓기",
+  description: "무료 작명으로 예쁜 아이 이름 찾아가세요",
+  icons: {
+    icon: BRAND_ICON_PATH,
+    shortcut: BRAND_ICON_PATH,
+  },
 };
 
 export default function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: ReactNode;
 }>): JSX.Element {

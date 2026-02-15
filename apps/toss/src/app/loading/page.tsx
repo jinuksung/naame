@@ -11,7 +11,7 @@ const LOADING_MESSAGES = [
   "인명용 한자 검토 중…",
   "발음 조합 분석 중…",
   "의미 균형 계산 중…",
-  "사주 오행 참고 중…"
+  "성씨 조합 안정성 확인 중…"
 ] as const;
 
 const MIN_LOADING_MS = 1700;
@@ -31,8 +31,7 @@ export default function LoadingPage(): JSX.Element {
   const [messageIndex, setMessageIndex] = useState(0);
   const hasInput =
     input.surnameHangul.trim().length > 0 &&
-    input.surnameHanja.trim().length > 0 &&
-    input.birth.date.length > 0;
+    input.surnameHanja.trim().length > 0;
 
   useEffect(() => {
     if (!hasInput) {

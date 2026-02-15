@@ -2,13 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Field,
-  PrimaryButton,
-  Screen,
-  SegmentedControl,
-  Toggle,
-} from "@/components/ui";
+import { PrimaryButton, Screen, SegmentedControl } from "@/components/ui";
 import { normalizeHangulReadingWithLimit } from "@namefit/engine/lib/korean/normalizeHangulReading";
 import { fetchSurnameHanjaOptions } from "@/lib/api";
 import { genderOptions, useRecommendStore } from "@/store/useRecommendStore";
@@ -17,8 +11,9 @@ import { FreeRecommendInput, SurnameHanjaOption } from "@/types/recommend";
 interface FormErrors {
   surnameHangul?: string;
   surnameHanja?: string;
-  date?: string;
 }
+
+const TITLE_ICON_PATH = "/namefit-mark-inline.svg";
 
 function countChars(value: string): number {
   return Array.from(value).length;
@@ -37,10 +32,6 @@ function validateInput(input: FreeRecommendInput): FormErrors {
     errors.surnameHanja = "성씨 한자를 선택해 주세요.";
   }
 
-  if (!input.birth.date) {
-    errors.date = "생년월일을 선택해 주세요.";
-  }
-
   return errors;
 }
 
@@ -54,13 +45,14 @@ export default function InputPage(): JSX.Element {
     normalizeHangulReadingWithLimit(storeInput.surnameHangul, 2),
   );
   const [surnameHanja, setSurnameHanja] = useState(storeInput.surnameHanja);
-  const [surnameOptions, setSurnameOptions] = useState<SurnameHanjaOption[]>([]);
+  const [surnameOptions, setSurnameOptions] = useState<SurnameHanjaOption[]>(
+    [],
+  );
   const [surnameOptionsLoading, setSurnameOptionsLoading] = useState(false);
-  const [surnameOptionsError, setSurnameOptionsError] = useState<string | null>(null);
-  const [date, setDate] = useState(storeInput.birth.date);
+  const [surnameOptionsError, setSurnameOptionsError] = useState<string | null>(
+    null,
+  );
   const [gender, setGender] = useState(storeInput.gender);
-  const [useBirthTime, setUseBirthTime] = useState(Boolean(storeInput.birth.time));
-  const [time, setTime] = useState(storeInput.birth.time ?? "");
   const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
@@ -90,7 +82,9 @@ export default function InputPage(): JSX.Element {
 
         if (response.options.length === 0) {
           setSurnameHanja("");
-          setSurnameOptionsError("입력한 음과 일치하는 성씨 한자를 찾지 못했습니다.");
+          setSurnameOptionsError(
+            "입력한 음과 일치하는 성씨 한자를 찾지 못했습니다.",
+          );
           return;
         }
 
@@ -127,8 +121,9 @@ export default function InputPage(): JSX.Element {
   }, [surnameHangul]);
 
   const isSubmitDisabled = useMemo(
-    () => !surnameHangul.trim() || !surnameHanja.trim() || !date || surnameOptionsLoading,
-    [surnameHangul, surnameHanja, date, surnameOptionsLoading],
+    () =>
+      !surnameHangul.trim() || !surnameHanja.trim() || surnameOptionsLoading,
+    [surnameHangul, surnameHanja, surnameOptionsLoading],
   );
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
@@ -137,11 +132,6 @@ export default function InputPage(): JSX.Element {
     const nextInput: FreeRecommendInput = {
       surnameHangul: normalizeHangulReadingWithLimit(surnameHangul, 2),
       surnameHanja: surnameHanja.trim(),
-      birth: {
-        calendar: "SOLAR",
-        date,
-        time: useBirthTime && time ? time : undefined,
-      },
       gender,
     };
 
@@ -159,7 +149,8 @@ export default function InputPage(): JSX.Element {
   return (
     <Screen
       title="네임핏: 우리 아이 이름 찾기"
-      description="발음·의미·사용 데이터를 기준으로 조건에 맞는 이름을 찾습니다"
+      titleIconSrc={TITLE_ICON_PATH}
+      titleIconAlt="네임핏 로고"
     >
       <form className="nf-form" onSubmit={handleSubmit}>
         <div className="nf-field">
@@ -171,8 +162,14 @@ export default function InputPage(): JSX.Element {
               value={surnameHangul}
               placeholder="김"
               onChange={(event) => {
-                setSurnameHangul(normalizeHangulReadingWithLimit(event.target.value, 2));
-                setErrors((prev) => ({ ...prev, surnameHangul: undefined, surnameHanja: undefined }));
+                setSurnameHangul(
+                  normalizeHangulReadingWithLimit(event.target.value, 2),
+                );
+                setErrors((prev) => ({
+                  ...prev,
+                  surnameHangul: undefined,
+                  surnameHanja: undefined,
+                }));
               }}
             />
 
@@ -180,7 +177,11 @@ export default function InputPage(): JSX.Element {
               surnameOptionsLoading ? (
                 <p className="nf-surname-loading">한자 조회 중…</p>
               ) : surnameOptions.length > 0 ? (
-                <div className="nf-hanja-options" role="radiogroup" aria-label="성씨 한자 선택">
+                <div
+                  className="nf-hanja-options"
+                  role="radiogroup"
+                  aria-label="성씨 한자 선택"
+                >
                   {surnameOptions.map((option) => {
                     const isSelected = surnameHanja === option.hanja;
 
@@ -192,7 +193,10 @@ export default function InputPage(): JSX.Element {
                         aria-pressed={isSelected}
                         onClick={() => {
                           setSurnameHanja(option.hanja);
-                          setErrors((prev) => ({ ...prev, surnameHanja: undefined }));
+                          setErrors((prev) => ({
+                            ...prev,
+                            surnameHanja: undefined,
+                          }));
                         }}
                       >
                         <span className="nf-hanja-main">{option.hanja}</span>
@@ -207,36 +211,13 @@ export default function InputPage(): JSX.Element {
           {!surnameOptionsLoading && surnameOptionsError ? (
             <span className="nf-error">{surnameOptionsError}</span>
           ) : null}
-          {errors.surnameHangul ? <span className="nf-error">{errors.surnameHangul}</span> : null}
-          {errors.surnameHanja ? <span className="nf-error">{errors.surnameHanja}</span> : null}
+          {errors.surnameHangul ? (
+            <span className="nf-error">{errors.surnameHangul}</span>
+          ) : null}
+          {errors.surnameHanja ? (
+            <span className="nf-error">{errors.surnameHanja}</span>
+          ) : null}
         </div>
-
-        <Field
-          label="생년월일"
-          type="date"
-          value={date}
-          onChange={setDate}
-          error={errors.date}
-        />
-
-        <p className="nf-helper-text">
-          생년월일, 출생시간은 참고용으로만 사용되며 결과에 큰 영향을 주지 않습니다.
-        </p>
-
-        <Toggle
-          label="출생시간 입력"
-          checked={useBirthTime}
-          onChange={(checked) => {
-            setUseBirthTime(checked);
-            if (!checked) {
-              setTime("");
-            }
-          }}
-        />
-
-        {useBirthTime ? (
-          <Field label="출생시간" type="time" value={time} onChange={setTime} />
-        ) : null}
 
         <SegmentedControl
           label="성별"
@@ -248,6 +229,30 @@ export default function InputPage(): JSX.Element {
         <PrimaryButton type="submit" disabled={isSubmitDisabled}>
           이름 추천받기
         </PrimaryButton>
+
+        <section
+          className="nf-basic-mode-guide"
+          aria-label="기본모드 이름 선정 기준"
+        >
+          <p className="nf-basic-mode-guide-title">
+            기본모드에서는 아래 기준으로 이름을 선정합니다.
+          </p>
+          <ul className="nf-basic-mode-guide-list">
+            <li>
+              발음오행: 성과 이름을 붙여 읽었을 때 발음 흐름과 소리 균형을
+              봅니다.
+            </li>
+            <li>의미: 한자 조합이 전달하는 의미의 조화와 선명도를 봅니다.</li>
+            <li>
+              오행 균형: 성씨와 이름의 오행 조합이 한쪽으로 치우치지 않는지
+              봅니다.
+            </li>
+          </ul>
+          <p className="nf-basic-mode-guide-note">
+            ※ 오행 균형은 사주가 반영된 결과가 아닌, 성+이름의 오행만
+            반영합니다.
+          </p>
+        </section>
       </form>
     </Screen>
   );

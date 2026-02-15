@@ -1,0 +1,15 @@
+<svg width="344" height="262" viewBox="84 166 344 262" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Namefit Inline Mark</title>
+  <desc id="desc">Compact four-dot N constellation icon for title row usage.</desc>
+
+  <g stroke="#D1DEEA" stroke-width="22" stroke-linecap="round">
+    <path d="M132 214L132 380"/>
+    <path d="M132 380L380 214"/>
+    <path d="M380 214L380 380"/>
+  </g>
+
+  <circle cx="132" cy="214" r="48" fill="#CFA097"/>
+  <circle cx="132" cy="380" r="48" fill="#E7B97D"/>
+  <circle cx="380" cy="214" r="48" fill="#63B6AF"/>
+  <circle cx="380" cy="380" r="48" fill="#4F6D8A"/>
+</svg>

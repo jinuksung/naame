@@ -17,6 +17,18 @@ function testBuildQuickSurnameCandidatesFallsBackToPresets(): void {
   assert.deepEqual(list, QUICK_SURNAME_PRESETS.slice(0, 3));
 }
 
+function testBuildQuickSurnameCandidatesReturnsAllPresetsByDefault(): void {
+  const list = buildQuickSurnameCandidates(" ");
+  assert.deepEqual(list, [...QUICK_SURNAME_PRESETS]);
+}
+
+function testQuickSurnamePresetsIncludeCompoundSurnames(): void {
+  const presets = QUICK_SURNAME_PRESETS as readonly string[];
+  for (const surname of ["남궁", "제갈", "선우", "서문", "황보", "독고", "사공", "동방"]) {
+    assert.ok(presets.includes(surname), `${surname} should be in quick surname presets`);
+  }
+}
+
 function testPickPreferredSurnameHanjaUsesAutoSelected(): void {
   const picked = pickPreferredSurnameHanja({
     autoSelectedHanja: "金",
@@ -65,6 +77,8 @@ function testBuildQuickExploreSeedUsesClickCounter(): void {
 function run(): void {
   testBuildQuickSurnameCandidatesPrioritizesCurrent();
   testBuildQuickSurnameCandidatesFallsBackToPresets();
+  testBuildQuickSurnameCandidatesReturnsAllPresetsByDefault();
+  testQuickSurnamePresetsIncludeCompoundSurnames();
   testPickPreferredSurnameHanjaUsesAutoSelected();
   testPickPreferredSurnameHanjaFallsBackToFirstOption();
   testIsQuickComboEnabledByNodeEnv();

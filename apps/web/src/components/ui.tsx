@@ -5,6 +5,8 @@ import { ReactNode } from "react";
 interface ScreenProps {
   title?: string;
   description?: string;
+  titleIconSrc?: string;
+  titleIconAlt?: string;
   children: ReactNode;
 }
 
@@ -47,11 +49,31 @@ interface SwitchProps {
   onChange: (checked: boolean) => void;
 }
 
-export function Screen({ title, description, children }: ScreenProps): JSX.Element {
+export function Screen({
+  title,
+  description,
+  titleIconSrc,
+  titleIconAlt,
+  children,
+}: ScreenProps): JSX.Element {
   return (
     <main className="nf-shell">
       <section className="nf-panel">
-        {title ? <h1 className="nf-title">{title}</h1> : null}
+        {title ? (
+          <h1 className="nf-title">
+            <span className="nf-title-row">
+              {titleIconSrc ? (
+                <img
+                  className="nf-title-icon"
+                  src={titleIconSrc}
+                  alt={titleIconAlt ?? ""}
+                  aria-hidden={titleIconAlt ? undefined : true}
+                />
+              ) : null}
+              <span>{title}</span>
+            </span>
+          </h1>
+        ) : null}
         {description ? <p className="nf-description">{description}</p> : null}
         {children}
       </section>

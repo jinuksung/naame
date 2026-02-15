@@ -24,9 +24,12 @@
     "test:engine:prior": "npm run test:prior --workspace @namefit/engine",
     "test:engine:surname": "npm run test:surname --workspace @namefit/engine",
     "test:engine:sensitivity": "npm run test:sensitivity --workspace @namefit/engine",
+    "test:engine:ssot": "npm run test:ssot --workspace @namefit/engine",
     "verify:parity": "npx ts-node -P apps/toss/tsconfig.json --compiler-options '{\"module\":\"CommonJS\"}' scripts/verify-parity.ts",
     "recommend:sample": "npm run recommend --workspace @namefit/engine",
-    "build:syllables": "ts-node -P tsconfig.scripts.json scripts/build-name-syllable-whitelist.ts"
+    "build:syllables": "ts-node -P tsconfig.scripts.json scripts/build-name-syllable-whitelist.ts",
+    "ssot:push": "npx ts-node -P tsconfig.scripts.json scripts/ssot/push-to-supabase.ts",
+    "ssot:pull": "npx ts-node -P tsconfig.scripts.json scripts/ssot/pull-from-supabase.ts"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",
