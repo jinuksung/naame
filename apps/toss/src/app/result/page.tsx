@@ -420,9 +420,9 @@ export default function ResultPage(): JSX.Element {
             })}
           </section>
 
-          <section className="nf-premium-teaser">
-            <h3 className="nf-premium-title">유료 모드도 곧 오픈해요 ✨</h3>
-            <ul className="nf-premium-list">
+          <section className="tds-premium-teaser">
+            <h3 className="tds-premium-title">유료 모드도 곧 오픈해요 ✨</h3>
+            <ul className="tds-premium-list">
               <li>추천 이름 수를 20개로 확대</li>
               <li>사주를 반영한 맞춤 결과 제공</li>
               <li>이름 의미 심층 분석 리포트 제공</li>

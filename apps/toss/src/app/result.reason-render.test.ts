@@ -56,9 +56,39 @@ function testFeedbackButtonsUseSplitLayoutWithEmoji(): void {
   );
 }
 
+function testPremiumTeaserUsesTossStyledClasses(): void {
+  const source = readFileSync(RESULT_PAGE_PATH, "utf8");
+  assert.equal(
+    source.includes('className="tds-premium-teaser"'),
+    true,
+    "토스 결과 화면의 유료 안내 섹션은 tds-premium-teaser 클래스를 사용해야 합니다.",
+  );
+  assert.equal(
+    source.includes('className="tds-premium-title"'),
+    true,
+    "토스 결과 화면의 유료 안내 제목은 tds-premium-title 클래스를 사용해야 합니다.",
+  );
+  assert.equal(
+    source.includes('className="tds-premium-list"'),
+    true,
+    "토스 결과 화면의 유료 안내 목록은 tds-premium-list 클래스를 사용해야 합니다.",
+  );
+  assert.equal(
+    source.includes('className="nf-premium-teaser"'),
+    false,
+    "토스 결과 화면에서 web 전용 nf-premium-teaser 클래스는 사용하지 않아야 합니다.",
+  );
+  assert.equal(
+    source.includes('className="premium-teaser"'),
+    false,
+    "토스 결과 화면에서 레거시 premium-teaser 클래스는 사용하지 않아야 합니다.",
+  );
+}
+
 function run(): void {
   testResultReasonLabelIsRenderedAsBold();
   testFeedbackButtonsUseSplitLayoutWithEmoji();
+  testPremiumTeaserUsesTossStyledClasses();
   console.log("[test:result-reason-render:toss] all tests passed");
 }
 
