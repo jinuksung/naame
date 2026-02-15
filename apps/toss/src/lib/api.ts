@@ -4,12 +4,6 @@ import {
   SurnameHanjaOptionsResponse
 } from "@/types/recommend";
 
-const API_BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-
-function withBasePath(path: string): string {
-  return `${API_BASE_PATH}${path}`;
-}
-
 function isValidResponse(value: unknown): value is FreeRecommendResponse {
   if (!value || typeof value !== "object") {
     return false;
@@ -87,7 +81,7 @@ export async function fetchSurnameHanjaOptions(
   }
 
   const response = await fetch(
-    withBasePath(`/api/surname/options?reading=${encodeURIComponent(reading)}`),
+    `/api/surname/options?reading=${encodeURIComponent(reading)}`,
     {
       method: "GET",
       cache: "no-store",
@@ -110,7 +104,7 @@ export async function fetchSurnameHanjaOptions(
 export async function fetchFreeRecommendations(
   input: FreeRecommendInput
 ): Promise<FreeRecommendResponse> {
-  const response = await fetch(withBasePath("/api/recommend/free"), {
+  const response = await fetch("/api/recommend/free", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -141,7 +135,7 @@ export async function submitNameFeedback(input: {
   hanjaPair: [string, string];
   vote: "like" | "dislike";
 }): Promise<void> {
-  const response = await fetch(withBasePath("/api/feedback/name"), {
+  const response = await fetch("/api/feedback/name", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

@@ -4,8 +4,8 @@
   "private": true,
   "description": "Toss miniapp dedicated frontend",
   "scripts": {
-    "dev": "NEXT_PUBLIC_BASE_PATH=/toss next dev",
-    "build": "NEXT_PUBLIC_BASE_PATH=/toss next build",
+    "dev": "next dev",
+    "build": "next build",
     "lint": "next lint",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test:feedback-scoring": "ts-node -P tsconfig.scripts.json src/server/feedback/feedbackScoring.test.ts"

@@ -17,7 +17,7 @@ interface FormErrors {
   surnameHanja?: string;
 }
 
-const BRAND_TITLE_IMAGE_PATH = "/toss/namefit-mark-inline.svg";
+const BRAND_TITLE_IMAGE_PATH = "/namefit-mark-inline.svg";
 
 function countChars(value: string): number {
   return Array.from(value).length;

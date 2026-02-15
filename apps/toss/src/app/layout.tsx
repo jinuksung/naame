@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-const BRAND_ICON_PATH = "/toss/namefit-mark.svg";
+const BRAND_ICON_PATH = "/namefit-mark.svg";
 
 export const metadata: Metadata = {
   title: "네임핏 | 우리 아이 이름 짓기",

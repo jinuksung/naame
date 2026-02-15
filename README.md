@@ -29,24 +29,10 @@ npm run build:toss
 
 ## 배포 방식
 
-이 레포는 `/toss` 경로 분리 방식을 적용했습니다.
-
-- `apps/web`는 도메인 루트(`/*`)를 담당
-- `apps/toss`는 `basePath: "/toss"`로 동작하여 `/toss/*`를 담당
+- `apps/web`는 웹 전용 도메인(또는 루트 경로)으로 배포
+- `apps/toss`는 토스 전용 도메인 루트(`/`)로 배포
 
 동일 도메인에서 함께 서비스하려면 리버스 프록시 또는 Next.js Multi-Zones 방식으로 경로 라우팅이 필요합니다.
-
-예시 개념:
-
-- `/toss/*` 요청은 `apps/toss` 배포로 전달
-- 그 외 `/*` 요청은 `apps/web` 배포로 전달
-
-## basePath 주의사항
-
-`apps/toss`의 `basePath`는 빌드 타임 고정값입니다.
-
-- 현재 값: `/toss`
-- 런타임에서 동적으로 변경할 수 없습니다.
 
 ## 공통 엔진 원칙
 

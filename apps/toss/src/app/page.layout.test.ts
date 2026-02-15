@@ -7,8 +7,8 @@ const LAYOUT_PAGE_PATH = path.resolve(__dirname, "layout.tsx");
 const MAIN_DESCRIPTION_TEXT = "발음·의미·사용 데이터를 기준으로 조건에 맞는 이름을 찾습니다";
 const BASIC_MODE_HEADER_TEXT = "기본모드에서는 아래 기준으로 이름을 선정합니다.";
 const BASIC_MODE_SAJU_NOTE_TEXT = "※ 오행 균형은";
-const TITLE_BRAND_IMAGE_PATH = "/toss/namefit-mark-inline.svg";
-const FAVICON_IMAGE_PATH = "/toss/namefit-mark.svg";
+const TITLE_BRAND_IMAGE_PATH = "/namefit-mark-inline.svg";
+const FAVICON_IMAGE_PATH = "/namefit-mark.svg";
 
 function testBirthInputsAreNotRenderedInBasicMode(): void {
   const source = readFileSync(INPUT_PAGE_PATH, "utf8");
