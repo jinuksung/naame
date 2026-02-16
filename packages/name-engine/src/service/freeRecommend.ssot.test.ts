@@ -186,6 +186,7 @@ async function run(): Promise<void> {
   const originalFetch = globalThis.fetch;
   const requiredPaths = getDefaultSupabaseSsotFilePaths();
   const rowsByTable = buildRowsByTable(requiredPaths);
+  const EXPECTED_RUNTIME_TABLE_FETCHES = 6;
   let fetchCalled = 0;
 
   globalThis.fetch = (async (input: unknown, _init?: unknown) => {
@@ -236,7 +237,7 @@ async function run(): Promise<void> {
     });
 
     assert.equal(result.ok, true);
-    assert.ok(fetchCalled > 0);
+    assert.equal(fetchCalled, EXPECTED_RUNTIME_TABLE_FETCHES);
   } finally {
     process.chdir(prevCwd);
     globalThis.fetch = originalFetch;

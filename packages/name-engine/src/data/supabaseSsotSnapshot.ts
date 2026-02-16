@@ -57,6 +57,15 @@ const DEFAULT_SSOT_DATASET_SPECS: SsotDatasetSpec[] = [
   { dataset: "hanname_metrics", table: "ssot_hanname_metrics", path: "hanname_metrics.jsonl", format: "jsonl" },
 ];
 
+const DEFAULT_RUNTIME_SSOT_FILE_PATHS = [
+  "hanname_master.jsonl",
+  "surname_map.jsonl",
+  "hanja_tags.jsonl",
+  "blacklist_words.jsonl",
+  "name_pool_M.json",
+  "name_pool_F.json",
+] as const;
+
 const JSONL_KEY_MAPS: Record<string, JsonColumnKey[]> = {
   hanname_master: [
     { jsonKey: "char", column: "char" },
@@ -440,6 +449,10 @@ async function writeContentToCache(
 
 export function getDefaultSupabaseSsotFilePaths(): string[] {
   return DEFAULT_SSOT_DATASET_SPECS.map((spec) => spec.path);
+}
+
+export function getDefaultRuntimeSupabaseSsotFilePaths(): string[] {
+  return [...DEFAULT_RUNTIME_SSOT_FILE_PATHS];
 }
 
 export function isSupabaseSsotEnabled(env: NodeJS.ProcessEnv = process.env): boolean {

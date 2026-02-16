@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 const INPUT_PAGE_PATH = path.resolve(__dirname, "page.tsx");
 const LAYOUT_PAGE_PATH = path.resolve(__dirname, "layout.tsx");
+const ROBOTS_ROUTE_PATH = path.resolve(__dirname, "robots.txt", "route.ts");
 const MAIN_DESCRIPTION_TEXT = "발음·의미·사용 데이터를 기준으로 조건에 맞는 이름을 찾습니다";
 const BASIC_MODE_HEADER_TEXT = "기본모드에서는 아래 기준으로 이름을 선정합니다.";
 const BASIC_MODE_SAJU_NOTE_TEXT = "※ 오행 균형은";
@@ -56,6 +57,29 @@ function testMetadataUsesBrandFavicon(): void {
     true,
     "layout metadata에 브랜드 파비콘 경로가 설정되어야 합니다.",
   );
+
+  assert.equal(
+    source.includes("robots: {") &&
+      source.includes("index: false") &&
+      source.includes("follow: false"),
+    true,
+    "toss 앱은 전역 robots 메타에서 noindex/nofollow가 설정되어야 합니다.",
+  );
+}
+
+function testRobotsRouteDisallowsAllCrawling(): void {
+  assert.equal(
+    existsSync(ROBOTS_ROUTE_PATH),
+    true,
+    "toss 앱은 robots.txt 라우트 파일이 있어야 합니다.",
+  );
+
+  const source = readFileSync(ROBOTS_ROUTE_PATH, "utf8");
+  assert.equal(
+    source.includes("Disallow: /"),
+    true,
+    "toss robots.txt는 전체 경로 크롤링을 차단해야 합니다.",
+  );
 }
 
 function run(): void {
@@ -63,6 +87,7 @@ function run(): void {
   testMainDescriptionRemovedAndBasicModeGuideVisible();
   testMainPageRendersBrandImage();
   testMetadataUsesBrandFavicon();
+  testRobotsRouteDisallowsAllCrawling();
   console.log("[test:input-page-layout:toss] all tests passed");
 }
 

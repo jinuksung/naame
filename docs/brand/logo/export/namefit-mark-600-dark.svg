@@ -1,0 +1,17 @@
+<svg width="600" height="600" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Namefit Mark 600 Dark</title>
+  <desc id="desc">Centered four-dot N symbol on dark background.</desc>
+
+  <rect width="600" height="600" fill="#0F172A"/>
+
+  <g stroke="#D1DEEA" stroke-width="26" stroke-linecap="round">
+    <path d="M170 220L170 380"/>
+    <path d="M170 380L430 220"/>
+    <path d="M430 220L430 380"/>
+  </g>
+
+  <circle cx="170" cy="220" r="60" fill="#CFA097"/>
+  <circle cx="170" cy="380" r="60" fill="#E7B97D"/>
+  <circle cx="430" cy="220" r="60" fill="#63B6AF"/>
+  <circle cx="430" cy="380" r="60" fill="#4F6D8A"/>
+</svg>

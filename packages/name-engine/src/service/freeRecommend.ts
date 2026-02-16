@@ -2,7 +2,10 @@ import { access, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 import { loadHanjaDataset } from "../data/loadHanjaDataset";
 import { resolveSurnameHanjaSelection } from "../data/loadSurnameMap";
-import { ensureSupabaseSsotSnapshot } from "../data/supabaseSsotSnapshot";
+import {
+  ensureSupabaseSsotSnapshot,
+  getDefaultRuntimeSupabaseSsotFilePaths
+} from "../data/supabaseSsotSnapshot";
 import { recommendNames } from "../engine/recommend";
 import { scoreSoundElement } from "../engine/scoring/soundElement";
 import { normalizeHangulReading } from "../lib/korean/normalizeHangulReading";
@@ -380,7 +383,9 @@ export async function recommendFreeNames(payload: unknown): Promise<FreeRecommen
     return { ok: false, status: 400, error: "Invalid request payload" };
   }
 
-  await ensureSupabaseSsotSnapshot();
+  await ensureSupabaseSsotSnapshot({
+    requiredPaths: getDefaultRuntimeSupabaseSsotFilePaths()
+  });
 
   let resolvedInput: FreeRecommendInput;
   try {

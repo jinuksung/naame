@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Namefit Square Thumbnail</title>
+  <style>
+    :root {
+      --bg: #eef3f8;
+      --card: #f9fbfe;
+      --line: #d8e0ea;
+      --ink: #10233f;
+      --ink-soft: #3a516d;
+      --navy: #4f6d8a;
+      --teal: #63b6af;
+      --sand: #e7b97d;
+      --rose: #cfa097;
+      --stroke: #d1deea;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 1000px; height: 1000px; overflow: hidden; }
+
+    body {
+      background:
+        radial-gradient(560px 420px at 86% 90%, rgba(79,109,138,0.11), transparent 72%),
+        linear-gradient(165deg, #f8fbff 0%, var(--bg) 100%);
+      font-family: "Pretendard Variable", "Pretendard", "SUIT", "Noto Sans KR", sans-serif;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+
+    .shell {
+      position: absolute;
+      inset: 48px;
+      border-radius: 38px;
+      border: 1.5px solid var(--line);
+      background: var(--card);
+      padding: 64px 58px;
+      overflow: hidden;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .logo {
+      width: 112px;
+      height: 112px;
+      flex: 0 0 auto;
+    }
+
+    .title-wrap { display: flex; flex-direction: column; gap: 4px; }
+
+    .name {
+      margin: 0;
+      font-size: 74px;
+      line-height: 0.95;
+      font-weight: 900;
+      color: #13284b;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 43px;
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--ink-soft);
+    }
+
+    .summary {
+      margin-top: 24px;
+      max-width: 520px;
+      font-size: 29px;
+      line-height: 1.42;
+      font-weight: 600;
+      color: #2c4666;
+    }
+
+    .shot-wrap {
+      position: absolute;
+      right: 52px;
+      bottom: 42px;
+      width: 500px;
+      height: 456px;
+      border-radius: 26px;
+      border: 1px solid #cfd9e4;
+      background: #ffffff;
+      box-shadow: 0 22px 46px rgba(18, 39, 63, 0.18);
+      overflow: hidden;
+    }
+
+    .shot-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: top center;
+      display: block;
+    }
+
+    .accent {
+      position: absolute;
+      right: 570px;
+      bottom: 86px;
+      width: 4px;
+      height: 200px;
+      border-radius: 3px;
+      background: linear-gradient(180deg, rgba(99,182,175,0.2), rgba(79,109,138,0.55));
+    }
+
+    .soft-dot {
+      position: absolute;
+      right: 28px;
+      bottom: 22px;
+      width: 144px;
+      height: 144px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 28% 25%, rgba(255,255,255,0.95), rgba(99,182,175,0.42) 68%, rgba(79,109,138,0.48) 100%);
+      filter: blur(0.2px);
+      opacity: 0.55;
+    }
+  </style>
+</head>
+<body>
+  <section class="shell" aria-label="네임핏 앱인토스 정방형 썸네일">
+    <header class="header">
+      <svg class="logo" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g stroke="var(--stroke)" stroke-width="26" stroke-linecap="round">
+          <path d="M170 220L170 380"/>
+          <path d="M170 380L430 220"/>
+          <path d="M430 220L430 380"/>
+        </g>
+        <circle cx="170" cy="220" r="60" fill="var(--rose)"/>
+        <circle cx="170" cy="380" r="60" fill="var(--sand)"/>
+        <circle cx="430" cy="220" r="60" fill="var(--teal)"/>
+        <circle cx="430" cy="380" r="60" fill="var(--navy)"/>
+      </svg>
+      <div class="title-wrap">
+        <h1 class="name">네임핏</h1>
+        <p class="subtitle">우리 아이 이름 찾기</p>
+      </div>
+    </header>
+
+    <p class="summary">성과 이름의 조합 흐름을 분석해, 부르기 좋고 균형 있는 이름 후보를 추천합니다.</p>
+
+    <div class="accent" aria-hidden="true"></div>
+
+    <figure class="shot-wrap" aria-label="네임핏 첫화면 캡처">
+      <img src="./captures/web-home-top-crop-580x530.png" alt="네임핏 웹 첫화면 캡처" />
+    </figure>
+
+    <div class="soft-dot" aria-hidden="true"></div>
+  </section>
+</body>
+</html>

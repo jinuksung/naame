@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Namefit Wide Thumbnail</title>
+  <style>
+    :root {
+      --bg: #edf2f7;
+      --panel: #f9fbfe;
+      --line: #d6deea;
+      --ink: #10233f;
+      --ink-soft: #35506f;
+      --navy: #4f6d8a;
+      --teal: #63b6af;
+      --sand: #e7b97d;
+      --rose: #cfa097;
+      --stroke: #d1deea;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 1932px; height: 828px; overflow: hidden; }
+
+    body {
+      background:
+        radial-gradient(900px 520px at 92% 84%, rgba(79,109,138,0.1), transparent 72%),
+        linear-gradient(160deg, #f8fbff 0%, var(--bg) 100%);
+      font-family: "Pretendard Variable", "Pretendard", "SUIT", "Noto Sans KR", sans-serif;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+
+    .shell {
+      position: absolute;
+      inset: 40px;
+      border-radius: 38px;
+      border: 1.5px solid var(--line);
+      background: var(--panel);
+      padding: 56px 64px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 34px;
+      overflow: hidden;
+    }
+
+    .left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+
+    .logo {
+      width: 132px;
+      height: 132px;
+      flex: 0 0 auto;
+    }
+
+    .name {
+      margin: 0;
+      font-size: 94px;
+      line-height: 0.95;
+      font-weight: 900;
+      color: #13284b;
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      font-size: 48px;
+      line-height: 1;
+      font-weight: 700;
+      color: var(--ink-soft);
+    }
+
+    .desc {
+      margin: 8px 0 0;
+      max-width: 980px;
+      font-size: 41px;
+      line-height: 1.36;
+      font-weight: 600;
+      color: #274465;
+    }
+
+    .right {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .screen {
+      position: relative;
+      width: 560px;
+      height: 512px;
+      border-radius: 28px;
+      border: 1px solid #ced9e5;
+      background: #ffffff;
+      box-shadow: 0 24px 48px rgba(18, 39, 63, 0.18);
+      overflow: hidden;
+      transform: translateY(2px);
+    }
+
+    .screen img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: top center;
+      display: block;
+    }
+
+    .track {
+      position: absolute;
+      right: 24px;
+      top: 50px;
+      width: 1px;
+      height: 620px;
+      background: linear-gradient(180deg, rgba(99,182,175,0.18), rgba(79,109,138,0.56));
+    }
+  </style>
+</head>
+<body>
+  <section class="shell" aria-label="네임핏 앱인토스 가로형 썸네일">
+    <div class="left">
+      <div class="brand">
+        <svg class="logo" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g stroke="var(--stroke)" stroke-width="26" stroke-linecap="round">
+            <path d="M170 220L170 380"/>
+            <path d="M170 380L430 220"/>
+            <path d="M430 220L430 380"/>
+          </g>
+          <circle cx="170" cy="220" r="60" fill="var(--rose)"/>
+          <circle cx="170" cy="380" r="60" fill="var(--sand)"/>
+          <circle cx="430" cy="220" r="60" fill="var(--teal)"/>
+          <circle cx="430" cy="380" r="60" fill="var(--navy)"/>
+        </svg>
+
+        <div>
+          <h1 class="name">네임핏</h1>
+          <p class="subtitle">우리 아이 이름 찾기</p>
+        </div>
+      </div>
+
+      <p class="desc">성과 이름의 조합 흐름을 분석해, 부르기 좋고 균형 있는 이름 후보를 추천하는 작명 추천 서비스</p>
+    </div>
+
+    <div class="right" aria-label="웹 화면 미리보기">
+      <div class="track" aria-hidden="true"></div>
+      <figure class="screen">
+        <img src="./captures/web-home-top-crop-580x530.png" alt="네임핏 웹 첫화면 캡처" />
+      </figure>
+    </div>
+  </section>
+</body>
+</html>
