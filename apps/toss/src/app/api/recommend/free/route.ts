@@ -2,9 +2,11 @@ import { NextResponse } from "next/server";
 import { recommendFreeNames } from "@namefit/engine";
 import { applyFeedbackScores } from "@/server/feedback/feedbackScoring";
 import { getFeedbackStatsMap } from "@/server/feedback/supabaseFeedback";
+import { preflight, withCors } from "@/app/api/_lib/cors";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+const ALLOWED_METHODS = "POST,OPTIONS";
 
 function toFeedbackSurnameContext(payload: unknown): { surnameHangul: string; surnameHanja: string } | null {
   if (!payload || typeof payload !== "object") {
@@ -22,31 +24,43 @@ function toFeedbackSurnameContext(payload: unknown): { surnameHangul: string; su
   };
 }
 
+export async function OPTIONS(request: Request): Promise<NextResponse> {
+  return preflight(request, ALLOWED_METHODS);
+}
+
 export async function POST(request: Request): Promise<NextResponse> {
   let payload: unknown;
 
   try {
     payload = await request.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    return withCors(
+      request,
+      NextResponse.json({ error: "Invalid JSON body" }, { status: 400 }),
+      ALLOWED_METHODS
+    );
   }
 
   const result = await recommendFreeNames(payload);
   if (!result.ok) {
-    return NextResponse.json({ error: result.error }, { status: result.status });
+    return withCors(
+      request,
+      NextResponse.json({ error: result.error }, { status: result.status }),
+      ALLOWED_METHODS
+    );
   }
 
   try {
     const surnameContext = toFeedbackSurnameContext(payload);
     if (!surnameContext) {
-      return NextResponse.json(result.response);
+      return withCors(request, NextResponse.json(result.response), ALLOWED_METHODS);
     }
 
     const statsMap = await getFeedbackStatsMap(result.response.results, surnameContext);
     const adjustedResults = applyFeedbackScores(result.response.results, statsMap, surnameContext);
-    return NextResponse.json({ results: adjustedResults });
+    return withCors(request, NextResponse.json({ results: adjustedResults }), ALLOWED_METHODS);
   } catch (error) {
     console.error("[api] feedback weight apply failed", error);
-    return NextResponse.json(result.response);
+    return withCors(request, NextResponse.json(result.response), ALLOWED_METHODS);
   }
 }

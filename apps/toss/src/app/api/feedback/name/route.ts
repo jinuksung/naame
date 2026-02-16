@@ -4,6 +4,7 @@ import {
   recordFeedbackVote,
   type FeedbackVoteType,
 } from "@/server/feedback/supabaseFeedback";
+import { preflight, withCors } from "@/app/api/_lib/cors";
 
 interface FeedbackPayload {
   surnameHangul?: unknown;
@@ -45,15 +46,22 @@ function toSafeHanjaPair(value: unknown): [string, string] | null {
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+const ALLOWED_METHODS = "POST,OPTIONS";
+
+export async function OPTIONS(request: Request): Promise<NextResponse> {
+  return preflight(request, ALLOWED_METHODS);
+}
 
 export async function POST(request: Request): Promise<NextResponse> {
   if (!isSupabaseFeedbackEnabled()) {
-    return NextResponse.json(
-      {
+    return withCors(
+      request,
+      NextResponse.json({
         ok: true,
         skipped: true,
         reason: "feedback_backend_not_configured",
-      },
+      }),
+      ALLOWED_METHODS
     );
   }
 
@@ -61,7 +69,11 @@ export async function POST(request: Request): Promise<NextResponse> {
   try {
     payload = (await request.json()) as FeedbackPayload;
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    return withCors(
+      request,
+      NextResponse.json({ error: "Invalid JSON body" }, { status: 400 }),
+      ALLOWED_METHODS
+    );
   }
 
   const nameHangul = toSafeNameHangul(payload.nameHangul);
@@ -71,7 +83,11 @@ export async function POST(request: Request): Promise<NextResponse> {
   const vote = payload.vote;
 
   if (!surnameHangul || !surnameHanja || !nameHangul || !hanjaPair || !isVoteType(vote)) {
-    return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+    return withCors(
+      request,
+      NextResponse.json({ error: "Invalid payload" }, { status: 400 }),
+      ALLOWED_METHODS
+    );
   }
 
   try {
@@ -82,9 +98,13 @@ export async function POST(request: Request): Promise<NextResponse> {
       hanjaPair,
       vote,
     });
-    return NextResponse.json({ ok: true });
+    return withCors(request, NextResponse.json({ ok: true }), ALLOWED_METHODS);
   } catch (error) {
     console.error("[feedback] failed to record vote", error);
-    return NextResponse.json({ error: "Failed to record feedback" }, { status: 500 });
+    return withCors(
+      request,
+      NextResponse.json({ error: "Failed to record feedback" }, { status: 500 }),
+      ALLOWED_METHODS
+    );
   }
 }
