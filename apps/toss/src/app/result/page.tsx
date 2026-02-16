@@ -100,6 +100,7 @@ export default function ResultPage(): JSX.Element {
   const router = useRouter();
   const input = useRecommendStore((state) => state.input);
   const results = useRecommendStore((state) => state.results);
+  const hasHydrated = useRecommendStore((state) => state.hasHydrated);
   const setInput = useRecommendStore((state) => state.setInput);
   const setResults = useRecommendStore((state) => state.setResults);
   const reset = useRecommendStore((state) => state.reset);
@@ -122,10 +123,14 @@ export default function ResultPage(): JSX.Element {
     input.surnameHanja.trim().length > 0;
 
   useEffect(() => {
+    if (!hasHydrated) {
+      return;
+    }
+
     if (!hasInput) {
       router.replace("/");
     }
-  }, [hasInput, router]);
+  }, [hasHydrated, hasInput, router]);
 
   const top5 = useMemo(() => results.slice(0, 5), [results]);
   const top5Keys = useMemo(
@@ -165,7 +170,7 @@ export default function ResultPage(): JSX.Element {
     });
   }, [input.surnameHangul, input.surnameHanja]);
 
-  if (!hasInput) {
+  if (!hasHydrated || !hasInput) {
     return <></>;
   }
 

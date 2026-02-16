@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "dev:appintos": "granite dev",
-    "build:appintos": "granite build --disable-cache",
-    "deploy:appintos": "ait deploy",
+    "dev:appintoss": "granite dev",
+    "build:appintoss": "granite build --disable-cache",
+    "deploy:appintoss": "ait deploy",
     "lint": "next lint",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test:feedback-scoring": "ts-node -P tsconfig.scripts.json src/server/feedback/feedbackScoring.test.ts",

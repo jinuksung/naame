@@ -31,6 +31,8 @@ export NEXT_PUBLIC_NAMEFIT_API_BASE_URL='https://api.example.com'
 `build:appintos`는 정적 번들을 생성하므로 `NEXT_PUBLIC_NAMEFIT_API_BASE_URL`이 필수예요.
 값이 없으면 빌드를 실패시켜 잘못된 배포를 막습니다.
 
+반복 입력을 줄이려면 `apps/toss/.env.production`에 기본값을 저장해두세요.
+
 ## 3. Build and package
 
 ```bash

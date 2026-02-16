@@ -1,11 +1,14 @@
 "use client";
 
 import { create } from "zustand";
+import { createJSONStorage, persist, type StateStorage } from "zustand/middleware";
 import { FreeRecommendInput, FreeRecommendResultItem, RecommendGender } from "@/types/recommend";
 
 interface RecommendStoreState {
   input: FreeRecommendInput;
   results: FreeRecommendResultItem[];
+  hasHydrated: boolean;
+  setHasHydrated: (value: boolean) => void;
   setInput: (input: FreeRecommendInput) => void;
   setResults: (results: FreeRecommendResultItem[]) => void;
   reset: () => void;
@@ -42,14 +45,49 @@ function sanitizeResults(results: FreeRecommendResultItem[]): FreeRecommendResul
   }));
 }
 
-export const useRecommendStore = create<RecommendStoreState>((set) => ({
-  input: initialInput,
-  results: [],
-  setInput: (input) => set({ input }),
-  setResults: (results) => set({ results: sanitizeResults(results) }),
-  reset: () =>
-    set({
+type PersistedRecommendStoreState = Pick<RecommendStoreState, "input" | "results">;
+
+const noopStorage: StateStorage = {
+  getItem: () => null,
+  setItem: () => undefined,
+  removeItem: () => undefined
+};
+
+const recommendStorage = createJSONStorage<PersistedRecommendStoreState>(() => {
+  if (typeof window === "undefined") {
+    return noopStorage;
+  }
+  return window.sessionStorage;
+});
+
+export const useRecommendStore = create<RecommendStoreState>()(
+  persist(
+    (set) => ({
       input: initialInput,
-      results: []
-    })
-}));
+      results: [],
+      hasHydrated: false,
+      setHasHydrated: (value) => set({ hasHydrated: value }),
+      setInput: (input) => set({ input }),
+      setResults: (results) => set({ results: sanitizeResults(results) }),
+      reset: () =>
+        set({
+          input: initialInput,
+          results: []
+        })
+    }),
+    {
+      name: "namefit-toss-recommend-store-v1",
+      storage: recommendStorage,
+      partialize: (state) => ({
+        input: state.input,
+        results: state.results
+      }),
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          console.error("[store] recommend store rehydrate failed", error);
+        }
+        state?.setHasHydrated(true);
+      }
+    }
+  )
+);

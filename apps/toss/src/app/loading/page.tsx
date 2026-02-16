@@ -26,6 +26,7 @@ function wait(ms: number): Promise<void> {
 export default function LoadingPage(): JSX.Element {
   const router = useRouter();
   const input = useRecommendStore((state) => state.input);
+  const hasHydrated = useRecommendStore((state) => state.hasHydrated);
   const setResults = useRecommendStore((state) => state.setResults);
 
   const [messageIndex, setMessageIndex] = useState(0);
@@ -34,6 +35,10 @@ export default function LoadingPage(): JSX.Element {
     input.surnameHanja.trim().length > 0;
 
   useEffect(() => {
+    if (!hasHydrated) {
+      return;
+    }
+
     if (!hasInput) {
       router.replace("/");
       return;
@@ -74,7 +79,7 @@ export default function LoadingPage(): JSX.Element {
       isCancelled = true;
       clearInterval(rotateTimer);
     };
-  }, [hasInput, input, router, setResults]);
+  }, [hasHydrated, hasInput, input, router, setResults]);
 
   return (
     <TdsScreen title="이름을 추천하고 있어요" description="잠시만 기다려 주세요.">
