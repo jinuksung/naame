@@ -4,6 +4,18 @@ import {
   SurnameHanjaOptionsResponse
 } from "@/types/recommend";
 
+function getApiBaseUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_NAMEFIT_API_BASE_URL ?? "";
+  const trimmed = raw.trim();
+  return trimmed.endsWith("/") ? trimmed.slice(0, -1) : trimmed;
+}
+
+export function buildApiPath(pathname: string): string {
+  const normalizedPath = pathname.startsWith("/") ? pathname : `/${pathname}`;
+  const baseUrl = getApiBaseUrl();
+  return baseUrl ? `${baseUrl}${normalizedPath}` : normalizedPath;
+}
+
 function isValidResponse(value: unknown): value is FreeRecommendResponse {
   if (!value || typeof value !== "object") {
     return false;
@@ -81,7 +93,7 @@ export async function fetchSurnameHanjaOptions(
   }
 
   const response = await fetch(
-    `/api/surname/options?reading=${encodeURIComponent(reading)}`,
+    `${buildApiPath("/api/surname/options")}?reading=${encodeURIComponent(reading)}`,
     {
       method: "GET",
       cache: "no-store",
@@ -104,7 +116,7 @@ export async function fetchSurnameHanjaOptions(
 export async function fetchFreeRecommendations(
   input: FreeRecommendInput
 ): Promise<FreeRecommendResponse> {
-  const response = await fetch("/api/recommend/free", {
+  const response = await fetch(buildApiPath("/api/recommend/free"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -135,7 +147,7 @@ export async function submitNameFeedback(input: {
   hanjaPair: [string, string];
   vote: "like" | "dislike";
 }): Promise<void> {
-  const response = await fetch("/api/feedback/name", {
+  const response = await fetch(buildApiPath("/api/feedback/name"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

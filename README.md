@@ -20,11 +20,24 @@ npm run dev:web
 npm run dev:toss
 ```
 
+앱인토스(Granite) 개발 실행:
+
+```bash
+npm run dev:toss:appintos
+```
+
 빌드:
 
 ```bash
 npm run build:web
 npm run build:toss
+```
+
+앱인토스 `.ait` 번들 빌드:
+
+```bash
+NEXT_PUBLIC_NAMEFIT_API_BASE_URL=https://api.example.com \
+npm run build:toss:appintos
 ```
 
 ## 배포 방식

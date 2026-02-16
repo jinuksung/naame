@@ -6,12 +6,17 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "dev:appintos": "granite dev",
+    "build:appintos": "granite build --disable-cache",
+    "deploy:appintos": "ait deploy",
     "lint": "next lint",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test:feedback-scoring": "ts-node -P tsconfig.scripts.json src/server/feedback/feedbackScoring.test.ts"
+    "test:feedback-scoring": "ts-node -P tsconfig.scripts.json src/server/feedback/feedbackScoring.test.ts",
+    "test:api-base-url": "ts-node -P tsconfig.scripts.json src/lib/api.base-url.test.ts",
+    "test:api-feedback": "ts-node -P tsconfig.scripts.json src/lib/api.feedback.test.ts"
   },
   "dependencies": {
-    "@namefit/engine": "*",
+    "@apps-in-toss/web-framework": "^1.11.2",
     "@vercel/analytics": "^1.6.1",
     "next": "^14.2.25",
     "react": "^18.3.1",

@@ -7,7 +7,7 @@ import {
   TdsScreen,
   TdsSegmentedControl,
 } from "@/components/tds";
-import { normalizeHangulReadingWithLimit } from "@namefit/engine/lib/korean/normalizeHangulReading";
+import { normalizeHangulReadingWithLimit } from "@/lib/korean/normalizeHangulReading";
 import { fetchSurnameHanjaOptions } from "@/lib/api";
 import { genderOptions, useRecommendStore } from "@/store/useRecommendStore";
 import { FreeRecommendInput, SurnameHanjaOption } from "@/types/recommend";
