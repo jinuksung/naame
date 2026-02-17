@@ -14,7 +14,9 @@ export default defineConfig({
   brand: {
     displayName: "네임핏",
     primaryColor: "#3182F6",
-    icon: process.env.APPS_IN_TOSS_BRAND_ICON_URL?.trim() || "",
+    icon:
+      process.env.APPS_IN_TOSS_BRAND_ICON_URL?.trim() ||
+      "https://static.toss.im/appsintoss/22051/ced11649-ec35-479a-851a-57b26e20dd07.png",
   },
   permissions: [],
   web: {
@@ -23,7 +25,7 @@ export default defineConfig({
     port,
     //5173
     commands: {
-      dev: `next dev -p ${port}`,
+      dev: `NEXT_DIST_DIR=.next-granite next dev -p ${port}`,
       //
       build: "node scripts/build-appintos-static.mjs",
     },

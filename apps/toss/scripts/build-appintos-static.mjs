@@ -2,12 +2,87 @@ import { cp, mkdir, rm, stat, copyFile } from "node:fs/promises";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { execSync } from "node:child_process";
+import { pathToFileURL } from "node:url";
 
 const rootDir = process.cwd();
 const outputDir = path.join(rootDir, "dist-appintos");
 const nextAppDir = path.join(rootDir, ".next", "server", "app");
 const nextStaticDir = path.join(rootDir, ".next", "static");
 const publicDir = path.join(rootDir, "public");
+const DEV_SERVER_COMMAND_PATTERNS = [
+  "/node_modules/.bin/granite dev",
+  "/node_modules/.bin/next dev",
+];
+
+function normalizeProcessText(value) {
+  return value.replace(/\\/g, "/").toLowerCase();
+}
+
+function resolveProcessScopePaths(projectRootDir) {
+  const resolved = path.resolve(projectRootDir);
+  return Array.from(
+    new Set([
+      normalizeProcessText(resolved),
+      normalizeProcessText(path.resolve(resolved, "..")),
+      normalizeProcessText(path.resolve(resolved, "..", "..")),
+    ]),
+  );
+}
+
+export function detectConflictingDevProcesses(processListText, projectRootDir = rootDir) {
+  const scopePaths = resolveProcessScopePaths(projectRootDir);
+  const lines = processListText.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+
+  return lines.filter((line) => {
+    const normalized = normalizeProcessText(line);
+    const matchesDevCommand = DEV_SERVER_COMMAND_PATTERNS.some((pattern) =>
+      normalized.includes(pattern),
+    );
+    if (!matchesDevCommand) {
+      return false;
+    }
+    return scopePaths.some((scopePath) =>
+      normalized.includes(`${scopePath}/node_modules/.bin/`),
+    );
+  });
+}
+
+function getProcessListText() {
+  try {
+    return execSync("ps -A -o pid=,command=", {
+      cwd: rootDir,
+      stdio: ["ignore", "pipe", "ignore"],
+      encoding: "utf8",
+      env: process.env,
+    });
+  } catch {
+    return "";
+  }
+}
+
+export function assertNoConflictingDevProcesses(
+  projectRootDir = rootDir,
+  processListProvider = getProcessListText,
+) {
+  const processListText = processListProvider();
+  if (!processListText) {
+    return;
+  }
+
+  const conflicts = detectConflictingDevProcesses(processListText, projectRootDir);
+  if (conflicts.length === 0) {
+    return;
+  }
+
+  throw new Error(
+    [
+      "Stop dev server before build:appintoss.",
+      "Detected running Toss dev process(es):",
+      ...conflicts.map((line) => `- ${line}`),
+      "Run: kill $(ps aux | grep \"granite dev\\|next dev -p 3000\" | grep -v grep | awk '{print $2}')",
+    ].join("\n"),
+  );
+}
 
 function stripWrappingQuotes(value) {
   if (
@@ -69,8 +144,11 @@ function ensureApiBaseUrlEnv() {
   return "";
 }
 
-const requiredApiBaseUrl = ensureApiBaseUrlEnv();
-if (!requiredApiBaseUrl) {
+function assertApiBaseUrlEnv() {
+  const requiredApiBaseUrl = ensureApiBaseUrlEnv();
+  if (requiredApiBaseUrl) {
+    return;
+  }
   throw new Error(
     "NEXT_PUBLIC_NAMEFIT_API_BASE_URL is required for appintos static build. " +
       "Set it to your production API host before running build:appintos.",
@@ -84,6 +162,10 @@ const routeSourceMap = [
   { source: path.join("feature", "recommend.html"), route: "/feature/recommend" },
   { source: path.join("feature", "result.html"), route: "/feature/result" },
 ];
+
+export async function resetNextBuildDir(projectRootDir = rootDir) {
+  await rm(path.join(projectRootDir, ".next"), { recursive: true, force: true });
+}
 
 function ensureRouteTargets(routePath) {
   if (routePath === "/") {
@@ -115,6 +197,10 @@ async function pathExists(filePath) {
 }
 
 async function main() {
+  assertNoConflictingDevProcesses(rootDir);
+  assertApiBaseUrlEnv();
+  await resetNextBuildDir(rootDir);
+
   execSync("next build", {
     cwd: rootDir,
     stdio: "inherit",
@@ -143,4 +229,10 @@ async function main() {
   }
 }
 
-void main();
+const isDirectRun = Boolean(
+  process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url,
+);
+
+if (isDirectRun) {
+  void main();
+}

@@ -54,6 +54,21 @@ npx ait token add default {API_KEY}
 npx ait deploy --profile default
 ```
 
+자동 입력을 쓰려면 `apps/toss/.env.local` 또는 `apps/toss/.env.production.local`에 아래를 넣고:
+
+```bash
+APPS_IN_TOSS_API_KEY=your_api_key_here
+```
+
+아래처럼 실행하면 `deploy:appintoss`가 키를 읽어서 `ait deploy --api-key ...`를 자동 실행해요:
+
+```bash
+npm run deploy:appintoss --workspace @namefit/toss
+```
+
+레거시 호환으로, `.env.local` 마지막 줄의 bare token(키=값 형식 아님)도 읽을 수 있지만
+`APPS_IN_TOSS_API_KEY=` 형태를 권장합니다.
+
 Test via console QR (`intoss-private://...`) and verify:
 
 - deep links `/feature/recommend`, `/feature/result`
