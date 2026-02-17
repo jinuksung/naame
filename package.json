@@ -32,7 +32,8 @@
     "recommend:sample": "npm run recommend --workspace @namefit/engine",
     "build:syllables": "ts-node -P tsconfig.scripts.json scripts/build-name-syllable-whitelist.ts",
     "ssot:push": "npx ts-node -P tsconfig.scripts.json scripts/ssot/push-to-supabase.ts",
-    "ssot:pull": "npx ts-node -P tsconfig.scripts.json scripts/ssot/pull-from-supabase.ts"
+    "ssot:pull": "npx ts-node -P tsconfig.scripts.json scripts/ssot/pull-from-supabase.ts",
+    "ssot:pull:toss:dev": "set -a; . ./apps/toss/.env.local; set +a; npm run ssot:pull"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",
