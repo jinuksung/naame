@@ -351,7 +351,7 @@ export async function loadHanjaDataset(
     const tagMetadata = tagMetadataByHanja.get(hanja);
     const curatedTags = tagMetadata?.tags ?? [];
     const meaningTags = uniqueNonEmpty([...curatedTags, ...baseMeaningTags]);
-    const meaningKw = meaningTags[0] ?? "";
+    const meaningKw = baseMeaningTags[0] ?? curatedTags[0] ?? "";
 
     for (const rawReading of inmyongReadings) {
       const reading = normalizeReading(rawReading);

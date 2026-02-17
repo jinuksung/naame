@@ -97,6 +97,7 @@ async function testLoadDatasetMergesHanjaTagMetadata(): Promise<void> {
     assert.ok(bad);
     assert.deepEqual(good?.curatedTags, ["배려/따뜻함"]);
     assert.equal(good?.tagPriorityScore, 0.82);
+    assert.equal(good?.meaningKw, "어질");
     assert.equal(good?.meaningTags[0], "배려/따뜻함");
     assert.deepEqual(bad?.riskFlags, ["NEGATIVE_DICTIONARY_MEANING"]);
   } finally {
