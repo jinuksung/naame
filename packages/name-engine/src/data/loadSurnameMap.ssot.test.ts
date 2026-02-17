@@ -4,7 +4,6 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { resolveSurnameHanjaSelection } from "./loadSurnameMap";
 import {
-  getDefaultSupabaseSsotFilePaths,
   resetSupabaseSsotSnapshotStateForTests,
 } from "./supabaseSsotSnapshot";
 
@@ -173,9 +172,9 @@ async function run(): Promise<void> {
   const tempDir = mkdtempSync(join(tmpdir(), "namefit-surname-ssot-"));
   const prevCwd = process.cwd();
   const originalFetch = globalThis.fetch;
-  const requiredPaths = getDefaultSupabaseSsotFilePaths();
+  const requiredPaths = ["surname_map.jsonl"];
   const rowsByTable = buildRowsByTable(requiredPaths);
-  const EXPECTED_RUNTIME_TABLE_FETCHES = 6;
+  const EXPECTED_RUNTIME_TABLE_FETCHES = 1;
   let fetchCalled = 0;
 
   globalThis.fetch = (async (input: unknown, _init?: unknown) => {

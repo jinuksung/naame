@@ -3,8 +3,7 @@ import { resolve } from "node:path";
 import { SurnameHanjaOption } from "../types/recommend";
 import { normalizeHangulReading } from "../lib/korean/normalizeHangulReading";
 import {
-  ensureSupabaseSsotSnapshot,
-  getDefaultRuntimeSupabaseSsotFilePaths
+  ensureSupabaseSsotSnapshot
 } from "./supabaseSsotSnapshot";
 
 interface RawSurnameMapRow {
@@ -21,8 +20,10 @@ export interface SurnameHanjaResolution {
 }
 
 const DEFAULT_SURNAME_MAP_FILENAME = "surname_map.jsonl";
+const SURNAME_SSOT_REQUIRED_PATHS = [DEFAULT_SURNAME_MAP_FILENAME];
 const MAX_HANJA_LENGTH = 2;
 let surnameMapPromise: Promise<Map<string, SurnameHanjaOption[]>> | null = null;
+let surnameMapVersionSignature: string | null = null;
 
 function uniquePaths(paths: string[]): string[] {
   return Array.from(new Set(paths));
@@ -183,22 +184,30 @@ async function loadSurnameMap(sourcePath: string): Promise<Map<string, SurnameHa
 }
 
 async function getSurnameMap(): Promise<Map<string, SurnameHanjaOption[]>> {
-  if (surnameMapPromise) {
+  const snapshot = await ensureSupabaseSsotSnapshot({
+    requiredPaths: SURNAME_SSOT_REQUIRED_PATHS
+  });
+  const nextSignature = snapshot.versionSignature ?? snapshot.source;
+  if (surnameMapPromise && surnameMapVersionSignature === nextSignature) {
     return surnameMapPromise;
   }
 
   surnameMapPromise = (async () => {
-    await ensureSupabaseSsotSnapshot({
-      requiredPaths: getDefaultRuntimeSupabaseSsotFilePaths()
-    });
     const sourcePath = await resolveSurnameMapPath();
     return loadSurnameMap(sourcePath);
   })().catch((error) => {
     surnameMapPromise = null;
+    surnameMapVersionSignature = null;
     throw error;
   });
+  surnameMapVersionSignature = nextSignature;
 
   return surnameMapPromise;
+}
+
+export function resetSurnameMapCacheForRuntime(): void {
+  surnameMapPromise = null;
+  surnameMapVersionSignature = null;
 }
 
 export async function getSurnameHanjaOptions(surnameReading: string): Promise<SurnameHanjaOption[]> {
