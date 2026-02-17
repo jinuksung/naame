@@ -25,7 +25,7 @@ export default defineConfig({
     port,
     //5173
     commands: {
-      dev: `NEXT_DIST_DIR=.next-granite next dev -p ${port}`,
+      dev: `node scripts/dev-appintos.mjs --port ${port}`,
       //
       build: "node scripts/build-appintos-static.mjs",
     },

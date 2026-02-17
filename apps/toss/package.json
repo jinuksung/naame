@@ -14,7 +14,8 @@
     "test:feedback-scoring": "ts-node -P tsconfig.scripts.json src/server/feedback/feedbackScoring.test.ts",
     "test:api-base-url": "ts-node -P tsconfig.scripts.json src/lib/api.base-url.test.ts",
     "test:api-feedback": "ts-node -P tsconfig.scripts.json src/lib/api.feedback.test.ts",
-    "test:deploy-script": "node scripts/deploy-appintos.test.mjs"
+    "test:deploy-script": "node scripts/deploy-appintos.test.mjs",
+    "test:dev-appintos": "node scripts/dev-appintos.test.mjs"
   },
   "dependencies": {
     "@apps-in-toss/web-framework": "^1.11.2",
