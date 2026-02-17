@@ -33,6 +33,7 @@ export interface SupabaseSsotSnapshotResult {
   source: SupabaseSsotSource;
   cacheDir: string | null;
   writtenFiles: string[];
+  versionSignature: string | null;
 }
 
 const DEFAULT_SSOT_DATASET_SPECS: SsotDatasetSpec[] = [
@@ -143,6 +144,8 @@ const ENV_PATH_MAP: Record<string, string> = {
 
 let snapshotPromise: Promise<SupabaseSsotSnapshotResult> | null = null;
 let snapshotCacheKey: string | null = null;
+const snapshotVersionByCacheKey = new Map<string, string>();
+const snapshotVersionCheckedAtByCacheKey = new Map<string, number>();
 
 function parseBoolean(value: string | undefined, fallback: boolean): boolean {
   if (value == null) {
@@ -156,6 +159,25 @@ function parseBoolean(value: string | undefined, fallback: boolean): boolean {
     return false;
   }
   return fallback;
+}
+
+function parsePositiveInteger(value: string | undefined, fallback: number): number {
+  if (value == null) {
+    return fallback;
+  }
+  const parsed = Number(value.trim());
+  if (!Number.isFinite(parsed) || parsed < 0) {
+    return fallback;
+  }
+  return Math.floor(parsed);
+}
+
+function getVersionCheckIntervalMs(): number {
+  return parsePositiveInteger(process.env.SUPABASE_SSOT_VERSION_CHECK_INTERVAL_MS, 3000);
+}
+
+function isVersionCheckEnabled(): boolean {
+  return parseBoolean(process.env.SUPABASE_SSOT_VERSION_CHECK_ENABLED, true);
 }
 
 function uniquePaths(paths: string[]): string[] {
@@ -236,11 +258,11 @@ function ensureJsonlKeyMap(spec: SsotDatasetSpec): JsonColumnKey[] {
 
 function selectColumnsForSpec(spec: SsotDatasetSpec): string {
   if (spec.format === "name_pool_json") {
-    return NAME_POOL_COLUMNS.join(",");
+    return [...NAME_POOL_COLUMNS, "updated_at"].join(",");
   }
 
   const columns = ensureJsonlKeyMap(spec).map((item) => item.column);
-  return ["row_index", ...columns].join(",");
+  return ["row_index", "updated_at", ...columns].join(",");
 }
 
 function toTableRows(payload: unknown): Array<Record<string, unknown>> {
@@ -398,9 +420,63 @@ async function fetchTableRows(
   return allRows;
 }
 
-async function fetchSupabaseContentByPath(requiredSpecs: SsotDatasetSpec[]): Promise<Map<string, string>> {
+function toVersionStamp(rows: Array<Record<string, unknown>>): string {
+  if (rows.length === 0) {
+    return "empty";
+  }
+  let maxUpdatedAt = "";
+  let maxRowIndex = -1;
+  for (const row of rows) {
+    const updatedAt = typeof row.updated_at === "string" ? row.updated_at : "";
+    if (updatedAt > maxUpdatedAt) {
+      maxUpdatedAt = updatedAt;
+    }
+    const rowIndex = typeof row.row_index === "number" ? row.row_index : -1;
+    if (rowIndex > maxRowIndex) {
+      maxRowIndex = rowIndex;
+    }
+  }
+  return `${rows.length}:${maxUpdatedAt}:${maxRowIndex}`;
+}
+
+function buildVersionSignature(parts: string[]): string {
+  return parts.join("|");
+}
+
+async function fetchCurrentVersionSignature(requiredSpecs: SsotDatasetSpec[]): Promise<string> {
+  const config = resolveSupabaseConfig();
+  const parts: string[] = [];
+
+  for (const spec of requiredSpecs) {
+    const select = encodeURIComponent("updated_at,row_index");
+    const endpoint = `${config.baseUrl}/rest/v1/${spec.table}?select=${select}&order=updated_at.desc.nullslast,row_index.desc&limit=1`;
+    const response = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        apikey: config.serviceRoleKey,
+        Authorization: `Bearer ${config.serviceRoleKey}`,
+      },
+    });
+
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(`[supabase-ssot] version probe failed table=${spec.table}: ${response.status} ${body}`);
+    }
+
+    const payload = (await response.json()) as unknown;
+    const rows = toTableRows(payload);
+    parts.push(`${spec.table}:${toVersionStamp(rows)}`);
+  }
+
+  return buildVersionSignature(parts);
+}
+
+async function fetchSupabaseContentByPath(
+  requiredSpecs: SsotDatasetSpec[],
+): Promise<{ contentByPath: Map<string, string>; versionSignature: string }> {
   const config = resolveSupabaseConfig();
   const byPath = new Map<string, string>();
+  const versionParts: string[] = [];
 
   for (const spec of requiredSpecs) {
     const rows = await fetchTableRows(config, spec);
@@ -408,11 +484,15 @@ async function fetchSupabaseContentByPath(requiredSpecs: SsotDatasetSpec[]): Pro
       throw new Error(`[supabase-ssot] missing table rows: ${spec.table}`);
     }
 
+    versionParts.push(`${spec.table}:${toVersionStamp(rows)}`);
     const content = spec.format === "jsonl" ? buildJsonlContent(spec, rows) : buildNamePoolContent(rows);
     byPath.set(spec.path, content);
   }
 
-  return byPath;
+  return {
+    contentByPath: byPath,
+    versionSignature: buildVersionSignature(versionParts),
+  };
 }
 
 async function hasAllCachedFiles(cacheDir: string, requiredPaths: string[]): Promise<boolean> {
@@ -465,6 +545,43 @@ export function isSupabaseSsotEnabled(env: NodeJS.ProcessEnv = process.env): boo
 export function resetSupabaseSsotSnapshotStateForTests(): void {
   snapshotPromise = null;
   snapshotCacheKey = null;
+  snapshotVersionByCacheKey.clear();
+  snapshotVersionCheckedAtByCacheKey.clear();
+}
+
+async function shouldRefreshByVersionProbe(cacheKey: string, requiredPaths: string[]): Promise<boolean> {
+  if (!isVersionCheckEnabled()) {
+    return false;
+  }
+
+  const now = Date.now();
+  const intervalMs = getVersionCheckIntervalMs();
+  const lastCheckedAt = snapshotVersionCheckedAtByCacheKey.get(cacheKey) ?? 0;
+  if (now - lastCheckedAt < intervalMs) {
+    return false;
+  }
+
+  snapshotVersionCheckedAtByCacheKey.set(cacheKey, now);
+
+  const knownVersion = snapshotVersionByCacheKey.get(cacheKey);
+  if (!knownVersion) {
+    return false;
+  }
+
+  try {
+    const requiredSpecs = resolveRequiredSpecs(requiredPaths);
+    const currentVersion = await fetchCurrentVersionSignature(requiredSpecs);
+    if (currentVersion === knownVersion) {
+      return false;
+    }
+
+    snapshotVersionByCacheKey.set(cacheKey, currentVersion);
+    return true;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.warn(`[supabase-ssot] version probe skipped: ${message}`);
+    return false;
+  }
 }
 
 async function ensureSupabaseSsotSnapshotInternal(
@@ -477,6 +594,7 @@ async function ensureSupabaseSsotSnapshotInternal(
       source: "disabled",
       cacheDir: null,
       writtenFiles: [],
+      versionSignature: "disabled",
     };
   }
 
@@ -485,7 +603,7 @@ async function ensureSupabaseSsotSnapshotInternal(
 
   try {
     const requiredSpecs = resolveRequiredSpecs(requiredPaths);
-    const contentByPath = await fetchSupabaseContentByPath(requiredSpecs);
+    const { contentByPath, versionSignature } = await fetchSupabaseContentByPath(requiredSpecs);
     const writtenFiles = await writeContentToCache(cacheDir, requiredPaths, contentByPath);
     applyEngineEnvPaths(cacheDir, requiredPaths);
 
@@ -494,6 +612,7 @@ async function ensureSupabaseSsotSnapshotInternal(
       source: "supabase",
       cacheDir,
       writtenFiles,
+      versionSignature,
     };
   } catch (error) {
     const cacheReady = await hasAllCachedFiles(cacheDir, requiredPaths);
@@ -504,6 +623,7 @@ async function ensureSupabaseSsotSnapshotInternal(
         source: "cache",
         cacheDir,
         writtenFiles: [],
+        versionSignature: null,
       };
     }
 
@@ -518,6 +638,7 @@ async function ensureSupabaseSsotSnapshotInternal(
       source: "fallback",
       cacheDir,
       writtenFiles: [],
+      versionSignature: null,
     };
   }
 }
@@ -530,7 +651,12 @@ export async function ensureSupabaseSsotSnapshot(
   const cacheKey = `${cacheDir}|${requiredPaths.join(",")}`;
 
   if (!options.forceRefresh && snapshotPromise && snapshotCacheKey === cacheKey) {
-    return snapshotPromise;
+    const refreshRequired = await shouldRefreshByVersionProbe(cacheKey, requiredPaths);
+    if (!refreshRequired) {
+      return snapshotPromise;
+    }
+    snapshotPromise = null;
+    snapshotCacheKey = null;
   }
 
   const promise = ensureSupabaseSsotSnapshotInternal(cacheDir, requiredPaths).catch((error) => {
@@ -546,5 +672,12 @@ export async function ensureSupabaseSsotSnapshot(
     snapshotCacheKey = cacheKey;
   }
 
-  return promise;
+  const result = await promise;
+  if (result.versionSignature) {
+    snapshotVersionByCacheKey.set(cacheKey, result.versionSignature);
+  }
+  if (options.forceRefresh) {
+    snapshotVersionCheckedAtByCacheKey.set(cacheKey, Date.now());
+  }
+  return result;
 }

@@ -40,7 +40,7 @@ export default function LoadingPage(): JSX.Element {
     }
 
     if (!hasInput) {
-      router.replace("/");
+      router.replace("/feature/recommend");
       return;
     }
 

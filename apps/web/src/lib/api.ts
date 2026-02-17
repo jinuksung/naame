@@ -158,3 +158,50 @@ export async function submitNameFeedback(input: {
     throw new Error(`[api] feedback submit failed: ${response.status} ${text}`);
   }
 }
+
+export async function markHanjaAsNotInmyong(char: string): Promise<void> {
+  const normalizedChar = Array.from(char.trim().normalize("NFC")).slice(0, 1).join("");
+  if (!normalizedChar) {
+    throw new Error("[api] invalid hanja char");
+  }
+
+  const response = await fetch("/api/admin/local/hanja/not-inmyong", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    cache: "no-store",
+    body: JSON.stringify({ char: normalizedChar })
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`[api] mark not-inmyong failed: ${response.status} ${text}`);
+  }
+}
+
+export async function addNameToBlacklist(nameHangul: string): Promise<{ inserted: boolean }> {
+  const normalizedName = nameHangul.trim().normalize("NFC");
+  if (!normalizedName) {
+    throw new Error("[api] invalid nameHangul");
+  }
+
+  const response = await fetch("/api/admin/local/blacklist-word", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    cache: "no-store",
+    body: JSON.stringify({ nameHangul: normalizedName })
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`[api] blacklist update failed: ${response.status} ${text}`);
+  }
+
+  const payload = (await response.json()) as { inserted?: unknown };
+  return {
+    inserted: payload.inserted === true
+  };
+}

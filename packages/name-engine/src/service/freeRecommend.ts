@@ -34,6 +34,7 @@ const DISPLAY_SPREAD_MAX = 14;
 const EXPLORE_SEED_MOD = 0x7fffffff;
 
 let datasetPromise: Promise<HanjaDataset> | null = null;
+let datasetVersionSignature: string | null = null;
 
 interface RawPayload {
   surnameHangul?: unknown;
@@ -222,8 +223,8 @@ async function resolveDataPath(): Promise<string> {
   );
 }
 
-async function getDataset(): Promise<HanjaDataset> {
-  if (datasetPromise) {
+async function getDataset(versionSignature: string): Promise<HanjaDataset> {
+  if (datasetPromise && datasetVersionSignature === versionSignature) {
     return datasetPromise;
   }
 
@@ -233,8 +234,10 @@ async function getDataset(): Promise<HanjaDataset> {
     return loadHanjaDataset(dataPath);
   })().catch((error) => {
     datasetPromise = null;
+    datasetVersionSignature = null;
     throw error;
   });
+  datasetVersionSignature = versionSignature;
 
   return datasetPromise;
 }
@@ -383,9 +386,10 @@ export async function recommendFreeNames(payload: unknown): Promise<FreeRecommen
     return { ok: false, status: 400, error: "Invalid request payload" };
   }
 
-  await ensureSupabaseSsotSnapshot({
+  const snapshot = await ensureSupabaseSsotSnapshot({
     requiredPaths: getDefaultRuntimeSupabaseSsotFilePaths()
   });
+  const currentVersionSignature = snapshot.versionSignature ?? snapshot.source;
 
   let resolvedInput: FreeRecommendInput;
   try {
@@ -417,7 +421,7 @@ export async function recommendFreeNames(payload: unknown): Promise<FreeRecommen
   };
 
   try {
-    const dataset = await getDataset();
+    const dataset = await getDataset(currentVersionSignature);
     const recommended = recommendNames(dataset, engineRequest);
     const topItems = recommended.recommendations.slice(0, FREE_LIMIT);
     const displayScores = buildDisplayScores(topItems);

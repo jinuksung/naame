@@ -206,6 +206,11 @@ function parseNumberParam(input: unknown, key: string): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function isVersionProbeRequest(input: unknown): boolean {
+  const url = String(input);
+  return url.includes("select=updated_at%2Crow_index") && url.includes("limit=1");
+}
+
 async function testDisabledSkipsFetch(): Promise<void> {
   const tempDir = mkdtempSync(join(tmpdir(), "namefit-ssot-disabled-"));
   const originalFetch = globalThis.fetch;
@@ -387,11 +392,78 @@ async function testFetchPaginatesLargeTables(): Promise<void> {
   }
 }
 
+async function testRefreshesSnapshotWhenVersionProbeChanges(): Promise<void> {
+  const tempDir = mkdtempSync(join(tmpdir(), "namefit-ssot-version-refresh-"));
+  const originalFetch = globalThis.fetch;
+  const requiredPaths = getDefaultSupabaseSsotFilePaths();
+  const v1RowsByTable = buildRowsByTable(requiredPaths);
+  const v2RowsByTable = buildRowsByTable(requiredPaths);
+  v2RowsByTable.set("ssot_blacklist_words", [
+    {
+      row_index: 1,
+      pattern: "새금칙어",
+    },
+  ]);
+
+  let phase: "initial" | "after-change" = "initial";
+  let fullFetchCount = 0;
+  let probeFetchCount = 0;
+
+  globalThis.fetch = (async (input: unknown, _init?: unknown) => {
+    const table = parseTableFromEndpoint(input);
+    if (isVersionProbeRequest(input)) {
+      probeFetchCount += 1;
+      const updatedAt = phase === "initial" ? "2026-02-01T00:00:00.000Z" : "2026-02-01T00:01:00.000Z";
+      return createJsonResponse([
+        {
+          row_index: 1,
+          updated_at: `${updatedAt}:${table}`,
+        },
+      ]);
+    }
+
+    fullFetchCount += 1;
+    const rowsByTable = phase === "initial" ? v1RowsByTable : v2RowsByTable;
+    return createJsonResponse(rowsByTable.get(table) ?? []);
+  }) as unknown as FetchLike;
+
+  try {
+    await withPatchedEnv(
+      {
+        SUPABASE_SSOT_ENABLED: "1",
+        SUPABASE_URL: "https://example.supabase.co",
+        SUPABASE_SERVICE_ROLE_KEY: "service-role",
+        SUPABASE_SSOT_VERSION_CHECK_INTERVAL_MS: "0",
+      },
+      async () => {
+        resetSupabaseSsotSnapshotStateForTests();
+
+        const first = await ensureSupabaseSsotSnapshot({ cacheDir: tempDir });
+        assert.equal(first.source, "supabase");
+        assert.equal(fullFetchCount, requiredPaths.length);
+
+        phase = "after-change";
+        const second = await ensureSupabaseSsotSnapshot({ cacheDir: tempDir });
+        assert.equal(second.source, "supabase");
+        assert.equal(fullFetchCount, requiredPaths.length * 2);
+        assert.equal(probeFetchCount, requiredPaths.length);
+
+        const blacklistText = readFileSync(resolve(tempDir, "blacklist_words.jsonl"), "utf8");
+        assert.ok(blacklistText.includes("새금칙어"));
+      },
+    );
+  } finally {
+    globalThis.fetch = originalFetch;
+    rmSync(tempDir, { recursive: true, force: true });
+  }
+}
+
 async function run(): Promise<void> {
   await testDisabledSkipsFetch();
   await testFetchWritesSnapshotAndSetsEnvPaths();
   await testFetchPaginatesLargeTables();
   await testFallsBackToCacheWhenFetchFails();
+  await testRefreshesSnapshotWhenVersionProbeChanges();
   console.log("[test:ssot] all tests passed");
 }
 

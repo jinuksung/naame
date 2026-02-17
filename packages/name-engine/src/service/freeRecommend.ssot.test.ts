@@ -186,7 +186,7 @@ async function run(): Promise<void> {
   const originalFetch = globalThis.fetch;
   const requiredPaths = getDefaultSupabaseSsotFilePaths();
   const rowsByTable = buildRowsByTable(requiredPaths);
-  const EXPECTED_RUNTIME_TABLE_FETCHES = 6;
+  const EXPECTED_RUNTIME_TABLE_FETCHES = 12;
   let fetchCalled = 0;
 
   globalThis.fetch = (async (input: unknown, _init?: unknown) => {

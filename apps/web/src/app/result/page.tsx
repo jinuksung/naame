@@ -4,11 +4,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, PrimaryButton, Screen, SecondaryButton } from "@/components/ui";
 import {
+  addNameToBlacklist,
   fetchFreeRecommendations,
   fetchSurnameHanjaOptions,
+  markHanjaAsNotInmyong,
   submitNameFeedback,
 } from "@/lib/api";
 import { syncFeedbackStatus, syncFeedbackVote } from "@/lib/feedbackState";
+import { isLocalAdminToolsEnabled } from "@/lib/localAdminVisibility";
 import {
   buildQuickExploreSeed,
   buildQuickSurnameCandidates,
@@ -110,6 +113,13 @@ export default function ResultPage(): JSX.Element {
   const [surnameHanjaCache, setSurnameHanjaCache] = useState<
     Record<string, string>
   >({});
+  const [localAdminEnabled, setLocalAdminEnabled] = useState(false);
+  const [hanjaActionStatus, setHanjaActionStatus] = useState<
+    Record<string, "idle" | "pending" | "done" | "error">
+  >({});
+  const [nameActionStatus, setNameActionStatus] = useState<
+    Record<string, "idle" | "pending" | "done" | "error">
+  >({});
   const quickExploreCounterRef = useRef(0);
 
   const hasInput =
@@ -159,6 +169,17 @@ export default function ResultPage(): JSX.Element {
       };
     });
   }, [input.surnameHangul, input.surnameHanja]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    setLocalAdminEnabled(
+      isLocalAdminToolsEnabled({
+        hostname: window.location.hostname,
+      }),
+    );
+  }, []);
 
   if (!hasInput) {
     return <></>;
@@ -237,6 +258,41 @@ export default function ResultPage(): JSX.Element {
       setQuickError("조합 추천을 불러오지 못했어요. 다시 시도해 주세요.");
     } finally {
       setQuickLoadingKey(null);
+    }
+  };
+
+  const handleSetNotInmyong = async (hanjaChar: string): Promise<void> => {
+    const key = hanjaChar.trim();
+    if (!key) {
+      return;
+    }
+    if (hanjaActionStatus[key] === "pending" || hanjaActionStatus[key] === "done") {
+      return;
+    }
+    setHanjaActionStatus((prev) => ({ ...prev, [key]: "pending" }));
+    try {
+      await markHanjaAsNotInmyong(key);
+      setHanjaActionStatus((prev) => ({ ...prev, [key]: "done" }));
+    } catch (error) {
+      console.error("[result] mark not-inmyong failed", error);
+      setHanjaActionStatus((prev) => ({ ...prev, [key]: "error" }));
+    }
+  };
+
+  const handleBlacklistName = async (
+    item: Pick<FreeRecommendResultItem, "nameHangul" | "hanjaPair">,
+  ): Promise<void> => {
+    const key = buildNameKey(item);
+    if (nameActionStatus[key] === "pending" || nameActionStatus[key] === "done") {
+      return;
+    }
+    setNameActionStatus((prev) => ({ ...prev, [key]: "pending" }));
+    try {
+      await addNameToBlacklist(item.nameHangul);
+      setNameActionStatus((prev) => ({ ...prev, [key]: "done" }));
+    } catch (error) {
+      console.error("[result] blacklist update failed", error);
+      setNameActionStatus((prev) => ({ ...prev, [key]: "error" }));
     }
   };
 
@@ -360,6 +416,18 @@ export default function ResultPage(): JSX.Element {
                         <span className="nf-hanja-meaning">
                           {detail.meaning}
                         </span>
+                        {localAdminEnabled ? (
+                          <button
+                            type="button"
+                            className={`nf-local-admin-btn${hanjaActionStatus[detail.hanja] === "done" ? " is-done" : ""}`}
+                            disabled={hanjaActionStatus[detail.hanja] === "pending"}
+                            onClick={() => {
+                              void handleSetNotInmyong(detail.hanja);
+                            }}
+                          >
+                            한자 로컬 관리 · 비인명용 처리
+                          </button>
+                        ) : null}
                       </li>
                     ))}
                   </ul>
@@ -412,6 +480,20 @@ export default function ResultPage(): JSX.Element {
                       </span>
                     </button>
                   </div>
+                  {localAdminEnabled ? (
+                    <div className="nf-local-admin-name-row">
+                      <button
+                        type="button"
+                        className={`nf-local-admin-btn${nameActionStatus[itemKey] === "done" ? " is-done" : ""}`}
+                        disabled={nameActionStatus[itemKey] === "pending"}
+                        onClick={() => {
+                          void handleBlacklistName(item);
+                        }}
+                      >
+                        이름 블랙리스트 처리
+                      </button>
+                    </div>
+                  ) : null}
                 </Card>
               );
             })}

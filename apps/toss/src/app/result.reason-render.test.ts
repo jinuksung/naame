@@ -85,10 +85,35 @@ function testPremiumTeaserUsesTossStyledClasses(): void {
   );
 }
 
+function testLocalAdminControlsArePresentWithVisibilityGuard(): void {
+  const source = readFileSync(RESULT_PAGE_PATH, "utf8");
+  assert.equal(
+    source.includes("isLocalAdminToolsEnabled"),
+    true,
+    "로컬 전용 admin UI는 환경 게이트 함수로 렌더링 제어해야 합니다.",
+  );
+  assert.equal(
+    source.includes("한자 로컬 관리"),
+    true,
+    "결과 화면에는 로컬 환경에서만 보이는 한자 관리 UI가 있어야 합니다.",
+  );
+  assert.equal(
+    source.includes("비인명용 처리"),
+    true,
+    "결과 화면의 각 한자 항목에 비인명용 처리 버튼이 있어야 합니다.",
+  );
+  assert.equal(
+    source.includes("이름 블랙리스트 처리"),
+    true,
+    "결과 화면의 각 이름 카드에 블랙리스트 처리 버튼이 있어야 합니다.",
+  );
+}
+
 function run(): void {
   testResultReasonLabelIsRenderedAsBold();
   testFeedbackButtonsUseSplitLayoutWithEmoji();
   testPremiumTeaserUsesTossStyledClasses();
+  testLocalAdminControlsArePresentWithVisibilityGuard();
   console.log("[test:result-reason-render:toss] all tests passed");
 }
 
