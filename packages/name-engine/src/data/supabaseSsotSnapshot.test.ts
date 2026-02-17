@@ -458,12 +458,56 @@ async function testRefreshesSnapshotWhenVersionProbeChanges(): Promise<void> {
   }
 }
 
+async function testUsesTmpCacheDirByDefaultOnVercel(): Promise<void> {
+  const tempRoot = mkdtempSync(join(tmpdir(), "namefit-ssot-vercel-"));
+  const expectedCacheDir = resolve(tempRoot, "ssot");
+  const originalFetch = globalThis.fetch;
+  const requiredPaths = getDefaultSupabaseSsotFilePaths();
+  const rowsByTable = buildRowsByTable(requiredPaths);
+
+  globalThis.fetch = (async (input: unknown, _init?: unknown) => {
+    const table = parseTableFromEndpoint(input);
+    return createJsonResponse(rowsByTable.get(table) ?? []);
+  }) as unknown as FetchLike;
+
+  try {
+    await withPatchedEnv(
+      {
+        VERCEL: "1",
+        TMPDIR: tempRoot,
+        SUPABASE_SSOT_ENABLED: "1",
+        SUPABASE_SSOT_CACHE_DIR: undefined,
+        SUPABASE_URL: "https://example.supabase.co",
+        SUPABASE_SERVICE_ROLE_KEY: "service-role",
+        DATA_SOURCE_PATH: undefined,
+        SURNAME_MAP_PATH: undefined,
+        HANJA_TAGS_PATH: undefined,
+        BLACKLIST_WORDS_PATH: undefined,
+        BLACKLIST_INITIALS_PATH: undefined,
+        NAME_POOL_M_PATH: undefined,
+        NAME_POOL_F_PATH: undefined,
+      },
+      async () => {
+        resetSupabaseSsotSnapshotStateForTests();
+        const result = await ensureSupabaseSsotSnapshot();
+        assert.equal(result.source, "supabase");
+        assert.equal(result.cacheDir, expectedCacheDir);
+        assert.equal(process.env.DATA_SOURCE_PATH, resolve(expectedCacheDir, "hanname_master.jsonl"));
+      },
+    );
+  } finally {
+    globalThis.fetch = originalFetch;
+    rmSync(tempRoot, { recursive: true, force: true });
+  }
+}
+
 async function run(): Promise<void> {
   await testDisabledSkipsFetch();
   await testFetchWritesSnapshotAndSetsEnvPaths();
   await testFetchPaginatesLargeTables();
   await testFallsBackToCacheWhenFetchFails();
   await testRefreshesSnapshotWhenVersionProbeChanges();
+  await testUsesTmpCacheDirByDefaultOnVercel();
   console.log("[test:ssot] all tests passed");
 }
 

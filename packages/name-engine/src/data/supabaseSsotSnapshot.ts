@@ -172,6 +172,16 @@ function parsePositiveInteger(value: string | undefined, fallback: number): numb
   return Math.floor(parsed);
 }
 
+function defaultCacheDirRaw(env: NodeJS.ProcessEnv = process.env): string {
+  const vercelEnabled = (env.VERCEL ?? "").trim().length > 0;
+  const lambdaEnabled = (env.AWS_LAMBDA_FUNCTION_NAME ?? "").trim().length > 0;
+  if (vercelEnabled || lambdaEnabled) {
+    const tmpBase = (env.TMPDIR ?? "").trim() || "/tmp";
+    return `${tmpBase.replace(/\/+$/, "")}/ssot`;
+  }
+  return ".cache/ssot";
+}
+
 function getVersionCheckIntervalMs(): number {
   return parsePositiveInteger(process.env.SUPABASE_SSOT_VERSION_CHECK_INTERVAL_MS, 3000);
 }
@@ -194,7 +204,7 @@ async function fileExists(path: string): Promise<boolean> {
 }
 
 function resolveCacheDir(override?: string): string {
-  const raw = override?.trim() || process.env.SUPABASE_SSOT_CACHE_DIR?.trim() || ".cache/ssot";
+  const raw = override?.trim() || process.env.SUPABASE_SSOT_CACHE_DIR?.trim() || defaultCacheDirRaw();
   return resolve(process.cwd(), raw);
 }
 
