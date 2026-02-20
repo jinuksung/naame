@@ -77,6 +77,13 @@ npm run ssot:push
 npm run ssot:pull
 ```
 
+기본값으로 `hanname_master`는 `is_inmyong=true` 행만 내려받습니다.  
+전체(`is_inmyong=false` 포함)가 필요하면 아래처럼 실행하세요.
+
+```bash
+SSOT_PULL_INCLUDE_NOT_INMYONG=1 npm run ssot:pull
+```
+
 ## 4) 런타임에서 SSOT 사용
 
 추천 API 런타임에서 아래 플래그를 켭니다.
