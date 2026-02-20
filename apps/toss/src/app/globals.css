@@ -10,6 +10,7 @@
   --button-secondary-bg: #f2f4f6;
   --card-bg: #ffffff;
   --error: #f04452;
+  color-scheme: light;
 }
 
 * {

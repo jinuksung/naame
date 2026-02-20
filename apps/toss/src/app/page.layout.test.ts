@@ -5,6 +5,7 @@ import path from "node:path";
 const INPUT_PAGE_PATH = path.resolve(__dirname, "page.tsx");
 const LAYOUT_PAGE_PATH = path.resolve(__dirname, "layout.tsx");
 const ROBOTS_ROUTE_PATH = path.resolve(__dirname, "robots.txt", "route.ts");
+const GLOBAL_STYLE_PATH = path.resolve(__dirname, "globals.css");
 const MAIN_DESCRIPTION_TEXT = "발음·의미·사용 데이터를 기준으로 조건에 맞는 이름을 찾습니다";
 const BASIC_MODE_HEADER_TEXT = "기본모드에서는 아래 기준으로 이름을 선정합니다.";
 const BASIC_MODE_SAJU_NOTE_TEXT = "※ 오행 균형은";
@@ -67,6 +68,26 @@ function testMetadataUsesBrandFavicon(): void {
   );
 }
 
+function testViewportDisablesUnnecessaryZoom(): void {
+  const source = readFileSync(LAYOUT_PAGE_PATH, "utf8");
+  assert.equal(
+    source.includes("export const viewport") &&
+      source.includes("maximumScale: 1") &&
+      source.includes("userScalable: false"),
+    true,
+    "toss 앱은 불필요한 확대/축소 제스처를 막기 위해 viewport에서 zoom을 제한해야 합니다.",
+  );
+}
+
+function testLightModeIsForcedForTossNonGamePolicy(): void {
+  const source = readFileSync(GLOBAL_STYLE_PATH, "utf8");
+  assert.equal(
+    source.includes("color-scheme: light"),
+    true,
+    "toss 비게임 가이드에 맞게 다크모드는 비활성화하고 라이트 컬러 스킴을 고정해야 합니다.",
+  );
+}
+
 function testRobotsRouteDisallowsAllCrawling(): void {
   assert.equal(
     existsSync(ROBOTS_ROUTE_PATH),
@@ -87,6 +108,8 @@ function run(): void {
   testMainDescriptionRemovedAndBasicModeGuideVisible();
   testMainPageRendersBrandImage();
   testMetadataUsesBrandFavicon();
+  testViewportDisablesUnnecessaryZoom();
+  testLightModeIsForcedForTossNonGamePolicy();
   testRobotsRouteDisallowsAllCrawling();
   console.log("[test:input-page-layout:toss] all tests passed");
 }

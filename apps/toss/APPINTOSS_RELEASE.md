@@ -83,3 +83,32 @@ Test via console QR (`intoss-private://...`) and verify:
 - External links only for permitted cases
 - Non-game nav and UX checklist satisfied
 - If AI-generated output is shown: AI usage notice + AI result labeling
+
+## 6. Non-game checklist gate (2026-02 update)
+
+아래 항목은 Toss 비게임 체크리스트 기준으로 배포 전 반드시 확인합니다.
+
+Automated gates:
+
+- 확대/축소 제스처 비활성화 (`viewport`에 `maximumScale: 1`, `userScalable: false`)
+- 다크모드 비활성화 (`color-scheme: light`)
+- 앱 소스 내 `intoss-private://` 직접 노출 금지
+- 앱 설치 유도 문구/스토어 스킴(`itms-apps://`, `market://`) 금지
+- 바텀시트 자동 노출 API 사용 금지
+- 필수 입력 전 제출 버튼 비활성화
+- 입력값 session scope 복원(sessionStorage)
+- 응답 지연 시 로딩 안내 화면 제공
+
+Run:
+
+```bash
+npx ts-node -P apps/toss/tsconfig.scripts.json apps/toss/src/app/page.layout.test.ts
+npm run test:nongame-checklist --workspace @namefit/toss
+```
+
+Manual console/product checks:
+
+- 네비게이션 바를 비게임 가이드(타이틀/아이콘/우측 액션 규칙)대로 설정했는지 확인
+- 앱 내 기능 딥링크가 `intoss://{appName}/...`로 등록되어 있는지 확인
+- 홈 인입/뒤로가기/엣지 스와이프 시 화면 전환이 자연스러운지 실기기 점검
+- 로그인/결제/개인정보 처리 등 미사용 기능이 노출되지 않는지 점검
