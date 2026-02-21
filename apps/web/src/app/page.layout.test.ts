@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-const INPUT_PAGE_PATH = path.resolve(__dirname, "page.tsx");
+const INPUT_PAGE_PATH = path.resolve(__dirname, "free", "page.tsx");
+const ROOT_PAGE_PATH = path.resolve(__dirname, "page.tsx");
 const LAYOUT_PAGE_PATH = path.resolve(__dirname, "layout.tsx");
 const MAIN_DESCRIPTION_TEXT = "발음·의미·사용 데이터를 기준으로 조건에 맞는 이름을 찾습니다";
 const BASIC_MODE_HEADER_TEXT = "기본모드에서는 아래 기준으로 이름을 선정합니다.";
@@ -57,11 +58,21 @@ function testMetadataUsesBrandFavicon(): void {
   );
 }
 
+function testRootLandingHasPremiumAndFreeRoutes(): void {
+  const source = readFileSync(ROOT_PAGE_PATH, "utf8");
+  assert.equal(
+    source.includes('href="/premium"') && source.includes('href="/free"'),
+    true,
+    "루트 랜딩에는 /premium 과 /free 선택 링크가 있어야 합니다.",
+  );
+}
+
 function run(): void {
   testBirthInputsAreNotRenderedInBasicMode();
   testMainDescriptionRemovedAndBasicModeGuideVisible();
   testMainPageRendersBrandImage();
   testMetadataUsesBrandFavicon();
+  testRootLandingHasPremiumAndFreeRoutes();
   console.log("[test:input-page-layout:web] all tests passed");
 }
 

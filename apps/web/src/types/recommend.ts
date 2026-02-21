@@ -1,8 +1,13 @@
 export type {
   RecommendGender,
+  RecommendElement,
   FreeRecommendInput,
   SurnameHanjaOption,
   SurnameHanjaOptionsResponse,
   FreeRecommendResultItem,
-  FreeRecommendResponse
+  FreeRecommendResponse,
+  PremiumRecommendInput,
+  PremiumRecommendSummary,
+  PremiumRecommendResultItem,
+  PremiumRecommendResponse
 } from "@namefit/engine";

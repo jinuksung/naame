@@ -1,6 +1,8 @@
 import {
   FreeRecommendInput,
   FreeRecommendResponse,
+  PremiumRecommendInput,
+  PremiumRecommendResponse,
   SurnameHanjaOptionsResponse
 } from "@/types/recommend";
 
@@ -49,6 +51,76 @@ function isValidResponse(value: unknown): value is FreeRecommendResponse {
       typeof result.score === "number" &&
       Number.isFinite(result.score) &&
       Array.isArray(result.reasons)
+    );
+  });
+}
+
+function isValidPremiumResponse(value: unknown): value is PremiumRecommendResponse {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const response = value as PremiumRecommendResponse;
+  if (!response.summary || typeof response.summary !== "object") {
+    return false;
+  }
+  if (!Array.isArray(response.results)) {
+    return false;
+  }
+
+  const summary = response.summary;
+  if (summary.mode !== "IMPROVE" && summary.mode !== "HARMONY") {
+    return false;
+  }
+  if (typeof summary.oneLineSummary !== "string") {
+    return false;
+  }
+  if (!Array.isArray(summary.weakTop2) || summary.weakTop2.length !== 2) {
+    return false;
+  }
+  if (typeof summary.hasHourPillar !== "boolean") {
+    return false;
+  }
+  if (!summary.pillars || typeof summary.pillars !== "object") {
+    return false;
+  }
+  if (!summary.distSaju || typeof summary.distSaju !== "object") {
+    return false;
+  }
+  if (!Array.isArray(summary.distStatus)) {
+    return false;
+  }
+
+  return response.results.every((item) => {
+    if (!item || typeof item !== "object") {
+      return false;
+    }
+    const result = item as PremiumRecommendResponse["results"][number];
+    return (
+      typeof result.rank === "number" &&
+      Number.isFinite(result.rank) &&
+      typeof result.nameHangul === "string" &&
+      Array.isArray(result.hanjaPair) &&
+      result.hanjaPair.length === 2 &&
+      typeof result.hanjaPair[0] === "string" &&
+      typeof result.hanjaPair[1] === "string" &&
+      Array.isArray(result.readingPair) &&
+      result.readingPair.length === 2 &&
+      typeof result.readingPair[0] === "string" &&
+      typeof result.readingPair[1] === "string" &&
+      Array.isArray(result.meaningKwPair) &&
+      result.meaningKwPair.length === 2 &&
+      typeof result.meaningKwPair[0] === "string" &&
+      typeof result.meaningKwPair[1] === "string" &&
+      typeof result.score === "number" &&
+      Number.isFinite(result.score) &&
+      typeof result.sajuScore5 === "number" &&
+      Number.isFinite(result.sajuScore5) &&
+      typeof result.soundScore5 === "number" &&
+      Number.isFinite(result.soundScore5) &&
+      typeof result.engineScore01 === "number" &&
+      Number.isFinite(result.engineScore01) &&
+      Array.isArray(result.why)
     );
   });
 }
@@ -140,6 +212,34 @@ export async function fetchFreeRecommendations(
 
   return {
     results: data.results.slice(0, 5)
+  };
+}
+
+export async function fetchPremiumRecommendations(
+  input: PremiumRecommendInput
+): Promise<PremiumRecommendResponse> {
+  const response = await fetch(buildApiPath("/api/recommend/premium"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    cache: "no-store",
+    body: JSON.stringify(input)
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`[api] premium recommend failed: ${response.status} ${text}`);
+  }
+
+  const data = (await response.json()) as unknown;
+  if (!isValidPremiumResponse(data)) {
+    throw new Error("[api] invalid premium response shape");
+  }
+
+  return {
+    summary: data.summary,
+    results: data.results.slice(0, 20)
   };
 }
 

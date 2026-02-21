@@ -245,3 +245,48 @@ export async function resolveSurnameHanjaSelection(
     selectedHanja: selectedFromRequest ?? defaultHanja
   };
 }
+
+interface SurnameReadingCandidate {
+  surnameReading: string;
+  isDefault: boolean;
+  popularityRank: number;
+}
+
+export async function resolveSurnameReadingByHanja(hanja: string): Promise<string | null> {
+  const normalizedHanja = normalizeHanja(hanja);
+  if (!normalizedHanja) {
+    return null;
+  }
+
+  const map = await getSurnameMap();
+  const candidates: SurnameReadingCandidate[] = [];
+
+  for (const [surnameReading, options] of map.entries()) {
+    for (const option of options) {
+      if (option.hanja !== normalizedHanja) {
+        continue;
+      }
+      candidates.push({
+        surnameReading,
+        isDefault: option.isDefault,
+        popularityRank: option.popularityRank
+      });
+    }
+  }
+
+  if (candidates.length === 0) {
+    return null;
+  }
+
+  candidates.sort((a, b) => {
+    if (a.isDefault !== b.isDefault) {
+      return a.isDefault ? -1 : 1;
+    }
+    if (a.popularityRank !== b.popularityRank) {
+      return a.popularityRank - b.popularityRank;
+    }
+    return a.surnameReading.localeCompare(b.surnameReading, "ko");
+  });
+
+  return candidates[0]?.surnameReading ?? null;
+}

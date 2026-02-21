@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
-const INPUT_PAGE_PATH = path.resolve(__dirname, "page.tsx");
+const INPUT_PAGE_PATH = path.resolve(__dirname, "free", "page.tsx");
+const ROOT_PAGE_PATH = path.resolve(__dirname, "page.tsx");
 const LAYOUT_PAGE_PATH = path.resolve(__dirname, "layout.tsx");
 const ROBOTS_ROUTE_PATH = path.resolve(__dirname, "robots.txt", "route.ts");
 const GLOBAL_STYLE_PATH = path.resolve(__dirname, "globals.css");
@@ -103,6 +104,15 @@ function testRobotsRouteDisallowsAllCrawling(): void {
   );
 }
 
+function testRootLandingHasPremiumAndFreeRoutes(): void {
+  const source = readFileSync(ROOT_PAGE_PATH, "utf8");
+  assert.equal(
+    source.includes('href="/premium"') && source.includes('href="/free"'),
+    true,
+    "루트 랜딩에는 /premium 과 /free 선택 링크가 있어야 합니다.",
+  );
+}
+
 function run(): void {
   testBirthInputsAreNotRenderedInBasicMode();
   testMainDescriptionRemovedAndBasicModeGuideVisible();
@@ -111,6 +121,7 @@ function run(): void {
   testViewportDisablesUnnecessaryZoom();
   testLightModeIsForcedForTossNonGamePolicy();
   testRobotsRouteDisallowsAllCrawling();
+  testRootLandingHasPremiumAndFreeRoutes();
   console.log("[test:input-page-layout:toss] all tests passed");
 }
 

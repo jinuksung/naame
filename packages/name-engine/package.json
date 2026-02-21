@@ -27,5 +27,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "@fullstackfamily/manseryeok": "^1.0.6"
   }
 }

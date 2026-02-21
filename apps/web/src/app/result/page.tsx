@@ -128,7 +128,7 @@ export default function ResultPage(): JSX.Element {
 
   useEffect(() => {
     if (!hasInput) {
-      router.replace("/");
+      router.replace("/free");
     }
   }, [hasInput, router]);
 
@@ -512,13 +512,13 @@ export default function ResultPage(): JSX.Element {
       )}
 
       <div className="nf-result-actions">
-        <SecondaryButton
-          onClick={() => {
-            reset();
-            router.replace("/");
-          }}
-        >
-          다시 입력
+          <SecondaryButton
+            onClick={() => {
+              reset();
+              router.replace("/free");
+            }}
+          >
+            다시 입력
         </SecondaryButton>
       </div>
     </Screen>

@@ -3,15 +3,13 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Screen } from "@/components/ui";
-import { fetchFreeRecommendations } from "@/lib/api";
-import { buildMockResults } from "@/lib/mock";
-import { useRecommendStore } from "@/store/useRecommendStore";
+import { fetchPremiumRecommendations } from "@/lib/api";
+import { usePremiumRecommendStore } from "@/store/usePremiumRecommendStore";
 
 const LOADING_MESSAGES = [
-  "인명용 한자 검토 중…",
-  "발음 조합 분석 중…",
-  "의미 균형 계산 중…",
-  "성씨 조합 안정성 확인 중…",
+  "만세력(절기) 기준으로 4주8자 계산 중…",
+  "사주 오행 분포 분석 중…",
+  "부족 오행 보완 점수 산정 중…"
 ] as const;
 
 const MIN_LOADING_MS = 1700;
@@ -23,19 +21,20 @@ function wait(ms: number): Promise<void> {
   });
 }
 
-export default function LoadingPage(): JSX.Element {
+export default function PremiumLoadingPage(): JSX.Element {
   const router = useRouter();
-  const input = useRecommendStore((state) => state.input);
-  const setResults = useRecommendStore((state) => state.setResults);
+  const input = usePremiumRecommendStore((state) => state.input);
+  const setSummary = usePremiumRecommendStore((state) => state.setSummary);
+  const setResults = usePremiumRecommendStore((state) => state.setResults);
 
   const [messageIndex, setMessageIndex] = useState(0);
   const hasInput =
-    input.surnameHangul.trim().length > 0 &&
+    input.birth.date.trim().length > 0 &&
     input.surnameHanja.trim().length > 0;
 
   useEffect(() => {
     if (!hasInput) {
-      router.replace("/free");
+      router.replace("/premium");
       return;
     }
 
@@ -46,25 +45,23 @@ export default function LoadingPage(): JSX.Element {
 
     const run = async (): Promise<void> => {
       try {
-        const requestPromise = fetchFreeRecommendations(input).catch((error) => {
-          console.error("[loading] API 실패, mock fallback 사용", error);
-          return { results: buildMockResults(input) };
-        });
-
+        const requestPromise = fetchPremiumRecommendations(input);
         await wait(MIN_LOADING_MS);
         const response = await requestPromise;
         if (isCancelled) {
           return;
         }
-        setResults(response.results.slice(0, 5));
-        router.replace("/result");
+        setSummary(response.summary);
+        setResults(response.results);
+        router.replace("/premium/result");
       } catch (error) {
-        console.error("[loading] 예기치 않은 오류, mock fallback 사용", error);
+        console.error("[premium/loading] 추천 호출 실패", error);
         if (isCancelled) {
           return;
         }
-        setResults(buildMockResults(input));
-        router.replace("/result");
+        setSummary(null);
+        setResults([]);
+        router.replace("/premium");
       }
     };
 
@@ -74,10 +71,10 @@ export default function LoadingPage(): JSX.Element {
       isCancelled = true;
       clearInterval(rotateTimer);
     };
-  }, [hasInput, input, router, setResults]);
+  }, [hasInput, input, router, setResults, setSummary]);
 
   return (
-    <Screen title="이름을 추천하고 있어요" description="잠시만 기다려 주세요.">
+    <Screen title="사주 기반으로 분석하고 있어요" description="잠시만 기다려 주세요.">
       <div className="nf-loading-wrap">
         <div className="nf-loading-spinner" aria-label="로딩 중" />
         <p className="nf-loading-text">{LOADING_MESSAGES[messageIndex]}</p>
