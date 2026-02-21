@@ -10,6 +10,19 @@ import {
 } from "./common";
 
 const SSOT_PULL_INCLUDE_NOT_INMYONG = "SSOT_PULL_INCLUDE_NOT_INMYONG";
+const HANNAME_TABLE = "ssot_hanname_master";
+const SURNAME_TABLE = "ssot_surname_map";
+const HANNAME_ELEMENT_CHUNK_SIZE = 120;
+
+interface ElementPair {
+  elementPronunciation: string | null;
+  elementResource: string | null;
+}
+
+interface SurnameElementEnrichResult {
+  updated: number;
+  remainingMissingChars: string[];
+}
 
 function parseBoolean(value: string | undefined): boolean {
   if (!value) {
@@ -24,6 +37,168 @@ function shouldFilterToInmyong(spec: SsotDatasetSpec): boolean {
     return false;
   }
   return !parseBoolean(process.env[SSOT_PULL_INCLUDE_NOT_INMYONG]);
+}
+
+function normalizeText(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function isMissingElement(value: unknown): boolean {
+  return normalizeText(value) == null;
+}
+
+function elementCompleteness(pair: ElementPair): number {
+  return (pair.elementPronunciation ? 1 : 0) + (pair.elementResource ? 1 : 0);
+}
+
+function chooseBetterElementPair(
+  current: (ElementPair & { isInmyong: boolean }) | null,
+  next: (ElementPair & { isInmyong: boolean }),
+): (ElementPair & { isInmyong: boolean }) {
+  if (!current) {
+    return next;
+  }
+  const currentScore = elementCompleteness(current) * 10 + (current.isInmyong ? 1 : 0);
+  const nextScore = elementCompleteness(next) * 10 + (next.isInmyong ? 1 : 0);
+  return nextScore > currentScore ? next : current;
+}
+
+function buildHannameElementMap(rows: SsotTableRow[]): Map<string, ElementPair> {
+  const candidates = new Map<string, ElementPair & { isInmyong: boolean }>();
+
+  for (const row of rows) {
+    const char = normalizeText(row.char);
+    if (!char) {
+      continue;
+    }
+
+    const pair = {
+      elementPronunciation: normalizeText(row.element_pronunciation),
+      elementResource: normalizeText(row.element_resource),
+      isInmyong: row.is_inmyong === true,
+    };
+
+    if (elementCompleteness(pair) === 0) {
+      continue;
+    }
+
+    const current = candidates.get(char) ?? null;
+    candidates.set(char, chooseBetterElementPair(current, pair));
+  }
+
+  const out = new Map<string, ElementPair>();
+  for (const [char, pair] of candidates.entries()) {
+    out.set(char, {
+      elementPronunciation: pair.elementPronunciation,
+      elementResource: pair.elementResource,
+    });
+  }
+  return out;
+}
+
+function collectMissingSurnameChars(rows: SsotTableRow[]): string[] {
+  const out = new Set<string>();
+  for (const row of rows) {
+    const hanja = normalizeText(row.hanja);
+    if (!hanja) {
+      continue;
+    }
+    if (!isMissingElement(row.element_pronunciation) && !isMissingElement(row.element_resource)) {
+      continue;
+    }
+    out.add(hanja);
+  }
+  return [...out];
+}
+
+function applyElementMapToSurnameRows(rows: SsotTableRow[], elementByChar: Map<string, ElementPair>): number {
+  let updated = 0;
+  for (const row of rows) {
+    const hanja = normalizeText(row.hanja);
+    if (!hanja) {
+      continue;
+    }
+    const pair = elementByChar.get(hanja);
+    if (!pair) {
+      continue;
+    }
+
+    if (isMissingElement(row.element_pronunciation) && pair.elementPronunciation) {
+      row.element_pronunciation = pair.elementPronunciation;
+      updated += 1;
+    }
+    if (isMissingElement(row.element_resource) && pair.elementResource) {
+      row.element_resource = pair.elementResource;
+      updated += 1;
+    }
+  }
+  return updated;
+}
+
+export function enrichSurnameRowsFromHannameRows(
+  surnameRows: SsotTableRow[],
+  hannameRows: SsotTableRow[],
+): SurnameElementEnrichResult {
+  const updated = applyElementMapToSurnameRows(surnameRows, buildHannameElementMap(hannameRows));
+  return {
+    updated,
+    remainingMissingChars: collectMissingSurnameChars(surnameRows),
+  };
+}
+
+function chunk<T>(items: T[], size: number): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < items.length; i += size) {
+    out.push(items.slice(i, i + size));
+  }
+  return out;
+}
+
+async function fetchHannameElementRowsByChars(
+  config: SupabaseConfig,
+  chars: string[],
+): Promise<SsotTableRow[]> {
+  const normalizedChars = Array.from(
+    new Set(chars.map((item) => item.trim()).filter((item) => item.length > 0)),
+  );
+  if (normalizedChars.length === 0) {
+    return [];
+  }
+
+  const rows: SsotTableRow[] = [];
+  const charChunks = chunk(normalizedChars, HANNAME_ELEMENT_CHUNK_SIZE);
+
+  for (const charChunk of charChunks) {
+    const encodedChars = charChunk.map((item) => `"${item.replace(/"/g, "\\\"")}"`).join(",");
+    const params = new URLSearchParams({
+      select: "row_index,char,is_inmyong,element_pronunciation,element_resource",
+      order: "row_index.asc",
+      limit: "1000",
+      char: `in.(${encodedChars})`,
+    });
+    const endpoint = `${config.baseUrl}/rest/v1/${HANNAME_TABLE}?${params.toString()}`;
+    const response = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        apikey: config.serviceRoleKey,
+        Authorization: `Bearer ${config.serviceRoleKey}`,
+      },
+    });
+
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(`[ssot:pull] failed element supplement table=${HANNAME_TABLE}: ${response.status} ${body}`);
+    }
+
+    const payload = (await response.json()) as unknown;
+    rows.push(...normalizeRawTableRows(payload));
+  }
+
+  return rows;
 }
 
 export function buildPullEndpoint(
@@ -90,6 +265,30 @@ export async function pullRows(): Promise<void> {
     }
     rowsByTable.set(spec.table, rows);
     totalRows += rows.length;
+  }
+
+  const hannameRows = rowsByTable.get(HANNAME_TABLE);
+  const surnameRows = rowsByTable.get(SURNAME_TABLE);
+  if (hannameRows && surnameRows) {
+    const initial = enrichSurnameRowsFromHannameRows(surnameRows, hannameRows);
+    let totalUpdated = initial.updated;
+    let remainingMissingChars = initial.remainingMissingChars;
+
+    const hannameSpec = SSOT_DATASET_SPECS.find((spec) => spec.dataset === "hanname_master");
+    if (hannameSpec && shouldFilterToInmyong(hannameSpec) && remainingMissingChars.length > 0) {
+      const supplementalRows = await fetchHannameElementRowsByChars(config, remainingMissingChars);
+      if (supplementalRows.length > 0) {
+        const supplement = enrichSurnameRowsFromHannameRows(surnameRows, supplementalRows);
+        totalUpdated += supplement.updated;
+        remainingMissingChars = supplement.remainingMissingChars;
+      }
+    }
+
+    if (totalUpdated > 0 || remainingMissingChars.length > 0) {
+      console.log(
+        `[ssot:pull] surname element enrichment updated=${totalUpdated} missing=${remainingMissingChars.length}`,
+      );
+    }
   }
 
   const written = await writeRowsByTableToLocal(rowsByTable);

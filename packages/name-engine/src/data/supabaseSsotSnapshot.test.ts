@@ -98,6 +98,8 @@ function buildRowsForPath(path: string): SupabaseTableRow[] {
         hanja: "金",
         is_default: true,
         popularity_rank: 1,
+        element_pronunciation: "METAL",
+        element_resource: "METAL",
       },
     ];
   }

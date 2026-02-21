@@ -1,6 +1,6 @@
 import { access, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { SurnameHanjaOption } from "../types/recommend";
+import type { RecommendElement, SurnameHanjaOption } from "../types/recommend";
 import { normalizeHangulReading } from "../lib/korean/normalizeHangulReading";
 import {
   ensureSupabaseSsotSnapshot
@@ -11,6 +11,8 @@ interface RawSurnameMapRow {
   hanja?: unknown;
   isDefault?: unknown;
   popularityRank?: unknown;
+  elementPronunciation?: unknown;
+  elementResource?: unknown;
 }
 
 export interface SurnameHanjaResolution {
@@ -97,6 +99,30 @@ function toPopularityRank(value: unknown): number {
   return Number.MAX_SAFE_INTEGER;
 }
 
+function toRecommendElement(value: unknown): RecommendElement | undefined {
+  const text = String(value ?? "").trim().toUpperCase();
+  if (!text) {
+    return undefined;
+  }
+
+  if (text.includes("목") || text === "WOOD") {
+    return "WOOD";
+  }
+  if (text.includes("화") || text === "FIRE") {
+    return "FIRE";
+  }
+  if (text.includes("토") || text === "EARTH") {
+    return "EARTH";
+  }
+  if (text.includes("금") || text === "METAL") {
+    return "METAL";
+  }
+  if (text.includes("수") || text === "WATER") {
+    return "WATER";
+  }
+  return undefined;
+}
+
 function sortOptions(options: SurnameHanjaOption[]): SurnameHanjaOption[] {
   return options.sort((a, b) => {
     if (a.isDefault !== b.isDefault) {
@@ -146,11 +172,15 @@ async function loadSurnameMap(sourcePath: string): Promise<Map<string, SurnameHa
       skipped += 1;
       continue;
     }
+    const elementPronunciation = toRecommendElement(raw.elementPronunciation);
+    const elementResource = toRecommendElement(raw.elementResource);
 
     const option: SurnameHanjaOption = {
       hanja,
       isDefault: raw.isDefault === true,
-      popularityRank: toPopularityRank(raw.popularityRank)
+      popularityRank: toPopularityRank(raw.popularityRank),
+      ...(elementPronunciation ? { elementPronunciation } : {}),
+      ...(elementResource ? { elementResource } : {}),
     };
 
     const options = byReading.get(surnameReading) ?? [];
@@ -160,7 +190,13 @@ async function loadSurnameMap(sourcePath: string): Promise<Map<string, SurnameHa
       options[existingIndex] = {
         hanja,
         isDefault: existing.isDefault || option.isDefault,
-        popularityRank: Math.min(existing.popularityRank, option.popularityRank)
+        popularityRank: Math.min(existing.popularityRank, option.popularityRank),
+        ...(existing.elementPronunciation || option.elementPronunciation
+          ? { elementPronunciation: existing.elementPronunciation ?? option.elementPronunciation }
+          : {}),
+        ...(existing.elementResource || option.elementResource
+          ? { elementResource: existing.elementResource ?? option.elementResource }
+          : {}),
       };
     } else {
       options.push(option);
@@ -289,4 +325,60 @@ export async function resolveSurnameReadingByHanja(hanja: string): Promise<strin
   });
 
   return candidates[0]?.surnameReading ?? null;
+}
+
+interface SurnameElementCandidate {
+  element: RecommendElement;
+  isDefault: boolean;
+  popularityRank: number;
+  hasResource: boolean;
+}
+
+export async function resolveSurnameElementByHanja(hanja: string): Promise<RecommendElement | null> {
+  const normalizedHanja = normalizeHanja(hanja);
+  if (!normalizedHanja) {
+    return null;
+  }
+
+  const map = await getSurnameMap();
+  const candidates: SurnameElementCandidate[] = [];
+
+  for (const options of map.values()) {
+    for (const option of options) {
+      if (option.hanja !== normalizedHanja) {
+        continue;
+      }
+
+      const element = option.elementResource ?? option.elementPronunciation;
+      if (!element) {
+        continue;
+      }
+
+      candidates.push({
+        element,
+        isDefault: option.isDefault,
+        popularityRank: option.popularityRank,
+        hasResource: Boolean(option.elementResource),
+      });
+    }
+  }
+
+  if (candidates.length === 0) {
+    return null;
+  }
+
+  candidates.sort((a, b) => {
+    if (a.isDefault !== b.isDefault) {
+      return a.isDefault ? -1 : 1;
+    }
+    if (a.popularityRank !== b.popularityRank) {
+      return a.popularityRank - b.popularityRank;
+    }
+    if (a.hasResource !== b.hasResource) {
+      return a.hasResource ? -1 : 1;
+    }
+    return a.element.localeCompare(b.element);
+  });
+
+  return candidates[0]?.element ?? null;
 }

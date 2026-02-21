@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { buildPullEndpoint } from "./pull-from-supabase";
-import type { SsotDatasetSpec, SupabaseConfig } from "./common";
+import { buildPullEndpoint, enrichSurnameRowsFromHannameRows } from "./pull-from-supabase";
+import type { SsotDatasetSpec, SupabaseConfig, SsotTableRow } from "./common";
 
 function withPatchedEnv<T>(patch: Record<string, string | undefined>, run: () => T): T {
   const backup = new Map<string, string | undefined>();
@@ -71,10 +71,68 @@ function testOtherTablesNeverApplyIsInmyongFilter(): void {
   });
 }
 
+function testSurnameElementEnrichmentUsesNotInmyongRows(): void {
+  const surnameRows: SsotTableRow[] = [
+    {
+      row_index: 1,
+      surname_reading: "가",
+      hanja: "賈",
+      is_default: true,
+      popularity_rank: 1,
+    },
+  ];
+  const hannameRows: SsotTableRow[] = [
+    {
+      row_index: 1,
+      char: "賈",
+      is_inmyong: false,
+      element_pronunciation: "WOOD",
+      element_resource: "WATER",
+    },
+  ];
+
+  const result = enrichSurnameRowsFromHannameRows(surnameRows, hannameRows);
+  assert.equal(result.updated, 2);
+  assert.deepEqual(result.remainingMissingChars, []);
+  assert.equal(surnameRows[0].element_pronunciation, "WOOD");
+  assert.equal(surnameRows[0].element_resource, "WATER");
+}
+
+function testSurnameElementEnrichmentPreservesExistingElement(): void {
+  const surnameRows: SsotTableRow[] = [
+    {
+      row_index: 1,
+      surname_reading: "김",
+      hanja: "金",
+      is_default: true,
+      popularity_rank: 1,
+      element_pronunciation: "METAL",
+      element_resource: null,
+    },
+  ];
+  const hannameRows: SsotTableRow[] = [
+    {
+      row_index: 1,
+      char: "金",
+      is_inmyong: true,
+      element_pronunciation: "WATER",
+      element_resource: "METAL",
+    },
+  ];
+
+  const result = enrichSurnameRowsFromHannameRows(surnameRows, hannameRows);
+  assert.equal(result.updated, 1);
+  assert.deepEqual(result.remainingMissingChars, []);
+  assert.equal(surnameRows[0].element_pronunciation, "METAL");
+  assert.equal(surnameRows[0].element_resource, "METAL");
+}
+
 function run(): void {
   testHannameMasterPullFiltersToInmyongByDefault();
   testHannameMasterCanIncludeNotInmyongRowsViaEnv();
   testOtherTablesNeverApplyIsInmyongFilter();
+  testSurnameElementEnrichmentUsesNotInmyongRows();
+  testSurnameElementEnrichmentPreservesExistingElement();
   console.log("[test:ssot-pull] all tests passed");
 }
 

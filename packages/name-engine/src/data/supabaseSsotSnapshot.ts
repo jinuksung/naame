@@ -90,6 +90,8 @@ const JSONL_KEY_MAPS: Record<string, JsonColumnKey[]> = {
     { jsonKey: "hanja", column: "hanja" },
     { jsonKey: "isDefault", column: "is_default" },
     { jsonKey: "popularityRank", column: "popularity_rank" },
+    { jsonKey: "elementPronunciation", column: "element_pronunciation" },
+    { jsonKey: "elementResource", column: "element_resource" },
   ],
   hanja_tags: [
     { jsonKey: "char", column: "char" },
@@ -609,9 +611,8 @@ async function ensureSupabaseSsotSnapshotInternal(
   }
 
   const strict = parseBoolean(process.env.SUPABASE_SSOT_STRICT, false);
-  await mkdir(cacheDir, { recursive: true });
-
   try {
+    await mkdir(cacheDir, { recursive: true });
     const requiredSpecs = resolveRequiredSpecs(requiredPaths);
     const { contentByPath, versionSignature } = await fetchSupabaseContentByPath(requiredSpecs);
     const writtenFiles = await writeContentToCache(cacheDir, requiredPaths, contentByPath);

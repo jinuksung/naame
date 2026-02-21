@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { resolveSurnameHanjaSelection } from "./loadSurnameMap";
+import { resolveSurnameElementByHanja, resolveSurnameHanjaSelection } from "./loadSurnameMap";
 import {
   resetSupabaseSsotSnapshotStateForTests,
 } from "./supabaseSsotSnapshot";
@@ -57,6 +57,8 @@ function buildRowsForPath(path: string): Array<Record<string, unknown>> {
         hanja: "金",
         is_default: true,
         popularity_rank: 1,
+        element_pronunciation: "METAL",
+        element_resource: "METAL",
       },
     ];
   }
@@ -169,68 +171,136 @@ function parseTableFromEndpoint(input: unknown): string {
 }
 
 async function run(): Promise<void> {
-  const tempDir = mkdtempSync(join(tmpdir(), "namefit-surname-ssot-"));
-  const prevCwd = process.cwd();
-  const originalFetch = globalThis.fetch;
-  const requiredPaths = ["surname_map.jsonl"];
-  const rowsByTable = buildRowsByTable(requiredPaths);
-  const EXPECTED_RUNTIME_TABLE_FETCHES = 1;
-  let fetchCalled = 0;
+  {
+    const tempDir = mkdtempSync(join(tmpdir(), "namefit-surname-ssot-cache-mkdir-"));
+    const prevCwd = process.cwd();
+    const backupEnv = new Map<string, string | undefined>();
+    const keys = [
+      "SUPABASE_SSOT_ENABLED",
+      "SUPABASE_URL",
+      "SUPABASE_SERVICE_ROLE_KEY",
+      "SUPABASE_SSOT_CACHE_DIR",
+      "SURNAME_MAP_PATH",
+      "DATA_SOURCE_PATH",
+      "HANJA_TAGS_PATH",
+      "BLACKLIST_WORDS_PATH",
+      "BLACKLIST_INITIALS_PATH",
+      "NAME_POOL_M_PATH",
+      "NAME_POOL_F_PATH",
+    ];
 
-  globalThis.fetch = (async (input: unknown, _init?: unknown) => {
-    fetchCalled += 1;
-    const table = parseTableFromEndpoint(input);
-    return createJsonResponse(rowsByTable.get(table) ?? []);
-  }) as unknown as FetchLike;
-
-  const backupEnv = new Map<string, string | undefined>();
-  const keys = [
-    "SUPABASE_SSOT_ENABLED",
-    "SUPABASE_URL",
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "SUPABASE_SSOT_CACHE_DIR",
-    "SURNAME_MAP_PATH",
-    "DATA_SOURCE_PATH",
-    "HANJA_TAGS_PATH",
-    "BLACKLIST_WORDS_PATH",
-    "BLACKLIST_INITIALS_PATH",
-    "NAME_POOL_M_PATH",
-    "NAME_POOL_F_PATH",
-  ];
-
-  try {
-    for (const key of keys) {
-      backupEnv.set(key, process.env[key]);
-    }
-
-    process.chdir(tempDir);
-    process.env.SUPABASE_SSOT_ENABLED = "1";
-    process.env.SUPABASE_URL = "https://example.supabase.co";
-    process.env.SUPABASE_SERVICE_ROLE_KEY = "service-role";
-    process.env.SUPABASE_SSOT_CACHE_DIR = ".cache/ssot";
-    delete process.env.SURNAME_MAP_PATH;
-    delete process.env.DATA_SOURCE_PATH;
-    delete process.env.HANJA_TAGS_PATH;
-    delete process.env.BLACKLIST_WORDS_PATH;
-    delete process.env.BLACKLIST_INITIALS_PATH;
-    delete process.env.NAME_POOL_M_PATH;
-    delete process.env.NAME_POOL_F_PATH;
-
-    resetSupabaseSsotSnapshotStateForTests();
-    const resolved = await resolveSurnameHanjaSelection("김");
-    assert.equal(resolved.selectedHanja, "金");
-    assert.equal(fetchCalled, EXPECTED_RUNTIME_TABLE_FETCHES);
-  } finally {
-    process.chdir(prevCwd);
-    globalThis.fetch = originalFetch;
-    for (const [key, value] of backupEnv) {
-      if (value === undefined) {
-        delete process.env[key];
-      } else {
-        process.env[key] = value;
+    try {
+      for (const key of keys) {
+        backupEnv.set(key, process.env[key]);
       }
+
+      process.chdir(tempDir);
+      writeFileSync(
+        join(tempDir, "surname_map.jsonl"),
+        JSON.stringify({
+          surnameReading: "김",
+          hanja: "金",
+          isDefault: true,
+          popularityRank: 1,
+        }) + "\n",
+        "utf8",
+      );
+      writeFileSync(join(tempDir, "blocked-cache-target"), "not-a-directory", "utf8");
+
+      process.env.SUPABASE_SSOT_ENABLED = "1";
+      process.env.SUPABASE_URL = "https://example.supabase.co";
+      process.env.SUPABASE_SERVICE_ROLE_KEY = "service-role";
+      process.env.SUPABASE_SSOT_CACHE_DIR = "blocked-cache-target";
+      delete process.env.SURNAME_MAP_PATH;
+      delete process.env.DATA_SOURCE_PATH;
+      delete process.env.HANJA_TAGS_PATH;
+      delete process.env.BLACKLIST_WORDS_PATH;
+      delete process.env.BLACKLIST_INITIALS_PATH;
+      delete process.env.NAME_POOL_M_PATH;
+      delete process.env.NAME_POOL_F_PATH;
+
+      resetSupabaseSsotSnapshotStateForTests();
+      const resolved = await resolveSurnameHanjaSelection("김");
+      assert.equal(resolved.selectedHanja, "金");
+    } finally {
+      process.chdir(prevCwd);
+      for (const [key, value] of backupEnv) {
+        if (value === undefined) {
+          delete process.env[key];
+        } else {
+          process.env[key] = value;
+        }
+      }
+      rmSync(tempDir, { recursive: true, force: true });
     }
-    rmSync(tempDir, { recursive: true, force: true });
+  }
+
+  {
+    const tempDir = mkdtempSync(join(tmpdir(), "namefit-surname-ssot-"));
+    const prevCwd = process.cwd();
+    const originalFetch = globalThis.fetch;
+    const requiredPaths = ["surname_map.jsonl"];
+    const rowsByTable = buildRowsByTable(requiredPaths);
+    const EXPECTED_RUNTIME_TABLE_FETCHES = 1;
+    let fetchCalled = 0;
+
+    globalThis.fetch = (async (input: unknown, _init?: unknown) => {
+      fetchCalled += 1;
+      const table = parseTableFromEndpoint(input);
+      return createJsonResponse(rowsByTable.get(table) ?? []);
+    }) as unknown as FetchLike;
+
+    const backupEnv = new Map<string, string | undefined>();
+    const keys = [
+      "SUPABASE_SSOT_ENABLED",
+      "SUPABASE_URL",
+      "SUPABASE_SERVICE_ROLE_KEY",
+      "SUPABASE_SSOT_CACHE_DIR",
+      "SURNAME_MAP_PATH",
+      "DATA_SOURCE_PATH",
+      "HANJA_TAGS_PATH",
+      "BLACKLIST_WORDS_PATH",
+      "BLACKLIST_INITIALS_PATH",
+      "NAME_POOL_M_PATH",
+      "NAME_POOL_F_PATH",
+    ];
+
+    try {
+      for (const key of keys) {
+        backupEnv.set(key, process.env[key]);
+      }
+
+      process.chdir(tempDir);
+      process.env.SUPABASE_SSOT_ENABLED = "1";
+      process.env.SUPABASE_URL = "https://example.supabase.co";
+      process.env.SUPABASE_SERVICE_ROLE_KEY = "service-role";
+      process.env.SUPABASE_SSOT_CACHE_DIR = ".cache/ssot";
+      delete process.env.SURNAME_MAP_PATH;
+      delete process.env.DATA_SOURCE_PATH;
+      delete process.env.HANJA_TAGS_PATH;
+      delete process.env.BLACKLIST_WORDS_PATH;
+      delete process.env.BLACKLIST_INITIALS_PATH;
+      delete process.env.NAME_POOL_M_PATH;
+      delete process.env.NAME_POOL_F_PATH;
+
+      resetSupabaseSsotSnapshotStateForTests();
+      const resolved = await resolveSurnameHanjaSelection("김");
+      assert.equal(resolved.selectedHanja, "金");
+      assert.equal(fetchCalled, EXPECTED_RUNTIME_TABLE_FETCHES);
+      const element = await resolveSurnameElementByHanja("金");
+      assert.equal(element, "METAL");
+    } finally {
+      process.chdir(prevCwd);
+      globalThis.fetch = originalFetch;
+      for (const [key, value] of backupEnv) {
+        if (value === undefined) {
+          delete process.env[key];
+        } else {
+          process.env[key] = value;
+        }
+      }
+      rmSync(tempDir, { recursive: true, force: true });
+    }
   }
 
   console.log("[test:surname-ssot] all tests passed");

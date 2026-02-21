@@ -2,7 +2,11 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { getDefaultSupabaseSsotFilePaths, resetSupabaseSsotSnapshotStateForTests } from "../data/supabaseSsotSnapshot";
+import {
+  getDefaultRuntimeSupabaseSsotFilePaths,
+  getDefaultSupabaseSsotFilePaths,
+  resetSupabaseSsotSnapshotStateForTests
+} from "../data/supabaseSsotSnapshot";
 import { recommendFreeNames } from "./freeRecommend";
 
 type FetchLike = typeof fetch;
@@ -186,7 +190,8 @@ async function run(): Promise<void> {
   const originalFetch = globalThis.fetch;
   const requiredPaths = getDefaultSupabaseSsotFilePaths();
   const rowsByTable = buildRowsByTable(requiredPaths);
-  const EXPECTED_RUNTIME_TABLE_FETCHES = 12;
+  // resolveSurnameHanjaSelection() preloads surname_map once before runtime SSOT snapshot fetches.
+  const EXPECTED_RUNTIME_TABLE_FETCHES = getDefaultRuntimeSupabaseSsotFilePaths().length + 1;
   let fetchCalled = 0;
 
   globalThis.fetch = (async (input: unknown, _init?: unknown) => {

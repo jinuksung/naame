@@ -1,6 +1,6 @@
 import { access, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
-import { resolveSurnameReadingByHanja } from "../data/loadSurnameMap";
+import { resolveSurnameElementByHanja, resolveSurnameReadingByHanja } from "../data/loadSurnameMap";
 import { loadHanjaDataset } from "../data/loadHanjaDataset";
 import {
   ensureSupabaseSsotSnapshot,
@@ -267,7 +267,11 @@ function resolveHanjaElement(dataset: HanjaDataset, hanja: string): ElementKey |
   return toElementKey(element);
 }
 
-function resolveSurnameElements(dataset: HanjaDataset, surnameHanja: string): ElementKey[] {
+function resolveSurnameElements(
+  dataset: HanjaDataset,
+  surnameHanja: string,
+  fallbackSurnameElement: ElementKey | null,
+): ElementKey[] {
   const out: ElementKey[] = [];
   for (const hanja of Array.from(surnameHanja)) {
     const element = resolveHanjaElement(dataset, hanja);
@@ -276,17 +280,22 @@ function resolveSurnameElements(dataset: HanjaDataset, surnameHanja: string): El
     }
     out.push(element);
   }
+  if (out.length === 0 && fallbackSurnameElement) {
+    out.push(fallbackSurnameElement);
+  }
   return out;
 }
 
 function buildDistFullName(
   dataset: HanjaDataset,
   surnameHanja: string,
-  candidate: RecommendationItem
+  candidate: RecommendationItem,
+  fallbackSurnameElement: ElementKey | null,
 ): ElementDist {
   const elements: ElementKey[] = [];
 
-  const surnameElement = resolveHanjaElement(dataset, Array.from(surnameHanja)[0] ?? "");
+  const surnameElement =
+    resolveHanjaElement(dataset, Array.from(surnameHanja)[0] ?? "") ?? fallbackSurnameElement;
   if (surnameElement) {
     elements.push(surnameElement);
   }
@@ -432,11 +441,24 @@ export async function recommendPremiumNames(payload: unknown): Promise<PremiumRe
         : `일간이 ${dayStem}이며 ${weakTop2
             .map((element) => ELEMENT_LABELS_KO[element])
             .join("/")} 기운이 상대적으로 약한 편입니다.`;
-    const surnameElements = resolveSurnameElements(dataset, input.surnameHanja);
+    const surnameFallbackElementRaw = await resolveSurnameElementByHanja(input.surnameHanja);
+    const surnameFallbackElement = surnameFallbackElementRaw
+      ? toElementKey(surnameFallbackElementRaw)
+      : null;
+    const surnameElements = resolveSurnameElements(
+      dataset,
+      input.surnameHanja,
+      surnameFallbackElement,
+    );
 
     const premiumCandidates: PremiumRankedCandidate[] = engineResult.recommendations.map(
       (candidate) => {
-        const distFullName = buildDistFullName(dataset, input.surnameHanja, candidate);
+        const distFullName = buildDistFullName(
+          dataset,
+          input.surnameHanja,
+          candidate,
+          surnameFallbackElement,
+        );
         const sajuEval = calcSajuScore5({
           distSaju,
           distFullName

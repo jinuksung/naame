@@ -115,6 +115,8 @@ const JSONL_KEY_MAPS: Record<string, JsonColumnKey[]> = {
     { jsonKey: "hanja", column: "hanja" },
     { jsonKey: "isDefault", column: "is_default" },
     { jsonKey: "popularityRank", column: "popularity_rank" },
+    { jsonKey: "elementPronunciation", column: "element_pronunciation" },
+    { jsonKey: "elementResource", column: "element_resource" },
   ],
   hanja_tags: [
     { jsonKey: "char", column: "char" },

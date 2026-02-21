@@ -97,6 +97,8 @@ create table if not exists public.ssot_surname_map (
   hanja text,
   is_default boolean,
   popularity_rank integer,
+  element_pronunciation text,
+  element_resource text,
   updated_at timestamptz not null default now()
 );
 
@@ -179,6 +181,34 @@ create table if not exists public.ssot_hanname_metrics (
   warnings jsonb,
   updated_at timestamptz not null default now()
 );
+
+alter table if exists public.ssot_surname_map
+  add column if not exists element_pronunciation text;
+
+alter table if exists public.ssot_surname_map
+  add column if not exists element_resource text;
+
+with surname_elements as (
+  select distinct on (char)
+    char,
+    element_pronunciation,
+    element_resource
+  from public.ssot_hanname_master
+  where element_pronunciation is not null or element_resource is not null
+  order by
+    char,
+    (element_resource is not null) desc,
+    (element_pronunciation is not null) desc,
+    coalesce(is_inmyong, false) desc,
+    row_index asc
+)
+update public.ssot_surname_map as sm
+set
+  element_pronunciation = coalesce(sm.element_pronunciation, se.element_pronunciation),
+  element_resource = coalesce(sm.element_resource, se.element_resource)
+from surname_elements as se
+where sm.hanja = se.char
+  and (sm.element_pronunciation is null or sm.element_resource is null);
 
 select public.ensure_ssot_identity('ssot_hanname_master');
 select public.ensure_ssot_identity('ssot_surname_map');

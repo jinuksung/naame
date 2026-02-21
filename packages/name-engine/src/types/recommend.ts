@@ -16,6 +16,8 @@ export interface SurnameHanjaOption {
   hanja: string;
   isDefault: boolean;
   popularityRank: number;
+  elementPronunciation?: RecommendElement;
+  elementResource?: RecommendElement;
 }
 
 export interface SurnameHanjaOptionsResponse {
