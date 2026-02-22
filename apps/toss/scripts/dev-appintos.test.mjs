@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 
 import {
-  DEFAULT_NEXT_DIST_DIR,
   DEFAULT_PORT,
   buildNextDevExecution,
 } from "./dev-appintos.mjs";
@@ -23,16 +22,20 @@ function testFallsBackToDefaultWhenPortInvalid() {
   assert.equal(execution.port, DEFAULT_PORT);
 }
 
-function testInjectsGraniteDistDirEnv() {
+function testDoesNotForceNextDistDir() {
   const execution = buildNextDevExecution([]);
-  assert.equal(execution.env.NEXT_DIST_DIR, DEFAULT_NEXT_DIST_DIR);
+  assert.equal(
+    execution.env.NEXT_DIST_DIR,
+    undefined,
+    "dev:appintoss는 NEXT_DIST_DIR를 강제로 주입하지 않아야 기본 .next 경로로 안정적으로 동작합니다.",
+  );
 }
 
 function run() {
   testUsesDefaultPortWhenArgMissing();
   testUsesProvidedPort();
   testFallsBackToDefaultWhenPortInvalid();
-  testInjectsGraniteDistDirEnv();
+  testDoesNotForceNextDistDir();
   console.log("[test:dev-appintos] all tests passed");
 }
 

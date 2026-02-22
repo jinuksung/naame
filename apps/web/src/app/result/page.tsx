@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, PrimaryButton, Screen, SecondaryButton } from "@/components/ui";
 import {
+  addNameBlockSyllableRule,
   addNameToBlacklist,
   fetchFreeRecommendations,
   fetchSurnameHanjaOptions,
@@ -11,7 +12,7 @@ import {
   submitNameFeedback,
 } from "@/lib/api";
 import { syncFeedbackStatus, syncFeedbackVote } from "@/lib/feedbackState";
-import { isLocalAdminToolsEnabled } from "@/lib/localAdminVisibility";
+import { isLocalAdminToolsEnabled } from "@namefit/engine/lib/localAdminVisibility";
 import {
   buildQuickExploreSeed,
   buildQuickSurnameCandidates,
@@ -118,6 +119,9 @@ export default function ResultPage(): JSX.Element {
     Record<string, "idle" | "pending" | "done" | "error">
   >({});
   const [nameActionStatus, setNameActionStatus] = useState<
+    Record<string, "idle" | "pending" | "done" | "error">
+  >({});
+  const [syllableRuleActionStatus, setSyllableRuleActionStatus] = useState<
     Record<string, "idle" | "pending" | "done" | "error">
   >({});
   const quickExploreCounterRef = useRef(0);
@@ -293,6 +297,26 @@ export default function ResultPage(): JSX.Element {
     } catch (error) {
       console.error("[result] blacklist update failed", error);
       setNameActionStatus((prev) => ({ ...prev, [key]: "error" }));
+    }
+  };
+
+  const handleAddSyllableRule = async (
+    item: Pick<FreeRecommendResultItem, "nameHangul" | "hanjaPair">,
+  ): Promise<void> => {
+    const key = buildNameKey(item);
+    if (
+      syllableRuleActionStatus[key] === "pending" ||
+      syllableRuleActionStatus[key] === "done"
+    ) {
+      return;
+    }
+    setSyllableRuleActionStatus((prev) => ({ ...prev, [key]: "pending" }));
+    try {
+      await addNameBlockSyllableRule(item.nameHangul);
+      setSyllableRuleActionStatus((prev) => ({ ...prev, [key]: "done" }));
+    } catch (error) {
+      console.error("[result] syllable-rule update failed", error);
+      setSyllableRuleActionStatus((prev) => ({ ...prev, [key]: "error" }));
     }
   };
 
@@ -491,6 +515,22 @@ export default function ResultPage(): JSX.Element {
                         }}
                       >
                         이름 블랙리스트 처리
+                      </button>
+                      <button
+                        type="button"
+                        className={`nf-local-admin-btn${
+                          syllableRuleActionStatus[itemKey] === "done"
+                            ? " is-done"
+                            : syllableRuleActionStatus[itemKey] === "error"
+                              ? " is-error"
+                              : ""
+                        }`}
+                        disabled={syllableRuleActionStatus[itemKey] === "pending"}
+                        onClick={() => {
+                          void handleAddSyllableRule(item);
+                        }}
+                      >
+                        음절패턴 차단
                       </button>
                     </div>
                   ) : null}

@@ -1,8 +1,13 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Field, PrimaryButton, Screen, SegmentedControl, Toggle } from "@/components/ui";
+import {
+  buildLocalQuickPremiumPayload,
+  resolvePremiumLoadingPath
+} from "@/lib/localQuickPremium";
+import { isLocalAdminToolsEnabled } from "@namefit/engine/lib/localAdminVisibility";
 import { genderOptions } from "@/store/useRecommendStore";
 import { usePremiumRecommendStore } from "@/store/usePremiumRecommendStore";
 import { PremiumRecommendInput } from "@/types/recommend";
@@ -53,9 +58,26 @@ export default function PremiumInputPage(): JSX.Element {
   const [surnameHanja, setSurnameHanja] = useState(storeInput.surnameHanja);
   const [gender, setGender] = useState(storeInput.gender);
   const [errors, setErrors] = useState<PremiumFormErrors>({});
+  const [localAdminEnabled, setLocalAdminEnabled] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    setLocalAdminEnabled(
+      isLocalAdminToolsEnabled({
+        hostname: window.location.hostname
+      })
+    );
+  }, []);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
+
+    const loadingPath =
+      typeof window === "undefined"
+        ? "/premium/loading"
+        : resolvePremiumLoadingPath(window.location.pathname);
 
     const nextInput: PremiumRecommendInput = {
       birth: {
@@ -77,7 +99,27 @@ export default function PremiumInputPage(): JSX.Element {
     setInput(nextInput);
     setSummary(null);
     setResults([]);
-    router.push("/premium/loading");
+    router.push(loadingPath);
+  };
+
+  const handleLocalQuickStart = (): void => {
+    const payload = buildLocalQuickPremiumPayload();
+    const loadingPath =
+      typeof window === "undefined"
+        ? "/premium/loading"
+        : resolvePremiumLoadingPath(window.location.pathname);
+    setDate(payload.input.birth.date);
+    setCalendar(payload.input.birth.calendar);
+    setIsLeapMonth(payload.input.birth.isLeapMonth === true);
+    setTime(payload.input.birth.time ?? "");
+    setSurnameHanja(payload.input.surnameHanja);
+    setGender(payload.input.gender);
+    setErrors({});
+
+    setInput(payload.input);
+    setSummary(null);
+    setResults([]);
+    router.push(loadingPath);
   };
 
   return (
@@ -152,6 +194,18 @@ export default function PremiumInputPage(): JSX.Element {
         />
 
         <PrimaryButton type="submit">사주 기반 분석 시작</PrimaryButton>
+
+        {localAdminEnabled ? (
+          <div className="nf-local-admin-name-row">
+            <button
+              type="button"
+              className="nf-local-admin-btn nf-local-admin-btn-minimal"
+              onClick={handleLocalQuickStart}
+            >
+              로컬 자동 입력으로 바로 조회
+            </button>
+          </div>
+        ) : null}
       </form>
     </Screen>
   );

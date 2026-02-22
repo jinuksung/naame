@@ -10,17 +10,22 @@ import {
 
 interface PremiumRecommendStoreState {
   input: PremiumRecommendInput;
+  surnameHangul: string;
   summary: PremiumRecommendSummary | null;
   results: PremiumRecommendResultItem[];
   hasHydrated: boolean;
   setHasHydrated: (value: boolean) => void;
   setInput: (input: PremiumRecommendInput) => void;
+  setSurnameHangul: (surnameHangul: string) => void;
   setSummary: (summary: PremiumRecommendSummary | null) => void;
   setResults: (results: PremiumRecommendResultItem[]) => void;
   reset: () => void;
 }
 
-type PersistedPremiumStoreState = Pick<PremiumRecommendStoreState, "input" | "summary" | "results">;
+type PersistedPremiumStoreState = Pick<
+  PremiumRecommendStoreState,
+  "input" | "surnameHangul" | "summary" | "results"
+>;
 
 const initialInput: PremiumRecommendInput = {
   birth: {
@@ -67,16 +72,19 @@ export const usePremiumRecommendStore = create<PremiumRecommendStoreState>()(
   persist(
     (set) => ({
       input: initialInput,
+      surnameHangul: "",
       summary: null,
       results: [],
       hasHydrated: false,
       setHasHydrated: (value) => set({ hasHydrated: value }),
       setInput: (input) => set({ input }),
+      setSurnameHangul: (surnameHangul) => set({ surnameHangul }),
       setSummary: (summary) => set({ summary }),
       setResults: (results) => set({ results: sanitizeResults(results) }),
       reset: () =>
         set({
           input: initialInput,
+          surnameHangul: "",
           summary: null,
           results: []
         })
@@ -86,6 +94,7 @@ export const usePremiumRecommendStore = create<PremiumRecommendStoreState>()(
       storage: premiumStorage,
       partialize: (state) => ({
         input: state.input,
+        surnameHangul: state.surnameHangul,
         summary: state.summary,
         results: state.results
       }),

@@ -127,12 +127,47 @@ function testSurnameElementEnrichmentPreservesExistingElement(): void {
   assert.equal(surnameRows[0].element_resource, "METAL");
 }
 
+function testSurnameElementEnrichmentHandlesTwoCharSurname(): void {
+  const surnameRows: SsotTableRow[] = [
+    {
+      row_index: 1,
+      surname_reading: "남궁",
+      hanja: "南宮",
+      is_default: true,
+      popularity_rank: 1,
+    },
+  ];
+  const hannameRows: SsotTableRow[] = [
+    {
+      row_index: 1,
+      char: "南",
+      is_inmyong: true,
+      element_pronunciation: "FIRE",
+      element_resource: null,
+    },
+    {
+      row_index: 2,
+      char: "宮",
+      is_inmyong: true,
+      element_pronunciation: "EARTH",
+      element_resource: "EARTH",
+    },
+  ];
+
+  const result = enrichSurnameRowsFromHannameRows(surnameRows, hannameRows);
+  assert.equal(result.updated, 2);
+  assert.deepEqual(result.remainingMissingChars, []);
+  assert.equal(surnameRows[0].element_pronunciation, "FIRE");
+  assert.equal(surnameRows[0].element_resource, "EARTH");
+}
+
 function run(): void {
   testHannameMasterPullFiltersToInmyongByDefault();
   testHannameMasterCanIncludeNotInmyongRowsViaEnv();
   testOtherTablesNeverApplyIsInmyongFilter();
   testSurnameElementEnrichmentUsesNotInmyongRows();
   testSurnameElementEnrichmentPreservesExistingElement();
+  testSurnameElementEnrichmentHandlesTwoCharSurname();
   console.log("[test:ssot-pull] all tests passed");
 }
 

@@ -4,7 +4,11 @@ interface LocalAdminVisibilityOptions {
   hostname?: string;
 }
 
-const BLOCKED_HOST_SUFFIXES = [".vercel.app", ".apps.tossmini.com", ".private-apps.tossmini.com"] as const;
+const BLOCKED_HOST_SUFFIXES = [
+  ".vercel.app",
+  ".apps.tossmini.com",
+  ".private-apps.tossmini.com",
+] as const;
 
 function normalizeHostname(hostname: string): string {
   return hostname.trim().toLowerCase();

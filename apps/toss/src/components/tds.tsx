@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ReactNode } from "react";
 
 interface ScreenProps {
@@ -37,6 +38,18 @@ interface ButtonProps {
   onClick?: () => void;
   type?: "button" | "submit";
   disabled?: boolean;
+}
+
+interface LinkButtonProps {
+  children: ReactNode;
+  href: string;
+  variant?: "primary" | "secondary";
+}
+
+interface BottomCtaDoubleProps {
+  left: ReactNode;
+  right: ReactNode;
+  topAccessory?: ReactNode;
 }
 
 interface CardProps {
@@ -165,7 +178,7 @@ export function TdsPrimaryButton({
       onClick={onClick}
       disabled={disabled}
     >
-      {children}
+      <span className="tds-button-label">{children}</span>
     </button>
   );
 }
@@ -183,8 +196,37 @@ export function TdsSecondaryButton({
       onClick={onClick}
       disabled={disabled}
     >
-      {children}
+      <span className="tds-button-label">{children}</span>
     </button>
+  );
+}
+
+export function TdsLinkButton({
+  children,
+  href,
+  variant = "primary"
+}: LinkButtonProps): JSX.Element {
+  const variantClass = variant === "secondary" ? "tds-button-secondary" : "tds-button-primary";
+  return (
+    <Link href={href} className={`tds-button ${variantClass}`}>
+      <span className="tds-button-label">{children}</span>
+    </Link>
+  );
+}
+
+export function TdsBottomCtaDouble({
+  left,
+  right,
+  topAccessory
+}: BottomCtaDoubleProps): JSX.Element {
+  return (
+    <div className="tds-bottom-cta tds-bottom-cta-double">
+      {topAccessory ? <div className="tds-bottom-cta-top">{topAccessory}</div> : null}
+      <div className="tds-bottom-cta-actions">
+        <div>{left}</div>
+        <div>{right}</div>
+      </div>
+    </div>
   );
 }
 

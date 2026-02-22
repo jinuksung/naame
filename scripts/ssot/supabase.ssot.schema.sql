@@ -128,6 +128,20 @@ create table if not exists public.ssot_blacklist_initials (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.ssot_name_block_syllable_rules (
+  id bigserial unique,
+  row_index integer primary key check (row_index >= 0),
+  enabled boolean not null default true,
+  s1_jung text,
+  s1_jong text,
+  s1_has_jong boolean,
+  s2_jung text,
+  s2_jong text,
+  s2_has_jong boolean,
+  note text,
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.ssot_name_pool_m (
   id bigserial unique,
   row_index integer primary key check (row_index >= 0),
@@ -188,26 +202,67 @@ alter table if exists public.ssot_surname_map
 alter table if exists public.ssot_surname_map
   add column if not exists element_resource text;
 
-with surname_elements as (
-  select distinct on (char)
-    char,
-    element_pronunciation,
-    element_resource
-  from public.ssot_hanname_master
-  where element_pronunciation is not null or element_resource is not null
-  order by
-    char,
-    (element_resource is not null) desc,
-    (element_pronunciation is not null) desc,
-    coalesce(is_inmyong, false) desc,
-    row_index asc
-)
+alter table if exists public.ssot_name_block_syllable_rules
+  add column if not exists enabled boolean not null default true;
+
+alter table if exists public.ssot_name_block_syllable_rules
+  add column if not exists s1_jung text;
+
+alter table if exists public.ssot_name_block_syllable_rules
+  add column if not exists s1_jong text;
+
+alter table if exists public.ssot_name_block_syllable_rules
+  add column if not exists s1_has_jong boolean;
+
+alter table if exists public.ssot_name_block_syllable_rules
+  add column if not exists s2_jung text;
+
+alter table if exists public.ssot_name_block_syllable_rules
+  add column if not exists s2_jong text;
+
+alter table if exists public.ssot_name_block_syllable_rules
+  add column if not exists s2_has_jong boolean;
+
+alter table if exists public.ssot_name_block_syllable_rules
+  add column if not exists note text;
+
+alter table if exists public.ssot_name_block_syllable_rules
+  add column if not exists updated_at timestamptz not null default now();
+
 update public.ssot_surname_map as sm
 set
-  element_pronunciation = coalesce(sm.element_pronunciation, se.element_pronunciation),
-  element_resource = coalesce(sm.element_resource, se.element_resource)
-from surname_elements as se
-where sm.hanja = se.char
+  element_pronunciation = coalesce(
+    sm.element_pronunciation,
+    (
+      select hm.element_pronunciation
+      from generate_series(1, char_length(sm.hanja)) as seq(pos)
+      join public.ssot_hanname_master as hm
+        on hm.char = substring(sm.hanja from seq.pos for 1)
+      where hm.element_pronunciation is not null
+      order by
+        seq.pos asc,
+        coalesce(hm.is_inmyong, false) desc,
+        hm.row_index asc
+      limit 1
+    )
+  ),
+  element_resource = coalesce(
+    sm.element_resource,
+    (
+      select hm.element_resource
+      from generate_series(1, char_length(sm.hanja)) as seq(pos)
+      join public.ssot_hanname_master as hm
+        on hm.char = substring(sm.hanja from seq.pos for 1)
+      where hm.element_resource is not null
+      order by
+        seq.pos asc,
+        coalesce(hm.is_inmyong, false) desc,
+        hm.row_index asc
+      limit 1
+    )
+  )
+where sm.hanja is not null
+  and char_length(sm.hanja) > 0
   and (sm.element_pronunciation is null or sm.element_resource is null);
 
 select public.ensure_ssot_identity('ssot_hanname_master');
@@ -215,6 +270,7 @@ select public.ensure_ssot_identity('ssot_surname_map');
 select public.ensure_ssot_identity('ssot_hanja_tags');
 select public.ensure_ssot_identity('ssot_blacklist_words');
 select public.ensure_ssot_identity('ssot_blacklist_initials');
+select public.ensure_ssot_identity('ssot_name_block_syllable_rules');
 select public.ensure_ssot_identity('ssot_name_pool_m');
 select public.ensure_ssot_identity('ssot_name_pool_f');
 select public.ensure_ssot_identity('ssot_hanname_master_conflicts');
@@ -247,6 +303,12 @@ execute function public.assign_ssot_row_index_if_missing();
 drop trigger if exists trg_assign_row_index_ssot_blacklist_initials on public.ssot_blacklist_initials;
 create trigger trg_assign_row_index_ssot_blacklist_initials
 before insert on public.ssot_blacklist_initials
+for each row
+execute function public.assign_ssot_row_index_if_missing();
+
+drop trigger if exists trg_assign_row_index_ssot_name_block_syllable_rules on public.ssot_name_block_syllable_rules;
+create trigger trg_assign_row_index_ssot_name_block_syllable_rules
+before insert on public.ssot_name_block_syllable_rules
 for each row
 execute function public.assign_ssot_row_index_if_missing();
 
@@ -301,6 +363,12 @@ execute function public.touch_ssot_updated_at();
 drop trigger if exists trg_touch_ssot_blacklist_initials on public.ssot_blacklist_initials;
 create trigger trg_touch_ssot_blacklist_initials
 before update on public.ssot_blacklist_initials
+for each row
+execute function public.touch_ssot_updated_at();
+
+drop trigger if exists trg_touch_ssot_name_block_syllable_rules on public.ssot_name_block_syllable_rules;
+create trigger trg_touch_ssot_name_block_syllable_rules
+before update on public.ssot_name_block_syllable_rules
 for each row
 execute function public.touch_ssot_updated_at();
 

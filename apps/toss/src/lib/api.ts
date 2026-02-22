@@ -314,3 +314,29 @@ export async function addNameToBlacklist(nameHangul: string): Promise<{ inserted
     inserted: payload.inserted === true
   };
 }
+
+export async function addNameBlockSyllableRule(nameHangul: string): Promise<{ inserted: boolean }> {
+  const normalizedName = nameHangul.trim().normalize("NFC");
+  if (!normalizedName) {
+    throw new Error("[api] invalid nameHangul");
+  }
+
+  const response = await fetch("/api/admin/local/name-block-syllable-rule", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    cache: "no-store",
+    body: JSON.stringify({ nameHangul: normalizedName })
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`[api] syllable rule update failed: ${response.status} ${text}`);
+  }
+
+  const payload = (await response.json()) as { inserted?: unknown };
+  return {
+    inserted: payload.inserted === true
+  };
+}

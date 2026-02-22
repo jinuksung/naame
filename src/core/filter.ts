@@ -1,4 +1,8 @@
-import { BLACKLIST_INITIAL_PATTERNS, BLACKLIST_WORD_PATTERNS } from "./blacklist";
+import {
+  getBlacklistInitialPatterns,
+  getBlacklistWordPatterns,
+  hasNameBlockSyllableRuleMatch,
+} from "./blacklist";
 import type { FilterReason, FilterResult, FrequencyProfile, NameCandidate } from "../types";
 
 const HANGUL_TWO_SYLLABLE = /^[가-힣]{2}$/;
@@ -38,12 +42,18 @@ function toInitialConsonants(name: string): string {
 }
 
 function hasBlacklistPattern(name: string): boolean {
-  if (BLACKLIST_WORD_PATTERNS.some((pattern) => name.includes(pattern))) {
+  const wordPatterns = getBlacklistWordPatterns();
+  if (wordPatterns.some((pattern) => name.includes(pattern))) {
     return true;
   }
 
   const initials = toInitialConsonants(name);
-  return BLACKLIST_INITIAL_PATTERNS.some((pattern) => initials.includes(pattern));
+  const initialPatterns = getBlacklistInitialPatterns();
+  if (initialPatterns.some((pattern) => initials.includes(pattern))) {
+    return true;
+  }
+
+  return hasNameBlockSyllableRuleMatch(name);
 }
 
 function emptyReasonCounts(): Record<FilterReason, number> {

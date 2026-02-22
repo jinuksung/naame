@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -64,10 +64,36 @@ async function testResetNextBuildDirRemovesDotNext() {
   }
 }
 
+function testRouteSourceMapIncludesPremiumRoutes() {
+  const scriptPath = new URL("./build-appintos-static.mjs", import.meta.url);
+  const source = readFileSync(scriptPath, "utf8");
+  assert.equal(
+    source.includes('route: "/premium"'),
+    true,
+    "appintos 정적 빌드는 /premium 라우트를 포함해야 합니다.",
+  );
+  assert.equal(
+    source.includes('route: "/premium/loading"'),
+    true,
+    "appintos 정적 빌드는 /premium/loading 라우트를 포함해야 합니다.",
+  );
+  assert.equal(
+    source.includes('route: "/premium/result"'),
+    true,
+    "appintos 정적 빌드는 /premium/result 라우트를 포함해야 합니다.",
+  );
+  assert.equal(
+    source.includes('route: "/free"'),
+    true,
+    "appintos 정적 빌드는 /free 라우트를 포함해야 합니다.",
+  );
+}
+
 async function run() {
   testDetectsDevProcessesInCurrentProject();
   testIgnoresUnrelatedProcesses();
   testThrowsWhenConflictExists();
+  testRouteSourceMapIncludesPremiumRoutes();
   await testResetNextBuildDirRemovesDotNext();
   console.log("[test:build-appintoss-guard] all tests passed");
 }

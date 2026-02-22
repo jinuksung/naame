@@ -1,8 +1,14 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, PrimaryButton, Screen } from "@/components/ui";
+import { addNameBlockSyllableRule } from "@/lib/api";
+import {
+  buildLocalQuickPremiumPayload,
+  resolvePremiumLoadingPath
+} from "@/lib/localQuickPremium";
+import { isLocalAdminToolsEnabled } from "@namefit/engine/lib/localAdminVisibility";
 import { usePremiumRecommendStore } from "@/store/usePremiumRecommendStore";
 import { PremiumRecommendResultItem, RecommendElement } from "@/types/recommend";
 
@@ -32,9 +38,15 @@ function toElementKo(element: RecommendElement): string {
 
 export default function PremiumResultPage(): JSX.Element {
   const router = useRouter();
+  const setInput = usePremiumRecommendStore((state) => state.setInput);
   const summary = usePremiumRecommendStore((state) => state.summary);
   const results = usePremiumRecommendStore((state) => state.results);
+  const setResults = usePremiumRecommendStore((state) => state.setResults);
   const reset = usePremiumRecommendStore((state) => state.reset);
+  const [localAdminEnabled, setLocalAdminEnabled] = useState(false);
+  const [syllableRuleActionStatus, setSyllableRuleActionStatus] = useState<
+    Record<string, "idle" | "pending" | "done" | "error">
+  >({});
 
   useEffect(() => {
     if (!summary) {
@@ -42,11 +54,54 @@ export default function PremiumResultPage(): JSX.Element {
     }
   }, [router, summary]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    setLocalAdminEnabled(
+      isLocalAdminToolsEnabled({
+        hostname: window.location.hostname
+      })
+    );
+  }, []);
+
   const top20 = useMemo(() => results.slice(0, 20), [results]);
+  const premiumLoadingPath =
+    typeof window === "undefined"
+      ? "/premium/loading"
+      : resolvePremiumLoadingPath(window.location.pathname);
 
   if (!summary) {
     return <></>;
   }
+
+  const handleAddSyllableRule = async (
+    item: Pick<PremiumRecommendResultItem, "nameHangul" | "hanjaPair">
+  ): Promise<void> => {
+    const key = buildNameKey(item);
+    if (
+      syllableRuleActionStatus[key] === "pending" ||
+      syllableRuleActionStatus[key] === "done"
+    ) {
+      return;
+    }
+
+    setSyllableRuleActionStatus((prev) => ({ ...prev, [key]: "pending" }));
+    try {
+      await addNameBlockSyllableRule(item.nameHangul);
+      setSyllableRuleActionStatus((prev) => ({ ...prev, [key]: "done" }));
+    } catch (error) {
+      console.error("[premium-result] syllable-rule update failed", error);
+      setSyllableRuleActionStatus((prev) => ({ ...prev, [key]: "error" }));
+    }
+  };
+
+  const handleLocalQuickStart = (): void => {
+    const payload = buildLocalQuickPremiumPayload();
+    setInput(payload.input);
+    setResults([]);
+    router.push(premiumLoadingPath);
+  };
 
   return (
     <Screen title="프리미엄 추천 결과" description="사주 점수를 우선으로 정렬했습니다.">
@@ -99,7 +154,7 @@ export default function PremiumResultPage(): JSX.Element {
           <p className="nf-description">추천 결과가 비어 있어요. 다시 시도해 주세요.</p>
           <PrimaryButton
             onClick={() => {
-              router.replace("/premium/loading");
+              router.replace(premiumLoadingPath);
             }}
           >
             다시 분석하기
@@ -123,6 +178,26 @@ export default function PremiumResultPage(): JSX.Element {
                   <li key={`${buildNameKey(item)}-${index}`}>{reason}</li>
                 ))}
               </ul>
+              {localAdminEnabled ? (
+                <div className="nf-local-admin-name-row">
+                  <button
+                    type="button"
+                    className={`nf-local-admin-btn nf-local-admin-btn-minimal${
+                      syllableRuleActionStatus[buildNameKey(item)] === "done"
+                        ? " is-done"
+                        : syllableRuleActionStatus[buildNameKey(item)] === "error"
+                          ? " is-error"
+                          : ""
+                    }`}
+                    disabled={syllableRuleActionStatus[buildNameKey(item)] === "pending"}
+                    onClick={() => {
+                      void handleAddSyllableRule(item);
+                    }}
+                  >
+                    음절패턴 차단
+                  </button>
+                </div>
+              ) : null}
             </Card>
           ))}
         </section>
@@ -131,6 +206,17 @@ export default function PremiumResultPage(): JSX.Element {
       <p className="nf-premium-free-note">현재 한시적 무료로 제공 중입니다.</p>
 
       <div className="nf-result-actions">
+        {localAdminEnabled ? (
+          <div className="nf-local-admin-name-row">
+            <button
+              type="button"
+              className="nf-local-admin-btn nf-local-admin-btn-minimal"
+              onClick={handleLocalQuickStart}
+            >
+              로컬 자동 입력으로 바로 조회
+            </button>
+          </div>
+        ) : null}
         <PrimaryButton
           onClick={() => {
             reset();

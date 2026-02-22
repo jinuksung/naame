@@ -744,11 +744,18 @@ export function recommendNames(dataset: HanjaDataset, request: RecommendRequest)
     console.info(`[recommend][prior]\n${formatPriorDiagnosticRows(diagnostics)}`);
   }
 
+  const nonBlacklistedFallbackCandidates = priorEvaluations
+    .filter((row) => row.gate !== "FAIL_BLACKLIST")
+    .map((row) => row.candidate);
   const candidatesForRanking =
-    priorAdjustedCandidates.length > 0 ? priorAdjustedCandidates : Array.from(deduped.values());
+    priorAdjustedCandidates.length > 0 ? priorAdjustedCandidates : nonBlacklistedFallbackCandidates;
 
   if (priorAdjustedCandidates.length === 0 && deduped.size > 0) {
-    console.warn("[recommend] prior gate removed all candidates; fallback to engine-only ranking");
+    const fallbackCount = nonBlacklistedFallbackCandidates.length;
+    console.warn(
+      `[recommend] prior gate removed all candidates; fallback to engine-only ranking ` +
+        `(non-blacklisted=${fallbackCount}, total=${deduped.size})`
+    );
   }
 
   const tieBreakRandom = resolveTieBreakRandom(request.exploreSeed);

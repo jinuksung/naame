@@ -110,9 +110,51 @@ function collectMissingSurnameChars(rows: SsotTableRow[]): string[] {
     if (!isMissingElement(row.element_pronunciation) && !isMissingElement(row.element_resource)) {
       continue;
     }
-    out.add(hanja);
+    for (const char of Array.from(hanja)) {
+      const normalized = normalizeText(char);
+      if (normalized) {
+        out.add(normalized);
+      }
+    }
   }
   return [...out];
+}
+
+function resolveSurnameElementPair(hanja: string, elementByChar: Map<string, ElementPair>): ElementPair | null {
+  const direct = elementByChar.get(hanja);
+  if (direct) {
+    return direct;
+  }
+
+  const chars = Array.from(hanja);
+  if (chars.length <= 1) {
+    return null;
+  }
+
+  let elementPronunciation: string | null = null;
+  let elementResource: string | null = null;
+
+  for (const char of chars) {
+    const pair = elementByChar.get(char);
+    if (!pair) {
+      continue;
+    }
+    if (!elementPronunciation && pair.elementPronunciation) {
+      elementPronunciation = pair.elementPronunciation;
+    }
+    if (!elementResource && pair.elementResource) {
+      elementResource = pair.elementResource;
+    }
+  }
+
+  if (!elementPronunciation && !elementResource) {
+    return null;
+  }
+
+  return {
+    elementPronunciation,
+    elementResource,
+  };
 }
 
 function applyElementMapToSurnameRows(rows: SsotTableRow[], elementByChar: Map<string, ElementPair>): number {
@@ -122,7 +164,7 @@ function applyElementMapToSurnameRows(rows: SsotTableRow[], elementByChar: Map<s
     if (!hanja) {
       continue;
     }
-    const pair = elementByChar.get(hanja);
+    const pair = resolveSurnameElementPair(hanja, elementByChar);
     if (!pair) {
       continue;
     }
@@ -260,7 +302,7 @@ export async function pullRows(): Promise<void> {
       offset += pageSize;
     }
 
-    if (rows.length === 0) {
+    if (rows.length === 0 && !spec.allowEmpty) {
       throw new Error(`[ssot:pull] missing rows in table=${spec.table}`);
     }
     rowsByTable.set(spec.table, rows);

@@ -1,5 +1,8 @@
 import { PriorIndex } from "./buildNamePrior";
-import { BLACKLIST_WORD_PATTERNS } from "../../../../../../src/core/blacklist";
+import {
+  getBlacklistWordSet,
+  hasNameBlockSyllableRuleMatch,
+} from "../../../../../../src/core/blacklist";
 
 export type PriorGate =
   | "PASS"
@@ -15,15 +18,15 @@ export interface PriorGateResult {
 
 export interface PriorGateOptions {
   strict?: boolean;
-  blacklist?: Set<string>;
+  blacklist?: ReadonlySet<string>;
 }
 
 const TWO_SYLLABLE_HANGUL_PATTERN = /^[가-힣]{2}$/;
 const SUFFIX_DO_PATTERN = /도$/;
 
-export const DEFAULT_NAME_BLACKLIST = new Set<string>([
-  ...BLACKLIST_WORD_PATTERNS,
-]);
+function resolveDefaultNameBlacklist(): ReadonlySet<string> {
+  return getBlacklistWordSet();
+}
 
 function clamp01(value: number): number {
   return Math.max(0, Math.min(1, value));
@@ -39,7 +42,7 @@ export function evaluateNamePriorGate(
   options: PriorGateOptions = {},
 ): PriorGateResult {
   const strict = options.strict ?? true;
-  const blacklist = options.blacklist ?? DEFAULT_NAME_BLACKLIST;
+  const blacklist = options.blacklist ?? resolveDefaultNameBlacklist();
   const reasons: string[] = [];
   let penalty01 = 0;
 
@@ -57,6 +60,15 @@ export function evaluateNamePriorGate(
 
   if (blacklist.has(name2)) {
     reasons.push("blacklist 일치");
+    return {
+      gate: "FAIL_BLACKLIST",
+      penalty01: 1,
+      reasons,
+    };
+  }
+
+  if (hasNameBlockSyllableRuleMatch(name2)) {
+    reasons.push("음절 특징 차단 룰 일치");
     return {
       gate: "FAIL_BLACKLIST",
       penalty01: 1,

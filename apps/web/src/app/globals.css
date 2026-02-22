@@ -333,12 +333,17 @@ input {
 }
 
 .nf-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   min-height: 48px;
   border: 1px solid transparent;
   border-radius: var(--radius);
   font-size: 0.95rem;
   font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
   cursor: pointer;
   transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
 }
@@ -824,6 +829,9 @@ input {
 
 .nf-local-admin-name-row {
   margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .nf-local-admin-btn {
@@ -837,10 +845,27 @@ input {
   font-weight: 700;
 }
 
+.nf-local-admin-btn-minimal {
+  min-height: 26px;
+  padding: 0 8px;
+  border-color: hsl(var(--border));
+  border-radius: 8px;
+  background: hsl(var(--card));
+  color: hsl(var(--muted-foreground));
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
 .nf-local-admin-btn.is-done {
   border-color: #16a34a;
   background: #f0fdf4;
   color: #166534;
+}
+
+.nf-local-admin-btn.is-error {
+  border-color: #ef4444;
+  background: #fff5f5;
+  color: #b42318;
 }
 
 .nf-local-admin-btn:disabled {

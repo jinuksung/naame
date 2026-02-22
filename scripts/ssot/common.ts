@@ -9,6 +9,7 @@ export interface SsotDatasetSpec {
   remotePath: string;
   localPath: string;
   format: SsotFormat;
+  allowEmpty?: boolean;
 }
 
 export const SSOT_DATASET_SPECS: SsotDatasetSpec[] = [
@@ -46,6 +47,14 @@ export const SSOT_DATASET_SPECS: SsotDatasetSpec[] = [
     remotePath: "blacklist_initials.jsonl",
     localPath: "blacklist_initials.jsonl",
     format: "jsonl",
+  },
+  {
+    dataset: "name_block_syllable_rules",
+    table: "ssot_name_block_syllable_rules",
+    remotePath: "name_block_syllable_rules.jsonl",
+    localPath: "name_block_syllable_rules.jsonl",
+    format: "jsonl",
+    allowEmpty: true,
   },
   {
     dataset: "name_pool_M",
@@ -128,6 +137,16 @@ const JSONL_KEY_MAPS: Record<string, JsonColumnKey[]> = {
   ],
   blacklist_words: [{ jsonKey: "pattern", column: "pattern" }],
   blacklist_initials: [{ jsonKey: "pattern", column: "pattern" }],
+  name_block_syllable_rules: [
+    { jsonKey: "enabled", column: "enabled" },
+    { jsonKey: "s1_jung", column: "s1_jung" },
+    { jsonKey: "s1_jong", column: "s1_jong" },
+    { jsonKey: "s1_has_jong", column: "s1_has_jong" },
+    { jsonKey: "s2_jung", column: "s2_jung" },
+    { jsonKey: "s2_jong", column: "s2_jong" },
+    { jsonKey: "s2_has_jong", column: "s2_has_jong" },
+    { jsonKey: "note", column: "note" },
+  ],
   hanname_master_conflicts: [
     { jsonKey: "char", column: "char" },
     { jsonKey: "existing", column: "existing" },

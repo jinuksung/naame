@@ -98,7 +98,9 @@ export function applyFinalScoreWithPrior<T extends CandidateWithEngineScore>(
 
     let dropped = false;
     let priorScore01 = prior.priorScore01;
-    if (prior.gate !== "PASS") {
+    if (prior.gate === "FAIL_BLACKLIST") {
+      dropped = true;
+    } else if (prior.gate !== "PASS") {
       if (allowNonWhitelist) {
         const penalty = gatePenalty(prior.gate);
         priorScore01 = clamp01(priorScore01 - penalty);
