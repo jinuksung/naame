@@ -8,12 +8,57 @@ export interface LocalQuickPremiumPayload {
   input: PremiumRecommendInput;
 }
 
+const LOCAL_QUICK_EXPLORE_SEED_MOD = 0x7fffffff;
+
 const SURNAME_PRESETS: readonly SurnamePreset[] = [
   { hanja: "金" },
   { hanja: "李" },
   { hanja: "朴" },
   { hanja: "崔" },
   { hanja: "鄭" },
+  { hanja: "姜" },
+  { hanja: "趙" },
+  { hanja: "尹" },
+  { hanja: "張" },
+  { hanja: "林" },
+  { hanja: "吳" },
+  { hanja: "韓" },
+  { hanja: "申" },
+  { hanja: "徐" },
+  { hanja: "權" },
+  { hanja: "黃" },
+  { hanja: "安" },
+  { hanja: "宋" },
+  { hanja: "柳" },
+  { hanja: "全" },
+  { hanja: "洪" },
+  { hanja: "劉" },
+  { hanja: "高" },
+  { hanja: "文" },
+  { hanja: "梁" },
+  { hanja: "孫" },
+  { hanja: "裵" },
+  { hanja: "白" },
+  { hanja: "許" },
+  { hanja: "南" },
+  { hanja: "沈" },
+  { hanja: "盧" },
+  { hanja: "河" },
+  { hanja: "郭" },
+  { hanja: "成" },
+  { hanja: "車" },
+  { hanja: "朱" },
+  { hanja: "禹" },
+  { hanja: "具" },
+  { hanja: "羅" },
+  { hanja: "南宮" },
+  { hanja: "諸葛" },
+  { hanja: "鮮于" },
+  { hanja: "西門" },
+  { hanja: "皇甫" },
+  { hanja: "獨孤" },
+  { hanja: "司空" },
+  { hanja: "東方" },
 ];
 
 const GENDER_PRESETS: readonly PremiumRecommendInput["gender"][] = [
@@ -41,6 +86,11 @@ function buildRandomTime(random: () => number): string {
   const hour = pickRandomIndex(24, random);
   const minute = pickRandomIndex(60, random);
   return `${pad2(hour)}:${pad2(minute)}`;
+}
+
+function buildRandomExploreSeed(random: () => number): number {
+  const seed = Math.floor(random() * LOCAL_QUICK_EXPLORE_SEED_MOD);
+  return seed === 0 ? 1 : seed;
 }
 
 export function resolvePremiumLoadingPath(currentPathname: string): string {
@@ -76,16 +126,20 @@ export function buildLocalQuickPremiumPayload(
 ): LocalQuickPremiumPayload {
   const surname = SURNAME_PRESETS[pickRandomIndex(SURNAME_PRESETS.length, random)];
   const gender = GENDER_PRESETS[pickRandomIndex(GENDER_PRESETS.length, random)];
+  const date = buildRandomDate(random);
+  const time = buildRandomTime(random);
+  const exploreSeed = buildRandomExploreSeed(random);
 
   return {
     input: {
       birth: {
         calendar: "SOLAR",
-        date: buildRandomDate(random),
-        time: buildRandomTime(random),
+        date,
+        time,
       },
       surnameHanja: surname.hanja,
       gender,
+      exploreSeed,
     },
   };
 }
