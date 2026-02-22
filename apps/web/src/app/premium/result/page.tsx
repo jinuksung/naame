@@ -32,6 +32,13 @@ function buildNameKey(item: Pick<PremiumRecommendResultItem, "nameHangul" | "han
   return `${item.nameHangul}:${item.hanjaPair[0]}${item.hanjaPair[1]}`;
 }
 
+function formatDisplayName(surnameHangul: string, nameHangul: string): string {
+  const normalizedSurnameHangul = surnameHangul.trim();
+  return normalizedSurnameHangul.length > 0
+    ? `${normalizedSurnameHangul}${nameHangul}`
+    : nameHangul;
+}
+
 function toElementKo(element: RecommendElement): string {
   return ELEMENT_LABELS_KO[element] ?? element;
 }
@@ -39,6 +46,7 @@ function toElementKo(element: RecommendElement): string {
 export default function PremiumResultPage(): JSX.Element {
   const router = useRouter();
   const setInput = usePremiumRecommendStore((state) => state.setInput);
+  const surnameHangul = usePremiumRecommendStore((state) => state.surnameHangul);
   const summary = usePremiumRecommendStore((state) => state.summary);
   const results = usePremiumRecommendStore((state) => state.results);
   const setResults = usePremiumRecommendStore((state) => state.setResults);
@@ -165,7 +173,9 @@ export default function PremiumResultPage(): JSX.Element {
           {top20.map((item) => (
             <Card key={buildNameKey(item)}>
               <div className="nf-premium-card-head">
-                <strong className="nf-pron-emphasis">{item.nameHangul}</strong>
+                <strong className="nf-pron-emphasis">
+                  {formatDisplayName(surnameHangul, item.nameHangul)}
+                </strong>
                 <span className="nf-score-chip">#{item.rank}</span>
               </div>
               <p className="nf-premium-hanja">

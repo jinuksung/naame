@@ -3,7 +3,8 @@ import {
   getBlacklistWordPatterns,
   hasNameBlockSyllableRuleMatch,
 } from "./blacklist";
-import type { FilterReason, FilterResult, FrequencyProfile, NameCandidate } from "../types";
+import { hasNamePoolSyllablePositionRuleMatch } from "./namePoolSyllablePositionRules";
+import type { FilterReason, FilterResult, FrequencyProfile, Gender, NameCandidate } from "../types";
 
 const HANGUL_TWO_SYLLABLE = /^[가-힣]{2}$/;
 const CHOSEONG = [
@@ -61,6 +62,7 @@ function emptyReasonCounts(): Record<FilterReason, number> {
     repeated_syllable: 0,
     blacklist: 0,
     invalid_chars: 0,
+    position_rule: 0,
     obvious_weird: 0
   };
 }
@@ -68,7 +70,8 @@ function emptyReasonCounts(): Record<FilterReason, number> {
 export function filterCandidates(
   candidates: NameCandidate[],
   profile: FrequencyProfile,
-  sourceTwoSyllableSet: Set<string>
+  sourceTwoSyllableSet: Set<string>,
+  gender: Gender,
 ): FilterResult {
   const removedByReason = emptyReasonCounts();
   const kept: NameCandidate[] = [];
@@ -87,6 +90,11 @@ export function filterCandidates(
 
     if (hasBlacklistPattern(name)) {
       removedByReason.blacklist += 1;
+      continue;
+    }
+
+    if (hasNamePoolSyllablePositionRuleMatch(candidate, gender)) {
+      removedByReason.position_rule += 1;
       continue;
     }
 

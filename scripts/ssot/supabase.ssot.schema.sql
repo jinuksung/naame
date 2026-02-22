@@ -142,6 +142,18 @@ create table if not exists public.ssot_name_block_syllable_rules (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.ssot_name_pool_syllable_position_rules (
+  id bigserial unique,
+  row_index integer primary key check (row_index >= 0),
+  enabled boolean not null default true,
+  syllable text not null check (char_length(syllable) = 1),
+  gender text not null default 'ALL' check (gender in ('M', 'F', 'ALL')),
+  blocked_position text not null check (blocked_position in ('START', 'END')),
+  tier_scope text not null default 'ALL' check (tier_scope in ('ALL', 'NON_A')),
+  note text,
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.ssot_name_pool_m (
   id bigserial unique,
   row_index integer primary key check (row_index >= 0),
@@ -229,6 +241,45 @@ alter table if exists public.ssot_name_block_syllable_rules
 alter table if exists public.ssot_name_block_syllable_rules
   add column if not exists updated_at timestamptz not null default now();
 
+alter table if exists public.ssot_name_pool_syllable_position_rules
+  add column if not exists enabled boolean not null default true;
+
+alter table if exists public.ssot_name_pool_syllable_position_rules
+  add column if not exists syllable text;
+
+alter table if exists public.ssot_name_pool_syllable_position_rules
+  add column if not exists gender text not null default 'ALL';
+
+alter table if exists public.ssot_name_pool_syllable_position_rules
+  add column if not exists blocked_position text;
+
+alter table if exists public.ssot_name_pool_syllable_position_rules
+  add column if not exists tier_scope text not null default 'ALL';
+
+alter table if exists public.ssot_name_pool_syllable_position_rules
+  add column if not exists note text;
+
+alter table if exists public.ssot_name_pool_syllable_position_rules
+  add column if not exists updated_at timestamptz not null default now();
+
+do $$
+begin
+  if exists (
+    select 1
+    from information_schema.tables
+    where table_schema = 'public'
+      and table_name = 'ssot_name_pool_syllable_position_rules'
+  ) then
+    update public.ssot_name_pool_syllable_position_rules
+    set gender = coalesce(nullif(gender, ''), 'ALL'),
+        tier_scope = coalesce(nullif(tier_scope, ''), 'ALL')
+    where gender is null
+       or gender = ''
+       or tier_scope is null
+       or tier_scope = '';
+  end if;
+end $$;
+
 update public.ssot_surname_map as sm
 set
   element_pronunciation = coalesce(
@@ -271,6 +322,7 @@ select public.ensure_ssot_identity('ssot_hanja_tags');
 select public.ensure_ssot_identity('ssot_blacklist_words');
 select public.ensure_ssot_identity('ssot_blacklist_initials');
 select public.ensure_ssot_identity('ssot_name_block_syllable_rules');
+select public.ensure_ssot_identity('ssot_name_pool_syllable_position_rules');
 select public.ensure_ssot_identity('ssot_name_pool_m');
 select public.ensure_ssot_identity('ssot_name_pool_f');
 select public.ensure_ssot_identity('ssot_hanname_master_conflicts');
@@ -309,6 +361,12 @@ execute function public.assign_ssot_row_index_if_missing();
 drop trigger if exists trg_assign_row_index_ssot_name_block_syllable_rules on public.ssot_name_block_syllable_rules;
 create trigger trg_assign_row_index_ssot_name_block_syllable_rules
 before insert on public.ssot_name_block_syllable_rules
+for each row
+execute function public.assign_ssot_row_index_if_missing();
+
+drop trigger if exists trg_assign_row_index_ssot_name_pool_syllable_position_rules on public.ssot_name_pool_syllable_position_rules;
+create trigger trg_assign_row_index_ssot_name_pool_syllable_position_rules
+before insert on public.ssot_name_pool_syllable_position_rules
 for each row
 execute function public.assign_ssot_row_index_if_missing();
 
@@ -369,6 +427,12 @@ execute function public.touch_ssot_updated_at();
 drop trigger if exists trg_touch_ssot_name_block_syllable_rules on public.ssot_name_block_syllable_rules;
 create trigger trg_touch_ssot_name_block_syllable_rules
 before update on public.ssot_name_block_syllable_rules
+for each row
+execute function public.touch_ssot_updated_at();
+
+drop trigger if exists trg_touch_ssot_name_pool_syllable_position_rules on public.ssot_name_pool_syllable_position_rules;
+create trigger trg_touch_ssot_name_pool_syllable_position_rules
+before update on public.ssot_name_pool_syllable_position_rules
 for each row
 execute function public.touch_ssot_updated_at();
 

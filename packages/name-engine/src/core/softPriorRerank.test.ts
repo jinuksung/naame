@@ -58,6 +58,15 @@ function testTierPriorityAcrossPools(): void {
   assert.equal(attached.tier, "A");
 }
 
+function testTierPriorityAcrossPoolsForAllPrefersAOverC(): void {
+  const poolIndex = createPoolIndex({
+    M: [{ name: "지안", tier: "A" }],
+    F: [{ name: "지안", tier: "C" }]
+  });
+  const attached = attachPoolPrior("지안", "ANY", poolIndex);
+  assert.equal(attached.tier, "A");
+}
+
 function testNoCrossGenderPoolFallback(): void {
   const poolIndex = createPoolIndex({
     M: [],
@@ -69,6 +78,26 @@ function testNoCrossGenderPoolFallback(): void {
   assert.equal(attachedM.poolIncluded, false);
   assert.equal(attachedF.tier, "B");
   assert.equal(attachedF.poolIncluded, true);
+}
+
+function testPoolPriorScoreOrderingPrefersAOverCAndNone(): void {
+  const poolIndex = createPoolIndex({
+    M: [
+      { name: "비이", tier: "B" },
+      { name: "에이", tier: "A" },
+      { name: "씨이", tier: "C" }
+    ],
+    F: []
+  });
+
+  const b = attachPoolPrior("비이", "M", poolIndex);
+  const a = attachPoolPrior("에이", "M", poolIndex);
+  const c = attachPoolPrior("씨이", "M", poolIndex);
+  const n = attachPoolPrior("없음", "M", poolIndex);
+
+  assert.ok(b.poolScore01 > a.poolScore01, "B should remain strongest pool prior");
+  assert.ok(a.poolScore01 > c.poolScore01, "A should outrank C");
+  assert.ok(c.poolScore01 > n.poolScore01, "C should outrank None");
 }
 
 function testDiversifyEndLimit(): void {
@@ -157,7 +186,9 @@ function run(): void {
   testFinalScoreFormula();
   testNonPoolCandidateNotDropped();
   testTierPriorityAcrossPools();
+  testTierPriorityAcrossPoolsForAllPrefersAOverC();
   testNoCrossGenderPoolFallback();
+  testPoolPriorScoreOrderingPrefersAOverCAndNone();
   testDiversifyEndLimit();
   testDiversifyNoDuplicateNames();
   testTieBreakUsesRandomOrderWhenScoresEqual();

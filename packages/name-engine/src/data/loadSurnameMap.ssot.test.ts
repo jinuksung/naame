@@ -198,6 +198,7 @@ async function run(): Promise<void> {
       "BLACKLIST_WORDS_PATH",
       "BLACKLIST_INITIALS_PATH",
       "NAME_BLOCK_SYLLABLE_RULES_PATH",
+      "NAME_POOL_SYLLABLE_POSITION_RULES_PATH",
       "NAME_POOL_M_PATH",
       "NAME_POOL_F_PATH",
     ];
@@ -230,6 +231,7 @@ async function run(): Promise<void> {
       delete process.env.BLACKLIST_WORDS_PATH;
       delete process.env.BLACKLIST_INITIALS_PATH;
       delete process.env.NAME_BLOCK_SYLLABLE_RULES_PATH;
+      delete process.env.NAME_POOL_SYLLABLE_POSITION_RULES_PATH;
       delete process.env.NAME_POOL_M_PATH;
       delete process.env.NAME_POOL_F_PATH;
 
@@ -276,6 +278,7 @@ async function run(): Promise<void> {
       "BLACKLIST_WORDS_PATH",
       "BLACKLIST_INITIALS_PATH",
       "NAME_BLOCK_SYLLABLE_RULES_PATH",
+      "NAME_POOL_SYLLABLE_POSITION_RULES_PATH",
       "NAME_POOL_M_PATH",
       "NAME_POOL_F_PATH",
     ];
@@ -296,6 +299,7 @@ async function run(): Promise<void> {
       delete process.env.BLACKLIST_WORDS_PATH;
       delete process.env.BLACKLIST_INITIALS_PATH;
       delete process.env.NAME_BLOCK_SYLLABLE_RULES_PATH;
+      delete process.env.NAME_POOL_SYLLABLE_POSITION_RULES_PATH;
       delete process.env.NAME_POOL_M_PATH;
       delete process.env.NAME_POOL_F_PATH;
 

@@ -39,6 +39,7 @@ function toTableName(path: string): string {
     "blacklist_words.jsonl": "ssot_blacklist_words",
     "blacklist_initials.jsonl": "ssot_blacklist_initials",
     "name_block_syllable_rules.jsonl": "ssot_name_block_syllable_rules",
+    "name_pool_syllable_position_rules.jsonl": "ssot_name_pool_syllable_position_rules",
     "name_pool_M.json": "ssot_name_pool_m",
     "name_pool_F.json": "ssot_name_pool_f",
     "hanname_master_conflicts.jsonl": "ssot_hanname_master_conflicts",
@@ -133,6 +134,19 @@ function buildRowsForPath(path: string): Array<Record<string, unknown>> {
     ];
   }
 
+  if (path === "name_pool_syllable_position_rules.jsonl") {
+    return [
+      {
+        row_index: 1,
+        enabled: true,
+        syllable: "린",
+        gender: "ALL",
+        blocked_position: "START",
+        tier_scope: "NON_A",
+      },
+    ];
+  }
+
   if (path === "hanname_master_conflicts.jsonl") {
     return [
       {
@@ -223,6 +237,7 @@ async function run(): Promise<void> {
     "BLACKLIST_WORDS_PATH",
     "BLACKLIST_INITIALS_PATH",
     "NAME_BLOCK_SYLLABLE_RULES_PATH",
+    "NAME_POOL_SYLLABLE_POSITION_RULES_PATH",
     "NAME_POOL_M_PATH",
     "NAME_POOL_F_PATH",
     "NAME_PRIOR_PATH",
@@ -245,6 +260,7 @@ async function run(): Promise<void> {
     delete process.env.BLACKLIST_WORDS_PATH;
     delete process.env.BLACKLIST_INITIALS_PATH;
     delete process.env.NAME_BLOCK_SYLLABLE_RULES_PATH;
+    delete process.env.NAME_POOL_SYLLABLE_POSITION_RULES_PATH;
     delete process.env.NAME_POOL_M_PATH;
     delete process.env.NAME_POOL_F_PATH;
     delete process.env.NAME_PRIOR_PATH;

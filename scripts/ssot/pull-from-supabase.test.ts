@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { buildPullEndpoint, enrichSurnameRowsFromHannameRows } from "./pull-from-supabase";
+import { SSOT_DATASET_SPECS, selectColumnsForSpec } from "./common";
 import type { SsotDatasetSpec, SupabaseConfig, SsotTableRow } from "./common";
 
 function withPatchedEnv<T>(patch: Record<string, string | undefined>, run: () => T): T {
@@ -161,6 +162,21 @@ function testSurnameElementEnrichmentHandlesTwoCharSurname(): void {
   assert.equal(surnameRows[0].element_resource, "EARTH");
 }
 
+function testNamePoolSyllablePositionRulesDatasetIsRegistered(): void {
+  const spec = SSOT_DATASET_SPECS.find(
+    (item) => item.dataset === "name_pool_syllable_position_rules",
+  );
+  assert.ok(spec, "name_pool_syllable_position_rules dataset should be registered");
+  assert.equal(spec?.table, "ssot_name_pool_syllable_position_rules");
+  assert.equal(spec?.localPath, "name_pool_syllable_position_rules.jsonl");
+
+  const select = selectColumnsForSpec(spec as SsotDatasetSpec);
+  assert.equal(
+    select,
+    "row_index,enabled,syllable,gender,blocked_position,tier_scope,note",
+  );
+}
+
 function run(): void {
   testHannameMasterPullFiltersToInmyongByDefault();
   testHannameMasterCanIncludeNotInmyongRowsViaEnv();
@@ -168,6 +184,7 @@ function run(): void {
   testSurnameElementEnrichmentUsesNotInmyongRows();
   testSurnameElementEnrichmentPreservesExistingElement();
   testSurnameElementEnrichmentHandlesTwoCharSurname();
+  testNamePoolSyllablePositionRulesDatasetIsRegistered();
   console.log("[test:ssot-pull] all tests passed");
 }
 

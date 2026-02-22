@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Screen } from "@/components/ui";
-import { fetchPremiumRecommendations } from "@/lib/api";
+import { fetchPremiumRecommendations, fetchSurnameReadingByHanja } from "@/lib/api";
 import { usePremiumRecommendStore } from "@/store/usePremiumRecommendStore";
 
 const LOADING_MESSAGES = [
@@ -24,6 +24,7 @@ function wait(ms: number): Promise<void> {
 export default function PremiumLoadingPage(): JSX.Element {
   const router = useRouter();
   const input = usePremiumRecommendStore((state) => state.input);
+  const setSurnameHangul = usePremiumRecommendStore((state) => state.setSurnameHangul);
   const setSummary = usePremiumRecommendStore((state) => state.setSummary);
   const setResults = usePremiumRecommendStore((state) => state.setResults);
 
@@ -44,13 +45,22 @@ export default function PremiumLoadingPage(): JSX.Element {
     }, MESSAGE_ROTATE_MS);
 
     const run = async (): Promise<void> => {
+      setSurnameHangul("");
       try {
+        const surnameReadingPromise = fetchSurnameReadingByHanja(input.surnameHanja).catch((error) => {
+          console.error("[premium/loading] 성 한글 역조회 실패", error);
+          return "";
+        });
         const requestPromise = fetchPremiumRecommendations(input);
         await wait(MIN_LOADING_MS);
-        const response = await requestPromise;
+        const [response, surnameHangul] = await Promise.all([
+          requestPromise,
+          surnameReadingPromise
+        ]);
         if (isCancelled) {
           return;
         }
+        setSurnameHangul(surnameHangul);
         setSummary(response.summary);
         setResults(response.results);
         router.replace("/premium/result");
@@ -59,6 +69,7 @@ export default function PremiumLoadingPage(): JSX.Element {
         if (isCancelled) {
           return;
         }
+        setSurnameHangul("");
         setSummary(null);
         setResults([]);
         router.replace("/premium");
@@ -71,7 +82,7 @@ export default function PremiumLoadingPage(): JSX.Element {
       isCancelled = true;
       clearInterval(rotateTimer);
     };
-  }, [hasInput, input, router, setResults, setSummary]);
+  }, [hasInput, input, router, setResults, setSummary, setSurnameHangul]);
 
   return (
     <Screen title="사주 기반으로 분석하고 있어요" description="잠시만 기다려 주세요.">

@@ -18,6 +18,11 @@ function testPremiumNameAndHanjaUseFreeCardDesign(): void {
     "프리미엄 결과 카드 이름 표시는 무료와 동일하게 pron-emphasis를 사용해야 합니다.",
   );
   assert.equal(
+    source.includes("formatDisplayName(surnameHangul, item.nameHangul)"),
+    true,
+    "프리미엄 결과 카드 대표 이름 표시는 이름 2글자만이 아니라 성+이름(예: 김민준)으로 보여줘야 합니다.",
+  );
+  assert.equal(
     source.includes('className="hanja-detail-list"') &&
       source.includes('className="hanja-detail-item"') &&
       source.includes('className="hanja-char"') &&

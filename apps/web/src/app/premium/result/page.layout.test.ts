@@ -12,6 +12,11 @@ function testPremiumResultHasLocalQuickStartButton(): void {
     true,
     "웹 프리미엄 결과 화면에도 로컬 개발 환경에서만 노출되는 원클릭 자동조회 버튼이 있어야 합니다.",
   );
+  assert.equal(
+    source.includes("formatDisplayName(surnameHangul, item.nameHangul)"),
+    true,
+    "웹 프리미엄 결과 카드 대표 이름 표시는 이름 2글자만이 아니라 성+이름(예: 김민준)으로 보여줘야 합니다.",
+  );
 
   const quickStartFnMatch = source.match(
     /const handleLocalQuickStart = \(\): void => \{[\s\S]*?\n  \};/,

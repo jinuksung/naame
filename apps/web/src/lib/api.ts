@@ -145,6 +145,13 @@ function isValidSurnameHanjaOptionsResponse(value: unknown): value is SurnameHan
   });
 }
 
+function isValidSurnameReadingResponse(value: unknown): value is { surnameReading: string } {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  return typeof (value as { surnameReading?: unknown }).surnameReading === "string";
+}
+
 export async function fetchSurnameHanjaOptions(
   surnameReading: string,
   signal?: AbortSignal
@@ -177,6 +184,37 @@ export async function fetchSurnameHanjaOptions(
     throw new Error("[api] invalid surname options response");
   }
   return data;
+}
+
+export async function fetchSurnameReadingByHanja(
+  surnameHanja: string,
+  signal?: AbortSignal
+): Promise<string> {
+  const hanja = surnameHanja.trim().normalize("NFC");
+  if (!hanja) {
+    return "";
+  }
+
+  const response = await fetch(
+    withBasePath(`/api/surname/reading?hanja=${encodeURIComponent(hanja)}`),
+    {
+      method: "GET",
+      cache: "no-store",
+      signal
+    }
+  );
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`[api] surname reading failed: ${response.status} ${text}`);
+  }
+
+  const data = (await response.json()) as unknown;
+  if (!isValidSurnameReadingResponse(data)) {
+    throw new Error("[api] invalid surname reading response");
+  }
+
+  return data.surnameReading.trim();
 }
 
 export async function fetchFreeRecommendations(

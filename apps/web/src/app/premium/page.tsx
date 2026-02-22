@@ -48,6 +48,7 @@ export default function PremiumInputPage(): JSX.Element {
   const router = useRouter();
   const storeInput = usePremiumRecommendStore((state) => state.input);
   const setInput = usePremiumRecommendStore((state) => state.setInput);
+  const setSurnameHangul = usePremiumRecommendStore((state) => state.setSurnameHangul);
   const setResults = usePremiumRecommendStore((state) => state.setResults);
   const setSummary = usePremiumRecommendStore((state) => state.setSummary);
 
@@ -97,6 +98,7 @@ export default function PremiumInputPage(): JSX.Element {
     }
 
     setInput(nextInput);
+    setSurnameHangul("");
     setSummary(null);
     setResults([]);
     router.push(loadingPath);
@@ -117,6 +119,7 @@ export default function PremiumInputPage(): JSX.Element {
     setErrors({});
 
     setInput(payload.input);
+    setSurnameHangul("");
     setSummary(null);
     setResults([]);
     router.push(loadingPath);

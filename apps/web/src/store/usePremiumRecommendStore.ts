@@ -9,9 +9,11 @@ import {
 
 interface PremiumRecommendStoreState {
   input: PremiumRecommendInput;
+  surnameHangul: string;
   summary: PremiumRecommendSummary | null;
   results: PremiumRecommendResultItem[];
   setInput: (input: PremiumRecommendInput) => void;
+  setSurnameHangul: (surnameHangul: string) => void;
   setSummary: (summary: PremiumRecommendSummary | null) => void;
   setResults: (results: PremiumRecommendResultItem[]) => void;
   reset: () => void;
@@ -47,14 +49,17 @@ function sanitizeResults(results: PremiumRecommendResultItem[]): PremiumRecommen
 
 export const usePremiumRecommendStore = create<PremiumRecommendStoreState>((set) => ({
   input: initialInput,
+  surnameHangul: "",
   summary: null,
   results: [],
   setInput: (input) => set({ input }),
+  setSurnameHangul: (surnameHangul) => set({ surnameHangul }),
   setSummary: (summary) => set({ summary }),
   setResults: (results) => set({ results: sanitizeResults(results) }),
   reset: () =>
     set({
       input: initialInput,
+      surnameHangul: "",
       summary: null,
       results: []
     })

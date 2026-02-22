@@ -13,6 +13,11 @@ const OUTPUT_JSON_PATH =
 const FALLBACK_JSON_PATH = resolve(".cache/name_syllable_whitelist.json");
 const OUTPUT_TS_PATH = resolve("packages/name-engine/src/engine/whitelist/allowSyllables.ts");
 const KOREAN_TWO_SYLLABLE_PATTERN = /^[가-힣]{2}$/;
+const KOREAN_ONE_OR_TWO_SYLLABLE_PATTERN = /^[가-힣]{1,2}$/;
+const BIRTH_REGISTERED_OVERRIDE_FILE_CANDIDATES = [
+  "birth_registered_names_gender.jsonl",
+  "birth_registered_names_gender.json"
+] as const;
 
 const NAME_FIELD_HINT = /name|value|title|label|text|이름|성명/i;
 const COUNT_FIELD_HINT = /count|total|freq|frequency|cnt|num|population|빈도|건수|합계|인원|수량/i;
@@ -185,6 +190,13 @@ interface WhitelistPayload {
   allow: string[];
 }
 
+interface SyllableOverrideSets {
+  allow: string[];
+  male: string[];
+  female: string[];
+  sourcePath: string | null;
+}
+
 function toErrorMessage(error: unknown): string {
   if (error instanceof Error) {
     return error.message;
@@ -194,6 +206,19 @@ function toErrorMessage(error: unknown): string {
 
 function roundScore(score: number): number {
   return Math.round(score * 1000) / 1000;
+}
+
+function mergeSortedUniqueSyllables(...groups: ReadonlyArray<ReadonlyArray<string>>): string[] {
+  return Array.from(new Set(groups.flatMap((group) => group))).sort((a, b) => a.localeCompare(b, "ko"));
+}
+
+function createEmptySyllableOverrideSets(): SyllableOverrideSets {
+  return {
+    allow: [],
+    male: [],
+    female: [],
+    sourcePath: null
+  };
 }
 
 function tokenize(value: string): string[] {
@@ -311,6 +336,147 @@ function asRecord(value: unknown): Record<string, unknown> | null {
     return null;
   }
   return value as Record<string, unknown>;
+}
+
+function normalizeBirthRegisteredName(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const normalized = value.normalize("NFC").trim();
+  if (!KOREAN_ONE_OR_TWO_SYLLABLE_PATTERN.test(normalized)) {
+    return null;
+  }
+
+  return normalized;
+}
+
+function pushBirthRegisteredNameByGender(
+  target: { M: string[]; F: string[] },
+  nameValue: unknown,
+  genderValue: unknown
+): void {
+  const normalizedName = normalizeBirthRegisteredName(nameValue);
+  if (!normalizedName) {
+    return;
+  }
+  if (genderValue === "M") {
+    target.M.push(normalizedName);
+  } else if (genderValue === "F") {
+    target.F.push(normalizedName);
+  }
+}
+
+function extractBirthRegisteredNamesByGenderFromParsed(parsed: unknown): { M: string[]; F: string[] } {
+  const out = { M: [] as string[], F: [] as string[] };
+
+  if (Array.isArray(parsed)) {
+    for (const row of parsed) {
+      const asObj = asRecord(row);
+      if (!asObj) {
+        continue;
+      }
+      pushBirthRegisteredNameByGender(out, asObj.name, asObj.gender);
+    }
+    return out;
+  }
+
+  const asObj = asRecord(parsed);
+  if (!asObj) {
+    return out;
+  }
+
+  const byGender = asRecord(asObj.byGender);
+  if (byGender) {
+    const maleList = Array.isArray(byGender.M) ? byGender.M : [];
+    const femaleList = Array.isArray(byGender.F) ? byGender.F : [];
+    for (const name of maleList) {
+      pushBirthRegisteredNameByGender(out, name, "M");
+    }
+    for (const name of femaleList) {
+      pushBirthRegisteredNameByGender(out, name, "F");
+    }
+  }
+
+  const items = Array.isArray(asObj.items) ? asObj.items : [];
+  for (const item of items) {
+    const row = asRecord(item);
+    if (!row) {
+      continue;
+    }
+    pushBirthRegisteredNameByGender(out, row.name, row.gender);
+  }
+
+  return out;
+}
+
+function parseBirthRegisteredNamesByGenderFromRaw(raw: string): { M: string[]; F: string[] } {
+  const trimmed = raw.trim();
+  if (!trimmed) {
+    return { M: [], F: [] };
+  }
+
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+    return extractBirthRegisteredNamesByGenderFromParsed(JSON.parse(trimmed));
+  }
+
+  const out = { M: [] as string[], F: [] as string[] };
+  for (const line of raw.split(/\r?\n/)) {
+    const lineTrimmed = line.trim();
+    if (!lineTrimmed) {
+      continue;
+    }
+    try {
+      const parsedLine = JSON.parse(lineTrimmed) as unknown;
+      const chunk = extractBirthRegisteredNamesByGenderFromParsed(parsedLine);
+      out.M.push(...chunk.M);
+      out.F.push(...chunk.F);
+    } catch {
+      // ignore malformed lines
+    }
+  }
+
+  return out;
+}
+
+function extractSyllablesFromNameList(names: readonly string[]): string[] {
+  const syllables: string[] = [];
+  for (const name of names) {
+    for (const char of Array.from(name)) {
+      syllables.push(char);
+    }
+  }
+  return mergeSortedUniqueSyllables(syllables);
+}
+
+async function loadBirthRegisteredSyllableOverrides(): Promise<SyllableOverrideSets> {
+  for (const candidate of BIRTH_REGISTERED_OVERRIDE_FILE_CANDIDATES) {
+    const resolved = resolve(candidate);
+    if (!(await pathExists(resolved))) {
+      continue;
+    }
+
+    try {
+      const raw = await readFile(resolved, "utf8");
+      const namesByGender = parseBirthRegisteredNamesByGenderFromRaw(raw);
+      const male = extractSyllablesFromNameList(namesByGender.M);
+      const female = extractSyllablesFromNameList(namesByGender.F);
+      const allow = mergeSortedUniqueSyllables(male, female);
+
+      return {
+        allow,
+        male,
+        female,
+        sourcePath: resolved
+      };
+    } catch (error) {
+      console.warn(
+        `[build:syllables] birth_registered_names_gender 로드 실패 (${candidate}): ${toErrorMessage(error)}`
+      );
+    }
+  }
+
+  return createEmptySyllableOverrideSets();
 }
 
 function extractNameFromRecord(record: Record<string, unknown>): string | null {
@@ -477,7 +643,7 @@ function buildRanked(freqMap: Map<string, number>, limit: number): RankedSyllabl
     .map(({ syl, rawScore }) => ({ syl, score: roundScore(rawScore) }));
 }
 
-function buildFromExtracted(entries: ExtractedNameEntry[]): BuildResult {
+function buildFromExtracted(entries: ExtractedNameEntry[], overrides: SyllableOverrideSets): BuildResult {
   const yearCandidates = Array.from(
     new Set(entries.map((item) => item.year).filter((year) => year > 0))
   ).sort((a, b) => b - a);
@@ -513,13 +679,12 @@ function buildFromExtracted(entries: ExtractedNameEntry[]): BuildResult {
   const overallTop = buildRanked(overallFreq, 220);
   const maleTop = buildRanked(maleFreq, 160);
   const femaleTop = buildRanked(femaleFreq, 160);
-  const allow = Array.from(
-    new Set([
-      ...overallTop.map((item) => item.syl),
-      ...maleTop.map((item) => item.syl),
-      ...femaleTop.map((item) => item.syl)
-    ])
-  ).sort((a, b) => a.localeCompare(b, "ko"));
+  const allow = mergeSortedUniqueSyllables(
+    overallTop.map((item) => item.syl),
+    maleTop.map((item) => item.syl),
+    femaleTop.map((item) => item.syl),
+    overrides.allow
+  );
 
   return {
     topYears,
@@ -532,7 +697,7 @@ function buildFromExtracted(entries: ExtractedNameEntry[]): BuildResult {
   };
 }
 
-function buildFallbackResult(): BuildResult {
+function buildFallbackResult(overrides: SyllableOverrideSets): BuildResult {
   const overallTop = FALLBACK_ALLOW.map((syl, index) => ({
     syl,
     score: FALLBACK_ALLOW.length - index
@@ -545,7 +710,7 @@ function buildFallbackResult(): BuildResult {
     syl,
     score: FALLBACK_FEMALE.length - index
   }));
-  const allow = Array.from(new Set(FALLBACK_ALLOW)).sort((a, b) => a.localeCompare(b, "ko"));
+  const allow = mergeSortedUniqueSyllables([...FALLBACK_ALLOW], overrides.allow);
 
   return {
     topYears: [],
@@ -636,12 +801,21 @@ async function main(): Promise<void> {
     console.warn("[build:syllables] 데이터 저장소 접근 실패. fallback whitelist를 사용합니다.");
   }
 
+  const birthRegisteredOverrides = await loadBirthRegisteredSyllableOverrides();
+  if (birthRegisteredOverrides.sourcePath) {
+    console.info(
+      `[build:syllables] birth overrides loaded: ${relative(process.cwd(), birthRegisteredOverrides.sourcePath)} (allow=${birthRegisteredOverrides.allow.length}, M=${birthRegisteredOverrides.male.length}, F=${birthRegisteredOverrides.female.length})`
+    );
+  } else {
+    console.info("[build:syllables] birth overrides not found; skip supplemental syllables");
+  }
+
   let result: BuildResult;
   if (extracted.length === 0) {
     usedFallback = true;
-    result = buildFallbackResult();
+    result = buildFallbackResult(birthRegisteredOverrides);
   } else {
-    result = buildFromExtracted(extracted);
+    result = buildFromExtracted(extracted, birthRegisteredOverrides);
   }
 
   const generatedAt = new Date().toISOString();
@@ -669,9 +843,9 @@ async function main(): Promise<void> {
 
   const writtenJsonPath = await writeWhitelistJson(payload);
   await writeAllowSyllablesTs(
-    result.allow,
-    result.maleTop.map((item) => item.syl),
-    result.femaleTop.map((item) => item.syl),
+    mergeSortedUniqueSyllables(result.allow, birthRegisteredOverrides.allow),
+    mergeSortedUniqueSyllables(result.maleTop.map((item) => item.syl), birthRegisteredOverrides.male),
+    mergeSortedUniqueSyllables(result.femaleTop.map((item) => item.syl), birthRegisteredOverrides.female),
     generatedAt
   );
 

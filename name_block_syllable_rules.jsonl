@@ -1,1 +1,40 @@
-
+{"enabled":true,"s1_jung":"ㅜ","s1_has_jong":false,"s2_jung":"ㅏ","s2_has_jong":false,"note":"[local-admin] 수가 / 1음절 중성:ㅜ 종성:없음 받침:N / 2음절 중성:ㅏ 종성:없음 받침:N"}
+{"enabled":true,"s1_jung":"ㅗ","s1_has_jong":false,"s2_jung":"ㅓ","s2_has_jong":false,"note":"[local-admin] 오서 / 1음절 중성:ㅗ 종성:없음 받침:N / 2음절 중성:ㅓ 종성:없음 받침:N"}
+{"enabled":true,"s1_jung":"ㅏ","s1_has_jong":false,"s2_jung":"ㅏ","s2_has_jong":false,"note":"동일 단모음 반복 + 개방음절"}
+{"enabled":true,"s1_jung":"ㅓ","s1_has_jong":false,"s2_jung":"ㅓ","s2_has_jong":false,"note":"동일 단모음 반복 + 개방음절"}
+{"enabled":true,"s1_jung":"ㅗ","s1_has_jong":false,"s2_jung":"ㅗ","s2_has_jong":false,"note":"동일 단모음 반복 + 개방음절"}
+{"enabled":true,"s1_jung":"ㅜ","s1_has_jong":false,"s2_jung":"ㅜ","s2_has_jong":false,"note":"동일 단모음 반복 + 개방음절"}
+{"enabled":true,"s1_jung":"ㅡ","s1_has_jong":false,"s2_jung":"ㅡ","s2_has_jong":false,"note":"동일 단모음 반복 + 개방음절"}
+{"enabled":true,"s1_jung":"ㅣ","s1_has_jong":false,"s2_jung":"ㅣ","s2_has_jong":false,"note":"동일 단모음 반복 + 개방음절"}
+{"enabled":true,"s1_jung":"ㅘ","s1_has_jong":false,"s2_jung":"ㅐ","s2_has_jong":false,"note":"이중모음 연속"}
+{"enabled":true,"s1_jung":"ㅝ","s1_has_jong":false,"s2_jung":"ㅓ","s2_has_jong":false,"note":"이중모음 연속"}
+{"enabled":false,"s1_jung":"ㅢ","s1_has_jong":false,"s2_jung":"ㅣ","s2_has_jong":false,"note":"발음 경계 모호"}
+{"enabled":true,"s1_jung":"ㅙ","s1_has_jong":false,"s2_jung":"ㅞ","s2_has_jong":false,"note":"이중모음 구분 어려움"}
+{"enabled":true,"s1_jung":"ㅏ","s1_has_jong":true,"s2_jung":"ㅏ","s2_has_jong":true,"note":"✖ 동일 단모음 반복 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅏ","s1_has_jong":true,"s2_jung":"ㅓ","s2_has_jong":true,"note":"✖ 밝은↔어두운 교차 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅏ","s1_has_jong":true,"s2_jung":"ㅜ","s2_has_jong":true,"note":"✖ 밝은↔어두운 교차 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅓ","s1_has_jong":true,"s2_jung":"ㅏ","s2_has_jong":true,"note":"✖ 밝은↔어두운 교차 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅓ","s1_has_jong":true,"s2_jung":"ㅓ","s2_has_jong":true,"note":"✖ 동일 단모음 반복 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅓ","s1_has_jong":true,"s2_jung":"ㅗ","s2_has_jong":true,"note":"✖ 밝은↔어두운 교차 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅗ","s1_has_jong":true,"s2_jung":"ㅓ","s2_has_jong":true,"note":"✖ 밝은↔어두운 교차 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅗ","s1_has_jong":true,"s2_jung":"ㅗ","s2_has_jong":true,"note":"✖ 동일 단모음 반복 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅗ","s1_has_jong":true,"s2_jung":"ㅜ","s2_has_jong":true,"note":"✖ 밝은↔어두운 교차 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅜ","s1_has_jong":true,"s2_jung":"ㅏ","s2_has_jong":true,"note":"✖ 밝은↔어두운 교차 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅜ","s1_has_jong":true,"s2_jung":"ㅗ","s2_has_jong":true,"note":"✖ 밝은↔어두운 교차 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅜ","s1_has_jong":true,"s2_jung":"ㅜ","s2_has_jong":true,"note":"✖ 동일 단모음 반복 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅡ","s1_has_jong":false,"s2_jung":"ㅡ","s2_has_jong":true,"note":"✖ ㅡ-ㅡ (개방+폐)"}
+{"enabled":true,"s1_jung":"ㅡ","s1_has_jong":true,"s2_jung":"ㅏ","s2_has_jong":true,"note":"✖ ㅡ 포함 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅡ","s1_has_jong":true,"s2_jung":"ㅓ","s2_has_jong":true,"note":"✖ ㅡ 포함 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅡ","s1_has_jong":true,"s2_jung":"ㅗ","s2_has_jong":true,"note":"✖ ㅡ 포함 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅡ","s1_has_jong":true,"s2_jung":"ㅜ","s2_has_jong":true,"note":"✖ ㅡ 포함 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅡ","s1_has_jong":true,"s2_jung":"ㅡ","s2_has_jong":false,"note":"✖ ㅡ-ㅡ (폐+개방)"}
+{"enabled":true,"s1_jung":"ㅡ","s1_has_jong":true,"s2_jung":"ㅡ","s2_has_jong":true,"note":"✖ 동일 단모음 반복 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅣ","s1_has_jong":false,"s2_jung":"ㅣ","s2_has_jong":true,"note":"✖ ㅣ-ㅣ (개방+폐)"}
+{"enabled":true,"s1_jung":"ㅣ","s1_has_jong":true,"s2_jung":"ㅣ","s2_has_jong":false,"note":"✖ ㅣ-ㅣ (폐+개방)"}
+{"enabled":true,"s1_jung":"ㅣ","s1_has_jong":true,"s2_jung":"ㅣ","s2_has_jong":true,"note":"✖ 동일 단모음 반복 + 폐+폐"}
+{"enabled":true,"s1_jung":"ㅜ","s1_has_jong":false,"s2_jung":"ㅠ","s2_has_jong":false,"note":"[local-admin] 주규 / 1음절 중성:ㅜ 종성:없음 받침:N / 2음절 중성:ㅠ 종성:없음 받침:N"}
+{"enabled":true,"s1_jung":"ㅏ","s1_has_jong":false,"s2_jung":"ㅠ","s2_has_jong":false,"note":"[local-admin] 하규 / 1음절 중성:ㅏ 종성:없음 받침:N / 2음절 중성:ㅠ 종성:없음 받침:N"}
+{"enabled":true,"s1_jung":"ㅠ","s1_has_jong":false,"s2_jung":"ㅗ","s2_has_jong":false,"note":"[local-admin] 규소 / 1음절 중성:ㅠ 종성:없음 받침:N / 2음절 중성:ㅗ 종성:없음 받침:N"}
+{"enabled":true,"s1_jung":"ㅠ","s1_jong":"ㄴ","s1_has_jong":true,"s2_jung":"ㅠ","s2_has_jong":false,"note":"[local-admin] 윤유 / 1음절 중성:ㅠ 종성:ㄴ 받침:Y / 2음절 중성:ㅠ 종성:없음 받침:N"}
+{"enabled":true,"s1_jung":"ㅡ","s1_jong":"ㄴ","s1_has_jong":true,"s2_jung":"ㅣ","s2_jong":"ㄴ","s2_has_jong":true,"note":"[local-admin] 은린 / 1음절 중성:ㅡ 종성:ㄴ 받침:Y / 2음절 중성:ㅣ 종성:ㄴ 받침:Y"}
+{"enabled":true,"s1_jung":"ㅕ","s1_jong":"ㄴ","s1_has_jong":true,"s2_jung":"ㅣ","s2_jong":"ㄴ","s2_has_jong":true,"note":"[local-admin] 연린 / 1음절 중성:ㅕ 종성:ㄴ 받침:Y / 2음절 중성:ㅣ 종성:ㄴ 받침:Y"}

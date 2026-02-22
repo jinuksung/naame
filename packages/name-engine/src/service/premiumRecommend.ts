@@ -41,6 +41,11 @@ const DEFAULT_SOURCE_PATH = "hanname_master.jsonl";
 const DEFAULT_TIMEZONE = "Asia/Seoul";
 const PREMIUM_LIMIT = 20;
 const PREMIUM_POOL_LIMIT = 80;
+const PREMIUM_EXPANDED_POOL_LIMIT = 160;
+const PREMIUM_ADDITIONAL_SEARCH_BUDGET_MS = 250;
+const PREMIUM_MIN_TOP1_SAJU_SCORE5_FOR_SKIP_EXPANSION = 3.0;
+const PREMIUM_MIN_TOP5_AVG_SAJU_SCORE5_FOR_SKIP_EXPANSION = 2.5;
+const PREMIUM_MAX_TOP20_ZERO_SAJU_RATIO_FOR_SKIP_EXPANSION = 0.4;
 const EXPLORE_SEED_MOD = 0x7fffffff;
 
 let datasetPromise: Promise<HanjaDataset> | null = null;
@@ -63,6 +68,14 @@ export interface PremiumSortItem {
   sajuScore5: number;
   engineScore01: number;
   soundScore5: number;
+}
+
+export interface PremiumQualityMetrics {
+  topCount: number;
+  top5Count: number;
+  top1SajuScore5: number;
+  top5AvgSajuScore5: number;
+  top20ZeroSajuRatio: number;
 }
 
 interface PremiumRankedCandidate extends PremiumSortItem {
@@ -358,6 +371,147 @@ export function sortPremiumItems<T extends PremiumSortItem>(items: T[]): T[] {
   });
 }
 
+export function summarizePremiumQuality(
+  items: Array<Pick<PremiumSortItem, "sajuScore5">>,
+  limit: number = PREMIUM_LIMIT
+): PremiumQualityMetrics {
+  const top = items.slice(0, Math.max(0, limit));
+  const top5 = top.slice(0, 5);
+  const top1 = top[0];
+  const top20ZeroCount = top.reduce((count, item) => count + (item.sajuScore5 === 0 ? 1 : 0), 0);
+
+  return {
+    topCount: top.length,
+    top5Count: top5.length,
+    top1SajuScore5: top1?.sajuScore5 ?? 0,
+    top5AvgSajuScore5:
+      top5.length > 0
+        ? Math.round(
+            (top5.reduce((sum, item) => sum + item.sajuScore5, 0) / top5.length) * 100
+          ) / 100
+        : 0,
+    top20ZeroSajuRatio:
+      top.length > 0 ? Math.round((top20ZeroCount / top.length) * 10000) / 10000 : 0
+  };
+}
+
+export function shouldExpandPremiumPool(input: {
+  mode: "IMPROVE" | "HARMONY";
+  preDiversity: PremiumQualityMetrics;
+  elapsedMs: number;
+  budgetMs?: number;
+}): boolean {
+  if (input.mode !== "IMPROVE") {
+    return false;
+  }
+
+  const budgetMs = input.budgetMs ?? PREMIUM_ADDITIONAL_SEARCH_BUDGET_MS;
+  if (input.elapsedMs > budgetMs) {
+    return false;
+  }
+
+  if (input.preDiversity.topCount < PREMIUM_LIMIT) {
+    return true;
+  }
+
+  return (
+    input.preDiversity.top1SajuScore5 < PREMIUM_MIN_TOP1_SAJU_SCORE5_FOR_SKIP_EXPANSION ||
+    input.preDiversity.top5AvgSajuScore5 < PREMIUM_MIN_TOP5_AVG_SAJU_SCORE5_FOR_SKIP_EXPANSION ||
+    input.preDiversity.top20ZeroSajuRatio >= PREMIUM_MAX_TOP20_ZERO_SAJU_RATIO_FOR_SKIP_EXPANSION
+  );
+}
+
+function comparePremiumQuality(a: PremiumQualityMetrics, b: PremiumQualityMetrics): number {
+  if (a.top1SajuScore5 !== b.top1SajuScore5) {
+    return a.top1SajuScore5 > b.top1SajuScore5 ? 1 : -1;
+  }
+  if (a.top5AvgSajuScore5 !== b.top5AvgSajuScore5) {
+    return a.top5AvgSajuScore5 > b.top5AvgSajuScore5 ? 1 : -1;
+  }
+  if (a.top20ZeroSajuRatio !== b.top20ZeroSajuRatio) {
+    return a.top20ZeroSajuRatio < b.top20ZeroSajuRatio ? 1 : -1;
+  }
+  if (a.topCount !== b.topCount) {
+    return a.topCount > b.topCount ? 1 : -1;
+  }
+  return 0;
+}
+
+function buildPremiumCandidates(input: {
+  recommendations: RecommendationItem[];
+  dataset: HanjaDataset;
+  surnameHanja: string;
+  surnameFallbackElement: ElementKey | null;
+  distSaju: ElementDist;
+  weakTop2: ElementKey[];
+  surnameElements: ElementKey[];
+}): PremiumRankedCandidate[] {
+  return input.recommendations.map((candidate) => {
+    const distFullName = buildDistFullName(
+      input.dataset,
+      input.surnameHanja,
+      candidate,
+      input.surnameFallbackElement
+    );
+    const sajuEval = calcSajuScore5({
+      distSaju: input.distSaju,
+      distFullName
+    });
+    const soundRaw = scoreSoundElement(candidate.nameHangul, {
+      surnameElements: input.surnameElements
+    });
+    const soundEval = calcSoundScore5({
+      mode: sajuEval.mode,
+      weakTop2: input.weakTop2,
+      soundElements: soundRaw.elements.map(toElementKey),
+      phoneticScore: candidate.scores.phonetic
+    });
+    const engineScore01 = toEngineScore01(candidate);
+
+    return {
+      candidate,
+      nameHangul: candidate.nameHangul,
+      sajuScore5: sajuEval.sajuScore5,
+      soundScore5: soundEval.soundScore5,
+      engineScore01,
+      why: buildWhyLines({
+        mode: sajuEval.mode,
+        weakTop2: input.weakTop2,
+        improveRatio: sajuEval.improveRatio,
+        harmonyRatio: sajuEval.harmonyRatio,
+        soundScore5: soundEval.soundScore5,
+        engineScore01
+      })
+    };
+  });
+}
+
+function finalizePremiumCandidates(
+  premiumCandidates: PremiumRankedCandidate[]
+): {
+  sorted: PremiumRankedCandidate[];
+  diversified: PremiumRankedCandidate[];
+  results: PremiumRecommendResultItem[];
+  preDiversityQuality: PremiumQualityMetrics;
+  postDiversityQuality: PremiumQualityMetrics;
+} {
+  const sorted = sortPremiumItems(premiumCandidates);
+  const diversified = diversifyByStartEnd(sorted, {
+    limit: PREMIUM_LIMIT,
+    maxSameStart: 2,
+    maxSameEnd: 2,
+    getName: (item) => item.nameHangul
+  });
+
+  return {
+    sorted,
+    diversified,
+    results: diversified.map((row, index) => toPremiumResultItem(row, index + 1)),
+    preDiversityQuality: summarizePremiumQuality(sorted),
+    postDiversityQuality: summarizePremiumQuality(diversified)
+  };
+}
+
 function toPremiumResultItem(
   row: PremiumRankedCandidate,
   rank: number
@@ -402,7 +556,7 @@ export async function recommendPremiumNames(payload: unknown): Promise<PremiumRe
     const currentVersionSignature = snapshot.versionSignature ?? snapshot.source;
     const dataset = await getDataset(currentVersionSignature);
 
-    const engineRequest: RecommendRequest = {
+    const engineRequestBase: Omit<RecommendRequest, "limit"> = {
       surnameHangul,
       surnameHanja: input.surnameHanja,
       birth: {
@@ -412,11 +566,8 @@ export async function recommendPremiumNames(payload: unknown): Promise<PremiumRe
         timezone: DEFAULT_TIMEZONE
       },
       gender: mapGenderToEngine(input.gender),
-      limit: PREMIUM_POOL_LIMIT,
       ...(input.exploreSeed ? { exploreSeed: input.exploreSeed } : {})
     };
-
-    const engineResult = recommendNames(dataset, engineRequest);
     const distSaju = buildSajuDistFromPillars({
       yearPillar: sajuSnapshot.pillars.yearPillar,
       monthPillar: sajuSnapshot.pillars.monthPillar,
@@ -450,56 +601,71 @@ export async function recommendPremiumNames(payload: unknown): Promise<PremiumRe
       input.surnameHanja,
       surnameFallbackElement,
     );
+    const runPremiumPass = (
+      enginePoolLimit: number
+    ): ReturnType<typeof finalizePremiumCandidates> => {
+      const engineResult = recommendNames(dataset, {
+        ...engineRequestBase,
+        limit: enginePoolLimit
+      });
 
-    const premiumCandidates: PremiumRankedCandidate[] = engineResult.recommendations.map(
-      (candidate) => {
-        const distFullName = buildDistFullName(
-          dataset,
-          input.surnameHanja,
-          candidate,
-          surnameFallbackElement,
-        );
-        const sajuEval = calcSajuScore5({
-          distSaju,
-          distFullName
-        });
-        const soundRaw = scoreSoundElement(candidate.nameHangul, {
-          surnameElements
-        });
-        const soundEval = calcSoundScore5({
-          mode: sajuEval.mode,
-          weakTop2,
-          soundElements: soundRaw.elements.map(toElementKey),
-          phoneticScore: candidate.scores.phonetic
-        });
-        const engineScore01 = toEngineScore01(candidate);
+      const premiumCandidates = buildPremiumCandidates({
+        recommendations: engineResult.recommendations,
+        dataset,
+        surnameHanja: input.surnameHanja,
+        surnameFallbackElement,
+        distSaju,
+        weakTop2,
+        surnameElements
+      });
 
-        return {
-          candidate,
-          nameHangul: candidate.nameHangul,
-          sajuScore5: sajuEval.sajuScore5,
-          soundScore5: soundEval.soundScore5,
-          engineScore01,
-          why: buildWhyLines({
-            mode: sajuEval.mode,
-            weakTop2,
-            improveRatio: sajuEval.improveRatio,
-            harmonyRatio: sajuEval.harmonyRatio,
-            soundScore5: soundEval.soundScore5,
-            engineScore01
-          })
-        };
-      }
-    );
+      return finalizePremiumCandidates(premiumCandidates);
+    };
 
-    const sorted = sortPremiumItems(premiumCandidates);
-    const diversified = diversifyByStartEnd(sorted, {
-      limit: PREMIUM_LIMIT,
-      maxSameStart: 2,
-      maxSameEnd: 2,
-      getName: (item) => item.nameHangul
+    const premiumPassStartedAt = Date.now();
+    let selectedPass = runPremiumPass(PREMIUM_POOL_LIMIT);
+    const initialElapsedMs = Date.now() - premiumPassStartedAt;
+    const shouldRunExpansion = shouldExpandPremiumPool({
+      mode,
+      preDiversity: selectedPass.preDiversityQuality,
+      elapsedMs: initialElapsedMs
     });
-    const results = diversified.map((row, index) => toPremiumResultItem(row, index + 1));
+
+    if (shouldRunExpansion && PREMIUM_EXPANDED_POOL_LIMIT > PREMIUM_POOL_LIMIT) {
+      console.info(
+        `[recommendPremium] adaptive expansion triggered ` +
+          `preTop1=${selectedPass.preDiversityQuality.top1SajuScore5.toFixed(1)} ` +
+          `preTop5Avg=${selectedPass.preDiversityQuality.top5AvgSajuScore5.toFixed(2)} ` +
+          `preZeroRatio=${(selectedPass.preDiversityQuality.top20ZeroSajuRatio * 100).toFixed(1)}% ` +
+          `elapsed=${initialElapsedMs}ms limit=${PREMIUM_POOL_LIMIT}->${PREMIUM_EXPANDED_POOL_LIMIT}`
+      );
+
+      const expandedPass = runPremiumPass(PREMIUM_EXPANDED_POOL_LIMIT);
+      const postCompare = comparePremiumQuality(
+        expandedPass.postDiversityQuality,
+        selectedPass.postDiversityQuality
+      );
+      const preCompare = comparePremiumQuality(
+        expandedPass.preDiversityQuality,
+        selectedPass.preDiversityQuality
+      );
+      const shouldReplace = postCompare > 0 || (postCompare === 0 && preCompare > 0);
+
+      if (shouldReplace) {
+        selectedPass = expandedPass;
+      }
+
+      console.info(
+        `[recommendPremium] adaptive expansion completed ` +
+          `replaced=${shouldReplace ? "Y" : "N"} ` +
+          `postTop1=${selectedPass.postDiversityQuality.top1SajuScore5.toFixed(1)} ` +
+          `postTop5Avg=${selectedPass.postDiversityQuality.top5AvgSajuScore5.toFixed(2)} ` +
+          `postZeroRatio=${(selectedPass.postDiversityQuality.top20ZeroSajuRatio * 100).toFixed(1)}% ` +
+          `totalElapsed=${Date.now() - premiumPassStartedAt}ms`
+      );
+    }
+
+    const results = selectedPass.results;
 
     return {
       ok: true,

@@ -55,6 +55,13 @@ const DEFAULT_SSOT_DATASET_SPECS: SsotDatasetSpec[] = [
     format: "jsonl",
     allowEmpty: true,
   },
+  {
+    dataset: "name_pool_syllable_position_rules",
+    table: "ssot_name_pool_syllable_position_rules",
+    path: "name_pool_syllable_position_rules.jsonl",
+    format: "jsonl",
+    allowEmpty: true,
+  },
   { dataset: "name_pool_M", table: "ssot_name_pool_m", path: "name_pool_M.json", format: "name_pool_json" },
   { dataset: "name_pool_F", table: "ssot_name_pool_f", path: "name_pool_F.json", format: "name_pool_json" },
   {
@@ -71,7 +78,9 @@ const DEFAULT_RUNTIME_SSOT_FILE_PATHS = [
   "surname_map.jsonl",
   "hanja_tags.jsonl",
   "blacklist_words.jsonl",
+  "blacklist_initials.jsonl",
   "name_block_syllable_rules.jsonl",
+  "name_pool_syllable_position_rules.jsonl",
   "name_pool_M.json",
   "name_pool_F.json",
 ] as const;
@@ -122,6 +131,14 @@ const JSONL_KEY_MAPS: Record<string, JsonColumnKey[]> = {
     { jsonKey: "s2_has_jong", column: "s2_has_jong" },
     { jsonKey: "note", column: "note" },
   ],
+  name_pool_syllable_position_rules: [
+    { jsonKey: "enabled", column: "enabled" },
+    { jsonKey: "syllable", column: "syllable" },
+    { jsonKey: "gender", column: "gender" },
+    { jsonKey: "blockedPosition", column: "blocked_position" },
+    { jsonKey: "tierScope", column: "tier_scope" },
+    { jsonKey: "note", column: "note" },
+  ],
   hanname_master_conflicts: [
     { jsonKey: "char", column: "char" },
     { jsonKey: "existing", column: "existing" },
@@ -160,6 +177,7 @@ const ENV_PATH_MAP: Record<string, string> = {
   "blacklist_words.jsonl": "BLACKLIST_WORDS_PATH",
   "blacklist_initials.jsonl": "BLACKLIST_INITIALS_PATH",
   "name_block_syllable_rules.jsonl": "NAME_BLOCK_SYLLABLE_RULES_PATH",
+  "name_pool_syllable_position_rules.jsonl": "NAME_POOL_SYLLABLE_POSITION_RULES_PATH",
   "name_pool_M.json": "NAME_POOL_M_PATH",
   "name_pool_F.json": "NAME_POOL_F_PATH",
 };

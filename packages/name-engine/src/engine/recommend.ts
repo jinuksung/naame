@@ -13,6 +13,7 @@ import { scoreMeaning } from "./scoring/meaning";
 import { scorePhonetic } from "./scoring/phonetic";
 import { calcSajuElementVector, scoreSajuFit } from "./scoring/sajuElements";
 import { scoreSoundElement } from "./scoring/soundElement";
+import { shouldBlockFinalResultName } from "./finalResultSsotFilters";
 import {
   SurnameInfluenceConfig,
   resolveSurnameInfluenceConfig,
@@ -779,7 +780,39 @@ export function recommendNames(dataset: HanjaDataset, request: RecommendRequest)
     console.info(`[recommend][soft-prior][top30]\n${formatSoftPriorTable(softRerankedRows, 30)}`);
   }
 
-  const rerankedCandidates = softRerankedRows.map((row) => {
+  const finalSsotFilterRejectedByType = {
+    blacklist_word: 0,
+    blacklist_initials: 0,
+    name_block_syllable_rule: 0,
+    name_pool_syllable_position_rule: 0
+  };
+  const finalSsotFilteredRows = softRerankedRows.filter((row) => {
+    const block = shouldBlockFinalResultName({
+      nameHangul: row.candidate.nameHangul,
+      requestGender: request.gender,
+      poolTier: row.pool.tier
+    });
+    if (!block.blocked || !block.reason) {
+      return true;
+    }
+    finalSsotFilterRejectedByType[block.reason] += 1;
+    return false;
+  });
+  const finalSsotRejectedCount = Object.values(finalSsotFilterRejectedByType).reduce(
+    (sum, count) => sum + count,
+    0
+  );
+  if (finalSsotRejectedCount > 0) {
+    console.info(
+      `[recommend][final-ssot-filter] rejected=${finalSsotRejectedCount} ` +
+        `word=${finalSsotFilterRejectedByType.blacklist_word} ` +
+        `initials=${finalSsotFilterRejectedByType.blacklist_initials} ` +
+        `syllable=${finalSsotFilterRejectedByType.name_block_syllable_rule} ` +
+        `position=${finalSsotFilterRejectedByType.name_pool_syllable_position_rule}`
+    );
+  }
+
+  const rerankedCandidates = finalSsotFilteredRows.map((row) => {
     const candidate = row.candidate;
     const poolReason = [
       `tier=${row.pool.tier}`,

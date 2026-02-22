@@ -5,6 +5,7 @@ export type FilterReason =
   | "repeated_syllable"
   | "blacklist"
   | "invalid_chars"
+  | "position_rule"
   | "obvious_weird";
 
 export interface RawInputItem {

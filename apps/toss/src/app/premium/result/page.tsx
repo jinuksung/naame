@@ -44,6 +44,13 @@ function buildNameKey(item: Pick<PremiumRecommendResultItem, "nameHangul" | "han
   return `${item.nameHangul}:${item.hanjaPair[0]}${item.hanjaPair[1]}`;
 }
 
+function formatDisplayName(surnameHangul: string, nameHangul: string): string {
+  const normalizedSurnameHangul = surnameHangul.trim();
+  return normalizedSurnameHangul.length > 0
+    ? `${normalizedSurnameHangul}${nameHangul}`
+    : nameHangul;
+}
+
 function toElementKo(element: RecommendElement): string {
   return ELEMENT_LABELS_KO[element] ?? element;
 }
@@ -326,6 +333,7 @@ export default function PremiumResultPage(): JSX.Element {
         <section className="result-list">
           {top20.map((item) => {
             const itemKey = buildNameKey(item);
+            const displayName = formatDisplayName(surnameHangul, item.nameHangul);
             const hanjaDetails = [
               {
                 hanja: item.hanjaPair[0],
@@ -344,7 +352,7 @@ export default function PremiumResultPage(): JSX.Element {
                 <div className="result-header-row">
                   <span className="score-chip">#{item.rank}</span>
                 </div>
-                <p className="pron-emphasis">{item.nameHangul}</p>
+                <p className="pron-emphasis">{displayName}</p>
                 <ul className="hanja-detail-list">
                   {hanjaDetails.map((detail, detailIndex) => (
                     <li

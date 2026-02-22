@@ -13,15 +13,15 @@ import type {
 
 const TIER_PRIORITY: Record<PoolTierFound, number> = {
   B: 3,
-  C: 2,
-  A: 1
+  A: 2,
+  C: 1
 };
 
 const SCORE_BY_TIER: Record<PoolTier, { poolScore01: number; tierBonus01: number }> = {
   B: { poolScore01: 0.75, tierBonus01: 0.03 },
-  C: { poolScore01: 0.6, tierBonus01: 0.01 },
-  A: { poolScore01: 0.35, tierBonus01: 0.0 },
-  None: { poolScore01: 0.45, tierBonus01: 0.0 }
+  A: { poolScore01: 0.55, tierBonus01: 0.02 },
+  C: { poolScore01: 0.5, tierBonus01: 0.005 },
+  None: { poolScore01: 0.4, tierBonus01: 0.0 }
 };
 
 const DEFAULT_M_FILENAME = "name_pool_M.json";

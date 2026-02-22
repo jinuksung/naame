@@ -57,6 +57,14 @@ export const SSOT_DATASET_SPECS: SsotDatasetSpec[] = [
     allowEmpty: true,
   },
   {
+    dataset: "name_pool_syllable_position_rules",
+    table: "ssot_name_pool_syllable_position_rules",
+    remotePath: "name_pool_syllable_position_rules.jsonl",
+    localPath: "name_pool_syllable_position_rules.jsonl",
+    format: "jsonl",
+    allowEmpty: true,
+  },
+  {
     dataset: "name_pool_M",
     table: "ssot_name_pool_m",
     remotePath: "name_pool_M.json",
@@ -145,6 +153,14 @@ const JSONL_KEY_MAPS: Record<string, JsonColumnKey[]> = {
     { jsonKey: "s2_jung", column: "s2_jung" },
     { jsonKey: "s2_jong", column: "s2_jong" },
     { jsonKey: "s2_has_jong", column: "s2_has_jong" },
+    { jsonKey: "note", column: "note" },
+  ],
+  name_pool_syllable_position_rules: [
+    { jsonKey: "enabled", column: "enabled" },
+    { jsonKey: "syllable", column: "syllable" },
+    { jsonKey: "gender", column: "gender" },
+    { jsonKey: "blockedPosition", column: "blocked_position" },
+    { jsonKey: "tierScope", column: "tier_scope" },
     { jsonKey: "note", column: "note" },
   ],
   hanname_master_conflicts: [
