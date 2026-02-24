@@ -5,7 +5,8 @@ import { createJSONStorage, persist, type StateStorage } from "zustand/middlewar
 import {
   PremiumRecommendInput,
   PremiumRecommendResultItem,
-  PremiumRecommendSummary
+  PremiumRecommendSummary,
+  RecommendElement
 } from "@/types/recommend";
 
 interface PremiumRecommendStoreState {
@@ -68,6 +69,26 @@ function sanitizeResults(results: PremiumRecommendResultItem[]): PremiumRecommen
   }));
 }
 
+function sanitizeSummary(summary: PremiumRecommendSummary | null): PremiumRecommendSummary | null {
+  if (!summary) {
+    return null;
+  }
+
+  const compat = summary as PremiumRecommendSummary & {
+    weakTop2?: RecommendElement[];
+  };
+  const weakTop3 = Array.isArray(compat.weakTop3)
+    ? compat.weakTop3
+    : Array.isArray(compat.weakTop2)
+      ? compat.weakTop2
+      : [];
+
+  return {
+    ...summary,
+    weakTop3
+  };
+}
+
 export const usePremiumRecommendStore = create<PremiumRecommendStoreState>()(
   persist(
     (set) => ({
@@ -79,7 +100,7 @@ export const usePremiumRecommendStore = create<PremiumRecommendStoreState>()(
       setHasHydrated: (value) => set({ hasHydrated: value }),
       setInput: (input) => set({ input }),
       setSurnameHangul: (surnameHangul) => set({ surnameHangul }),
-      setSummary: (summary) => set({ summary }),
+      setSummary: (summary) => set({ summary: sanitizeSummary(summary) }),
       setResults: (results) => set({ results: sanitizeResults(results) }),
       reset: () =>
         set({
@@ -101,6 +122,9 @@ export const usePremiumRecommendStore = create<PremiumRecommendStoreState>()(
       onRehydrateStorage: () => (state, error) => {
         if (error) {
           console.error("[store] premium store rehydrate failed", error);
+        }
+        if (state?.summary) {
+          state.setSummary(state.summary);
         }
         state?.setHasHydrated(true);
       }

@@ -46,6 +46,26 @@ export function pickWeakTop2(distSaju: ElementDist): ElementKey[] {
     .slice(0, 2);
 }
 
+export function pickWeakTop2Or3(distSaju: ElementDist): ElementKey[] {
+  const sorted = [...ELEMENT_KEYS].sort((a, b) => {
+    if (distSaju[a] !== distSaju[b]) {
+      return distSaju[a] - distSaju[b];
+    }
+    return a.localeCompare(b);
+  });
+
+  const need = calcNeed(distSaju);
+  const actualWeak = sorted.filter((key) => need[key] > 0);
+
+  if (actualWeak.length >= 3) {
+    return actualWeak.slice(0, 3);
+  }
+  if (actualWeak.length === 2) {
+    return actualWeak;
+  }
+  return sorted.slice(0, 2);
+}
+
 export function calcNeed(distSaju: ElementDist): ElementDist {
   const need = createZeroDist();
   for (const key of ELEMENT_KEYS) {
@@ -94,12 +114,14 @@ export function calcSajuScore5(input: SajuScoreInput): SajuScoreResult {
 export function buildSajuOneLineSummary(
   mode: SajuScoreMode,
   dayStem: string,
-  weakTop2: ElementKey[]
+  weakTopElements: ElementKey[],
+  dayStemHanja?: string
 ): string {
   if (mode === "HARMONY") {
     return "현재 사주는 전반적으로 균형에 가까워 조화 중심으로 추천됩니다.";
   }
 
-  const weakText = weakTop2.map((key) => ELEMENT_LABELS_KO[key]).join("/");
-  return `일간이 ${dayStem}이며 ${weakText} 기운이 상대적으로 약한 편입니다.`;
+  const formattedDayStem = dayStemHanja ? `${dayStem}(${dayStemHanja})` : dayStem;
+  const weakText = weakTopElements.map((key) => ELEMENT_LABELS_KO[key]).join("/");
+  return `일간이 ${formattedDayStem}이며 ${weakText} 기운이 상대적으로 약한 편입니다.`;
 }

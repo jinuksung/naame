@@ -31,6 +31,8 @@
     "verify:parity": "npx ts-node -P apps/toss/tsconfig.json --compiler-options '{\"module\":\"CommonJS\"}' scripts/verify-parity.ts",
     "recommend:sample": "npm run recommend --workspace @namefit/engine",
     "build:syllables": "ts-node -P tsconfig.scripts.json scripts/build-name-syllable-whitelist.ts",
+    "test:namechart:parse": "npx ts-node -P tsconfig.scripts.json scripts/namechart/parse.test.ts",
+    "crawl:namechart": "npx ts-node -P tsconfig.scripts.json scripts/namechart/crawl.ts",
     "ssot:push": "npx ts-node -P tsconfig.scripts.json scripts/ssot/push-to-supabase.ts",
     "ssot:pull": "npx ts-node -P tsconfig.scripts.json scripts/ssot/pull-from-supabase.ts",
     "ssot:pull:toss:dev": "set -a; . ./apps/toss/.env.local; set +a; npm run ssot:pull"

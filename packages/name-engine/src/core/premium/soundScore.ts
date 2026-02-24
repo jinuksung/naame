@@ -3,7 +3,7 @@ import { SajuScoreMode, roundToHalf } from "./sajuScore";
 
 export interface SoundScoreInput {
   mode: SajuScoreMode;
-  weakTop2: ElementKey[];
+  weakTop3: ElementKey[];
   soundElements: ElementKey[];
   phoneticScore: number;
 }
@@ -22,6 +22,9 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 function resolveImproveBaseScore(matchCount: number): number {
+  if (matchCount >= 3) {
+    return 5;
+  }
   if (matchCount >= 2) {
     return 4.5;
   }
@@ -43,7 +46,9 @@ function resolveFlowAdjustment(phoneticScore: number): number {
 
 export function calcSoundScore5(input: SoundScoreInput): SoundScoreResult {
   const uniqueSoundElements = new Set(input.soundElements);
-  const matchedWeakCount = input.weakTop2.filter((element) => uniqueSoundElements.has(element)).length;
+  const matchedWeakCount = input.weakTop3.filter((element) =>
+    uniqueSoundElements.has(element),
+  ).length;
 
   const baseScore =
     input.mode === "IMPROVE" ? resolveImproveBaseScore(matchedWeakCount) : 3.5;

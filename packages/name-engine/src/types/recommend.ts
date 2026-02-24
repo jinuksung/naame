@@ -69,7 +69,7 @@ export interface PremiumElementStatusItem {
 export interface PremiumRecommendSummary {
   mode: PremiumSajuMode;
   oneLineSummary: string;
-  weakTop2: RecommendElement[];
+  weakTop3: RecommendElement[];
   hasHourPillar: boolean;
   pillars: {
     year: PremiumPillarItem;

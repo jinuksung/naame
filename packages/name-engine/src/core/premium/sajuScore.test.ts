@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import { buildSajuDistFromPillars } from "./sajuDist";
-import { calcSajuScore5, pickWeakTop2 } from "./sajuScore";
+import {
+  buildSajuOneLineSummary,
+  calcSajuScore5,
+  pickWeakTop2,
+  pickWeakTop2Or3,
+} from "./sajuScore";
 import { ElementDist } from "./elements";
 
 function sumDist(dist: ElementDist): number {
@@ -22,6 +27,25 @@ function run(): void {
 
   const weakTop2 = pickWeakTop2(distSaju);
   assert.deepEqual(weakTop2, ["METAL", "EARTH"], "부족 TOP2는 금/토 순서여야 합니다.");
+  const weakTop2Or3 = pickWeakTop2Or3(distSaju);
+  assert.deepEqual(
+    weakTop2Or3,
+    ["METAL", "EARTH", "WATER"],
+    "실제 부족 오행이 3개 이상이면 TOP3까지 선택해야 합니다.",
+  );
+
+  const onlyTwoWeak = pickWeakTop2Or3({
+    WOOD: 0.2,
+    FIRE: 0.2,
+    EARTH: 0.17,
+    METAL: 0.17,
+    WATER: 0.26,
+  });
+  assert.deepEqual(
+    onlyTwoWeak,
+    ["EARTH", "METAL"],
+    "실제 부족 오행이 2개면 TOP2까지만 선택해야 합니다.",
+  );
 
   const improvePerfect = calcSajuScore5({
     distSaju: {
@@ -82,6 +106,13 @@ function run(): void {
 
   assert.equal(harmonyPerfect.mode, "HARMONY");
   assert.equal(harmonyPerfect.sajuScore5, 5, "조화 모드 완전 일치는 5점이어야 합니다.");
+
+  const oneLineSummary = buildSajuOneLineSummary("IMPROVE", "무", ["METAL", "WATER"], "戊");
+  assert.equal(
+    oneLineSummary,
+    "일간이 무(戊)이며 금/수 기운이 상대적으로 약한 편입니다.",
+    "사주 요약 문구의 일간 표시는 한자도 함께 보여줘야 합니다.",
+  );
 
   console.log("[test:premium:saju-score] all tests passed");
 }

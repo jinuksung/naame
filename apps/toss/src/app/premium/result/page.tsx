@@ -8,23 +8,27 @@ import {
   addNameToBlacklist,
   fetchPremiumRecommendations,
   markHanjaAsNotInmyong,
-  submitNameFeedback
+  submitNameFeedback,
 } from "@/lib/api";
 import { syncFeedbackStatus, syncFeedbackVote } from "@/lib/feedbackState";
 import {
   buildLocalQuickPremiumPayload,
-  resolvePremiumLoadingPath
+  resolvePremiumLoadingPath,
 } from "@/lib/localQuickPremium";
 import { isLocalAdminToolsEnabled } from "@namefit/engine/lib/localAdminVisibility";
 import { usePremiumRecommendStore } from "@/store/usePremiumRecommendStore";
-import { PremiumRecommendResultItem, RecommendElement } from "@/types/recommend";
+import {
+  PremiumRecommendResultItem,
+  PremiumRecommendSummary,
+  RecommendElement,
+} from "@/types/recommend";
 
 const ELEMENT_LABELS_KO: Record<RecommendElement, string> = {
   WOOD: "목",
   FIRE: "화",
   EARTH: "토",
   METAL: "금",
-  WATER: "수"
+  WATER: "수",
 };
 
 const STATUS_LABELS_KO = {
@@ -32,7 +36,14 @@ const STATUS_LABELS_KO = {
   LOW: "부족",
   BALANCED: "균형",
   HIGH: "강함",
-  VERY_HIGH: "매우 강함"
+  VERY_HIGH: "매우 강함",
+} as const;
+
+const PILLAR_HELP_TEXT = {
+  year: "초년·가정/조상 배경 흐름을 의미해요",
+  month: "성장기·사회 환경 흐름을 의미해요",
+  day: "나 자신·기본 성향 중심축을 의미해요",
+  hour: "후반 흐름·생각/표현 경향을 의미해요",
 } as const;
 
 function displayMeaning(meaning: string): string {
@@ -40,7 +51,9 @@ function displayMeaning(meaning: string): string {
   return normalized.length > 0 ? normalized : "뜻 정보 없음";
 }
 
-function buildNameKey(item: Pick<PremiumRecommendResultItem, "nameHangul" | "hanjaPair">): string {
+function buildNameKey(
+  item: Pick<PremiumRecommendResultItem, "nameHangul" | "hanjaPair">,
+): string {
   return `${item.nameHangul}:${item.hanjaPair[0]}${item.hanjaPair[1]}`;
 }
 
@@ -53,6 +66,45 @@ function formatDisplayName(surnameHangul: string, nameHangul: string): string {
 
 function toElementKo(element: RecommendElement): string {
   return ELEMENT_LABELS_KO[element] ?? element;
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function formatPremiumOneLineSummary(summary: PremiumRecommendSummary): string {
+  const source = summary.oneLineSummary;
+  const dayStemHangul = Array.from(summary.pillars.day.hangul)[0] ?? "";
+  const dayStemHanja = Array.from(summary.pillars.day.hanja)[0] ?? "";
+
+  if (!dayStemHangul || !dayStemHanja) {
+    return source;
+  }
+
+  const formattedDayStem = `${dayStemHangul}(${dayStemHanja})`;
+  if (source.includes(formattedDayStem)) {
+    return source;
+  }
+
+  const ilganPattern = new RegExp(
+    `일간이\\s*${escapeRegExp(dayStemHangul)}\\s*이며`,
+  );
+  return ilganPattern.test(source)
+    ? source.replace(ilganPattern, `일간이 ${formattedDayStem}이며`)
+    : source;
+}
+
+function getWeakTopElements(summary: PremiumRecommendSummary): RecommendElement[] {
+  const compat = summary as PremiumRecommendSummary & {
+    weakTop2?: RecommendElement[];
+  };
+  if (Array.isArray(compat.weakTop3)) {
+    return compat.weakTop3;
+  }
+  if (Array.isArray(compat.weakTop2)) {
+    return compat.weakTop2;
+  }
+  return [];
 }
 
 function ThumbUpIcon(): JSX.Element {
@@ -98,9 +150,13 @@ function ThumbDownIcon(): JSX.Element {
 export default function PremiumResultPage(): JSX.Element {
   const router = useRouter();
   const input = usePremiumRecommendStore((state) => state.input);
-  const surnameHangul = usePremiumRecommendStore((state) => state.surnameHangul);
+  const surnameHangul = usePremiumRecommendStore(
+    (state) => state.surnameHangul,
+  );
   const setInput = usePremiumRecommendStore((state) => state.setInput);
-  const setStoredSurnameHangul = usePremiumRecommendStore((state) => state.setSurnameHangul);
+  const setStoredSurnameHangul = usePremiumRecommendStore(
+    (state) => state.setSurnameHangul,
+  );
   const summary = usePremiumRecommendStore((state) => state.summary);
   const results = usePremiumRecommendStore((state) => state.results);
   const setSummary = usePremiumRecommendStore((state) => state.setSummary);
@@ -123,7 +179,9 @@ export default function PremiumResultPage(): JSX.Element {
   const [syllableRuleActionStatus, setSyllableRuleActionStatus] = useState<
     Record<string, "idle" | "pending" | "done" | "error">
   >({});
-  const [localQuickStatus, setLocalQuickStatus] = useState<"idle" | "pending" | "error">("idle");
+  const [localQuickStatus, setLocalQuickStatus] = useState<
+    "idle" | "pending" | "error"
+  >("idle");
 
   useEffect(() => {
     if (!hasHydrated) {
@@ -140,13 +198,16 @@ export default function PremiumResultPage(): JSX.Element {
     }
     setLocalAdminEnabled(
       isLocalAdminToolsEnabled({
-        hostname: window.location.hostname
-      })
+        hostname: window.location.hostname,
+      }),
     );
   }, []);
 
   const top20 = useMemo(() => results.slice(0, 20), [results]);
-  const top20Keys = useMemo(() => top20.map((item) => buildNameKey(item)), [top20]);
+  const top20Keys = useMemo(
+    () => top20.map((item) => buildNameKey(item)),
+    [top20],
+  );
   const hasFeedbackContext =
     surnameHangul.trim().length > 0 && input.surnameHanja.trim().length > 0;
   const premiumLoadingPath =
@@ -163,12 +224,20 @@ export default function PremiumResultPage(): JSX.Element {
     return <></>;
   }
 
+  const oneLineSummaryText = formatPremiumOneLineSummary(summary);
+  const weakTopElements = getWeakTopElements(summary);
+  const weakTopLabelCount =
+    weakTopElements.length === 3 ? 3 : 2;
+
   const handleSetNotInmyong = async (hanjaChar: string): Promise<void> => {
     const key = hanjaChar.trim();
     if (!key) {
       return;
     }
-    if (hanjaActionStatus[key] === "pending" || hanjaActionStatus[key] === "done") {
+    if (
+      hanjaActionStatus[key] === "pending" ||
+      hanjaActionStatus[key] === "done"
+    ) {
       return;
     }
 
@@ -183,10 +252,13 @@ export default function PremiumResultPage(): JSX.Element {
   };
 
   const handleBlacklistName = async (
-    item: Pick<PremiumRecommendResultItem, "nameHangul" | "hanjaPair">
+    item: Pick<PremiumRecommendResultItem, "nameHangul" | "hanjaPair">,
   ): Promise<void> => {
     const key = buildNameKey(item);
-    if (nameActionStatus[key] === "pending" || nameActionStatus[key] === "done") {
+    if (
+      nameActionStatus[key] === "pending" ||
+      nameActionStatus[key] === "done"
+    ) {
       return;
     }
 
@@ -201,7 +273,7 @@ export default function PremiumResultPage(): JSX.Element {
   };
 
   const handleAddSyllableRule = async (
-    item: Pick<PremiumRecommendResultItem, "nameHangul" | "hanjaPair">
+    item: Pick<PremiumRecommendResultItem, "nameHangul" | "hanjaPair">,
   ): Promise<void> => {
     const key = buildNameKey(item);
     if (
@@ -223,7 +295,7 @@ export default function PremiumResultPage(): JSX.Element {
 
   const handleFeedbackClick = async (
     item: PremiumRecommendResultItem,
-    vote: "like" | "dislike"
+    vote: "like" | "dislike",
   ): Promise<void> => {
     if (!hasFeedbackContext) {
       return;
@@ -242,7 +314,7 @@ export default function PremiumResultPage(): JSX.Element {
         surnameHanja: input.surnameHanja,
         nameHangul: item.nameHangul,
         hanjaPair: item.hanjaPair,
-        vote
+        vote,
       });
       setFeedbackStatus((prev) => ({ ...prev, [key]: "done" }));
     } catch (error) {
@@ -267,44 +339,92 @@ export default function PremiumResultPage(): JSX.Element {
       setResults(response.results);
       setLocalQuickStatus("idle");
     } catch (error) {
-      console.error("[premium-result] local quick premium refresh failed", error);
+      console.error(
+        "[premium-result] local quick premium refresh failed",
+        error,
+      );
       setLocalQuickStatus("error");
     }
   };
 
   return (
-    <TdsScreen title="프리미엄 추천 결과" description="사주 점수를 우선으로 정렬했습니다.">
+    <TdsScreen title="추천 결과" description="적합한 이름을 골라봤어요 ✨">
       <section className="tds-premium-summary">
         <div className="tds-premium-summary-head">
-          <h2 className="tds-premium-summary-title">4주8자</h2>
+          <h2 className="tds-premium-summary-title">사주 분석 결과</h2>
           {!summary.hasHourPillar ? (
             <span className="tds-premium-badge">시주 미반영</span>
           ) : null}
         </div>
         <div className="tds-premium-pillars">
-          <span className="tds-premium-pillar">년주 {summary.pillars.year.hangul}</span>
-          <span className="tds-premium-pillar">월주 {summary.pillars.month.hangul}</span>
-          <span className="tds-premium-pillar">일주 {summary.pillars.day.hangul}</span>
-          {summary.pillars.hour ? (
-            <span className="tds-premium-pillar">시주 {summary.pillars.hour.hangul}</span>
-          ) : null}
+          <div className="tds-premium-pillar">
+            <span className="tds-premium-pillar-label">년주</span>
+            <span className="tds-premium-pillar-value">
+              {summary.pillars.year.hangul} ({summary.pillars.year.hanja})
+            </span>
+            <span className="tds-premium-pillar-help">
+              {PILLAR_HELP_TEXT.year}
+            </span>
+          </div>
+          <div className="tds-premium-pillar">
+            <span className="tds-premium-pillar-label">월주</span>
+            <span className="tds-premium-pillar-value">
+              {summary.pillars.month.hangul} ({summary.pillars.month.hanja})
+            </span>
+            <span className="tds-premium-pillar-help">
+              {PILLAR_HELP_TEXT.month}
+            </span>
+          </div>
+          <div className="tds-premium-pillar">
+            <span className="tds-premium-pillar-label">일주</span>
+            <span className="tds-premium-pillar-value">
+              {summary.pillars.day.hangul} ({summary.pillars.day.hanja})
+            </span>
+            <span className="tds-premium-pillar-help">
+              {PILLAR_HELP_TEXT.day}
+            </span>
+          </div>
+          <div className="tds-premium-pillar">
+            <span className="tds-premium-pillar-label">시주</span>
+            <span className="tds-premium-pillar-value">
+              {summary.pillars.hour ? (
+                <>
+                  {summary.pillars.hour.hangul} ({summary.pillars.hour.hanja})
+                </>
+              ) : (
+                "시주 미반영"
+              )}
+            </span>
+            <span className="tds-premium-pillar-help">
+              {PILLAR_HELP_TEXT.hour}
+            </span>
+          </div>
         </div>
 
-        <p className="tds-premium-summary-line">{summary.oneLineSummary}</p>
+        <p className="tds-premium-summary-line">{oneLineSummaryText}</p>
+        {/* <p className="tds-premium-summary-help">
+          일간은 일주의 앞글자(천간)이고, 위 문구는 일간 자체의 좋고 나쁨보다
+          사주에서 상대적으로 부족한 오행을 설명합니다.
+        </p> */}
         <p className="tds-premium-weak">
-          부족 TOP2: {summary.weakTop2.map((element) => toElementKo(element)).join(" / ")}
+          부족 TOP{weakTopLabelCount}:{" "}
+          {weakTopElements.map((element) => toElementKo(element)).join(" / ")}
         </p>
 
         <ul className="tds-premium-dist-list">
           {summary.distStatus.map((item) => {
-            const isWeak = summary.weakTop2.includes(item.element);
+            const isWeak = weakTopElements.includes(item.element);
             return (
               <li
                 key={item.element}
                 className={`tds-premium-dist-item${isWeak ? " is-weak" : ""}`}
               >
-                <span className="tds-premium-dist-element">{toElementKo(item.element)}</span>
-                <span className="tds-premium-dist-percent">{item.percent.toFixed(1)}%</span>
+                <span className="tds-premium-dist-element">
+                  {toElementKo(item.element)}
+                </span>
+                <span className="tds-premium-dist-percent">
+                  {item.percent.toFixed(1)}%
+                </span>
                 <span className="tds-premium-dist-status">
                   {STATUS_LABELS_KO[item.status]}
                 </span>
@@ -314,13 +434,13 @@ export default function PremiumResultPage(): JSX.Element {
         </ul>
       </section>
 
-      <p className="tds-premium-notice">
-        추천 정렬은 사주 점수 기준이며 발음 점수는 참고용입니다.
-      </p>
+      <p className="tds-premium-notice">사주 보완 점수 순서대로 정렬했어요.</p>
 
       {top20.length === 0 ? (
         <div className="result-actions">
-          <p className="tds-description">추천 결과가 비어 있어요. 다시 시도해 주세요.</p>
+          <p className="tds-description">
+            추천 결과가 비어 있어요. 다시 시도해 주세요.
+          </p>
           <TdsPrimaryButton
             onClick={() => {
               router.replace(premiumLoadingPath);
@@ -333,18 +453,21 @@ export default function PremiumResultPage(): JSX.Element {
         <section className="result-list">
           {top20.map((item) => {
             const itemKey = buildNameKey(item);
-            const displayName = formatDisplayName(surnameHangul, item.nameHangul);
+            const displayName = formatDisplayName(
+              surnameHangul,
+              item.nameHangul,
+            );
             const hanjaDetails = [
               {
                 hanja: item.hanjaPair[0],
                 reading: item.readingPair[0],
-                meaning: displayMeaning(item.meaningKwPair[0])
+                meaning: displayMeaning(item.meaningKwPair[0]),
               },
               {
                 hanja: item.hanjaPair[1],
                 reading: item.readingPair[1],
-                meaning: displayMeaning(item.meaningKwPair[1])
-              }
+                meaning: displayMeaning(item.meaningKwPair[1]),
+              },
             ];
 
             return (
@@ -372,7 +495,9 @@ export default function PremiumResultPage(): JSX.Element {
                                 ? " is-error"
                                 : ""
                           }`}
-                          disabled={hanjaActionStatus[detail.hanja] === "pending"}
+                          disabled={
+                            hanjaActionStatus[detail.hanja] === "pending"
+                          }
                           onClick={() => {
                             void handleSetNotInmyong(detail.hanja);
                           }}
@@ -383,8 +508,12 @@ export default function PremiumResultPage(): JSX.Element {
                     </li>
                   ))}
                 </ul>
-                <p className="tds-premium-star">사주 보완 ⭐ {item.sajuScore5.toFixed(1)}</p>
-                <p className="tds-premium-star">발음 조화 ⭐ {item.soundScore5.toFixed(1)}</p>
+                <p className="tds-premium-star">
+                  사주 보완 ⭐ {item.sajuScore5.toFixed(1)}
+                </p>
+                <p className="tds-premium-star">
+                  발음 조화 ⭐ {item.soundScore5.toFixed(1)}
+                </p>
                 <ul className="reason-list">
                   {item.why.slice(0, 2).map((reason, index) => (
                     <li key={`${itemKey}-${index}`}>{reason}</li>
@@ -468,7 +597,9 @@ export default function PremiumResultPage(): JSX.Element {
         </section>
       )}
 
-      <p className="tds-premium-free-note">현재 한시적 무료로 제공 중입니다.</p>
+      <p className="tds-premium-free-note">
+        프리미엄 분석은 현재 한시적으로 무료 제공 중이에요.
+      </p>
 
       <div className="result-actions">
         {localAdminEnabled ? (
