@@ -473,7 +473,7 @@ export default function PremiumInputPage(): JSX.Element {
         </div>
 
         <TdsSegmentedControl
-          label="성별"
+          label="이름 느낌"
           value={gender}
           options={genderOptions}
           onChange={setGender}

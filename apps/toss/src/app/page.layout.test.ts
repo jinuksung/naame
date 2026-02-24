@@ -19,7 +19,11 @@ function testBirthInputsAreNotRenderedInBasicMode(): void {
   assert.equal(source.includes('label="생년월일"'), false, "기본모드에 생년월일 입력이 없어야 합니다.");
   assert.equal(source.includes('label="출생시간 입력"'), false, "기본모드에 출생시간 토글이 없어야 합니다.");
   assert.equal(source.includes('label="출생시간"'), false, "기본모드에 출생시간 필드가 없어야 합니다.");
-  assert.equal(source.includes('label="성별"'), true, "기본모드에 성별 입력은 유지되어야 합니다.");
+  assert.equal(
+    source.includes('label="이름 느낌"'),
+    true,
+    "기본모드에 이름 느낌 입력은 유지되어야 합니다.",
+  );
 }
 
 function testMainDescriptionRemovedAndBasicModeGuideVisible(): void {

@@ -39,6 +39,8 @@ export interface SoftPriorRerankedRow<TCandidate> {
 export interface PoolFileItem {
   name: string;
   tier: PoolTierFound;
+  score?: number;
+  genderFitScore?: number;
 }
 
 export interface PoolFilePayload {
@@ -46,9 +48,15 @@ export interface PoolFilePayload {
   items?: unknown;
 }
 
+export interface PoolIndexEntry {
+  tier: PoolTierFound;
+  score?: number;
+  genderFitScore?: number;
+}
+
 export interface PoolIndex {
-  M: Map<string, PoolTierFound>;
-  F: Map<string, PoolTierFound>;
+  M: Map<string, PoolIndexEntry>;
+  F: Map<string, PoolIndexEntry>;
 }
 
 export interface NamePreselectInput<TPayload> {

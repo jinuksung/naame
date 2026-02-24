@@ -355,14 +355,14 @@ export default function ResultPage(): JSX.Element {
               <div className="quick-combo-head">
                 <h3 className="quick-combo-title">빠른 조합 보기</h3>
                 <p className="quick-combo-description">
-                  성씨와 성별만 바꿔서 결과를 빠르게 넘겨보고, 안 예쁜 이름은
+                  성씨와 이름 느낌만 바꿔서 결과를 빠르게 넘겨보고, 안 예쁜 이름은
                   바로 싫어요를 눌러 정리하세요.
                 </p>
               </div>
               <div
                 className="quick-gender-row"
                 role="tablist"
-                aria-label="빠른 조합 성별"
+                aria-label="빠른 조합 이름 느낌"
               >
                 {genderOptions.map((option) => (
                   <button

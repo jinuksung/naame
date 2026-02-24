@@ -30,6 +30,11 @@ function testPremiumSurnameFollowsFreeModeSelectorFlow(): void {
     true,
     "프리미엄 입력 페이지에 성씨 한자 옵션 리스트 영역이 있어야 합니다.",
   );
+  assert.equal(
+    source.includes('label="이름 느낌"'),
+    true,
+    "프리미엄 입력 페이지의 성별 선택 필드명은 우선 이름 느낌으로 표시되어야 합니다.",
+  );
 }
 
 function testPremiumDateAndTimeFieldsUseTextStyleInput(): void {
