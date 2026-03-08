@@ -56,9 +56,45 @@ function testDedupByNameKeepsBestScore(): void {
   assert.equal((doyoon?.payload as { source: string }).source, "high");
 }
 
+function testPoolMinRatioGuaranteesPoolHeavySelectionWhenPoolIsSufficient(): void {
+  const poolNames = ["도윤", "시우", "민준", "하준", "지호", "준서", "서준", "예준", "주원", "지안"];
+  const poolIndex = createPoolIndex({
+    M: poolNames.map((name) => ({ name, tier: "B" as const })),
+    F: []
+  });
+
+  const explorationNames = ["가온", "라온", "하온", "다온", "로운", "서온", "채온", "이온", "세온", "다인"];
+  const inputs = [
+    ...poolNames.map((name, index) => ({
+      name,
+      partialEngineScore01: 0.95 - index * 0.01,
+      payload: { bucket: "pool", id: index }
+    })),
+    ...explorationNames.map((name, index) => ({
+      name,
+      partialEngineScore01: 0.9 - index * 0.01,
+      payload: { bucket: "exploration", id: index }
+    }))
+  ];
+
+  const result = preselectNameSeeds(inputs, "M", poolIndex, {
+    limit: 10,
+    explorationMinRatio: 0.4,
+    explorationMinCount: 4,
+    poolMinRatio: 0.8
+  });
+
+  assert.equal(result.selected.length, 10);
+  assert.ok(
+    result.stats.selectedPool >= 8,
+    "pool 후보가 충분할 때는 pool 최소 비율(80%)을 보장해야 합니다."
+  );
+}
+
 function run(): void {
   testKeepsExplorationBucket();
   testDedupByNameKeepsBestScore();
+  testPoolMinRatioGuaranteesPoolHeavySelectionWhenPoolIsSufficient();
   console.log("[test:preselect] all tests passed");
 }
 

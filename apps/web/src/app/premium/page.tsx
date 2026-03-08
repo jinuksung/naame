@@ -127,7 +127,7 @@ export default function PremiumInputPage(): JSX.Element {
 
   return (
     <Screen
-      title="네임핏 프리미엄"
+      title="네임핏 프리미엄(베타)"
       titleIconSrc={TITLE_ICON_PATH}
       titleIconAlt="네임핏 로고"
       description="사주 기반으로 이름을 분석해 추천합니다."

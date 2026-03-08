@@ -182,6 +182,30 @@ function testPoolPriorScoreOrderingPrefersAOverCAndNone(): void {
   assert.ok(c.poolScore01 > n.poolScore01, "C should outrank None");
 }
 
+function testPoolWeightBoostsPoolAppearanceAgainstEngineGap(): void {
+  const poolIndex = createPoolIndex({
+    M: [{ name: "도윤", tier: "B" }],
+    F: []
+  });
+
+  const ranked = rerankWithSoftPrior(
+    [
+      { name: "도윤", engineScore01: 0.65 },
+      { name: "하준", engineScore01: 0.9 }
+    ],
+    "M",
+    poolIndex,
+    undefined,
+    () => 0.5
+  ).map((row) => row.name);
+
+  assert.deepEqual(
+    ranked,
+    ["도윤", "하준"],
+    "name pool 비중을 높인 기본 가중치에서는 pool 포함 이름이 더 자주 상위에 노출되어야 합니다."
+  );
+}
+
 function testDiversifyEndLimit(): void {
   const ranked = [
     { name: "가나", score: 1 },
@@ -274,6 +298,7 @@ function run(): void {
   testOverlapSameTierCanFlipByGenderFitMetadata();
   testAnyModePrefersOverlapNameOverSinglePoolNameAtSameTier();
   testPoolPriorScoreOrderingPrefersAOverCAndNone();
+  testPoolWeightBoostsPoolAppearanceAgainstEngineGap();
   testDiversifyEndLimit();
   testDiversifyNoDuplicateNames();
   testTieBreakUsesRandomOrderWhenScoresEqual();

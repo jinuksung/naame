@@ -53,6 +53,7 @@ const PREMIUM_TOP20_HIGH_SAJU_TARGET_COUNT = 6;
 const PREMIUM_HIGH_SAJU_RAW_THRESHOLD5 = 3.25; // rounds to displayed 3.5
 const PREMIUM_ALL_ZERO_SAJU_RESCUE_ATTEMPTS = 3;
 const PREMIUM_ALL_ZERO_SAJU_RESCUE_BUDGET_MS = 800;
+const PREMIUM_UNIFORM_ROUNDED_SAJU_RETRY_ATTEMPTS = 1;
 const EXPLORE_SEED_MOD = 0x7fffffff;
 
 let datasetPromise: Promise<HanjaDataset> | null = null;
@@ -918,6 +919,74 @@ export async function recommendPremiumNames(payload: unknown): Promise<PremiumRe
       );
     }
 
+    const shouldRunUniformRoundedSajuRetry = isTopRoundedSajuUniform(
+      selectedPass.diversified,
+      PREMIUM_LIMIT
+    );
+    if (shouldRunUniformRoundedSajuRetry && PREMIUM_UNIFORM_ROUNDED_SAJU_RETRY_ATTEMPTS > 0) {
+      const retrySeeds = buildPremiumRescueExploreSeeds(
+        input.exploreSeed,
+        PREMIUM_UNIFORM_ROUNDED_SAJU_RETRY_ATTEMPTS
+      );
+      const retryPoolLimit = Math.max(PREMIUM_POOL_LIMIT, PREMIUM_EXPANDED_POOL_LIMIT);
+      let bestPass = selectedPass;
+      let selectedRetrySeed: number | null = null;
+      let attemptsRun = 0;
+
+      console.info(
+        `[recommendPremium] uniform rounded saju retry triggered ` +
+          `attempts=${retrySeeds.length} poolLimit=${retryPoolLimit} ` +
+          `baseSeed=${input.exploreSeed ?? "none"}`
+      );
+
+      for (const retrySeed of retrySeeds) {
+        attemptsRun += 1;
+        const retryPass = runPremiumPass(retryPoolLimit, {
+          exploreSeedOverride: retrySeed
+        });
+        const currentUniform = isTopRoundedSajuUniform(bestPass.diversified, PREMIUM_LIMIT);
+        const candidateUniform = isTopRoundedSajuUniform(retryPass.diversified, PREMIUM_LIMIT);
+        const postCompare = comparePremiumQuality(
+          retryPass.postDiversityQuality,
+          bestPass.postDiversityQuality
+        );
+        const preCompare = comparePremiumQuality(
+          retryPass.preDiversityQuality,
+          bestPass.preDiversityQuality
+        );
+        const shouldReplace =
+          (currentUniform && !candidateUniform) ||
+          postCompare > 0 ||
+          (postCompare === 0 && preCompare > 0);
+
+        console.info(
+          `[recommendPremium] uniform rounded saju retry attempt ` +
+            `seed=${retrySeed} replace=${shouldReplace ? "Y" : "N"} ` +
+            `currentUniform=${currentUniform ? "Y" : "N"} ` +
+            `candidateUniform=${candidateUniform ? "Y" : "N"} ` +
+            `postTop1=${retryPass.postDiversityQuality.top1SajuScore5.toFixed(1)} ` +
+            `postTop5Avg=${retryPass.postDiversityQuality.top5AvgSajuScore5.toFixed(2)}`
+        );
+
+        if (shouldReplace) {
+          bestPass = retryPass;
+          selectedRetrySeed = retrySeed;
+        }
+
+        if (!isTopRoundedSajuUniform(bestPass.diversified, PREMIUM_LIMIT)) {
+          break;
+        }
+      }
+
+      selectedPass = bestPass;
+      console.info(
+        `[recommendPremium] uniform rounded saju retry completed ` +
+          `attemptsRun=${attemptsRun} replaced=${selectedRetrySeed ? "Y" : "N"} ` +
+          `selectedSeed=${selectedRetrySeed ?? "none"} ` +
+          `isUniform=${isTopRoundedSajuUniform(selectedPass.diversified, PREMIUM_LIMIT) ? "Y" : "N"}`
+      );
+    }
+
     const results = selectedPass.results;
 
     return {
@@ -1037,6 +1106,19 @@ export function isTopRawSajuAllZero<T extends Pick<PremiumSortItem, "sajuScore5"
     return false;
   }
   return top.every((item) => toRawSajuScore5(item) <= 0);
+}
+
+export function isTopRoundedSajuUniform<T extends Pick<PremiumSortItem, "sajuScore5">>(
+  items: T[],
+  limit: number = PREMIUM_LIMIT
+): boolean {
+  const targetLimit = Math.max(0, limit);
+  const top = items.slice(0, targetLimit);
+  if (top.length === 0 || top.length !== targetLimit) {
+    return false;
+  }
+  const first = Math.round(clamp(top[0].sajuScore5, 0, 5) * 2) / 2;
+  return top.every((item) => Math.round(clamp(item.sajuScore5, 0, 5) * 2) / 2 === first);
 }
 
 export function selectPremiumTopWithHighSajuQuota<T extends PremiumSortItem>(

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {
   buildPremiumRescueExploreSeeds,
+  isTopRoundedSajuUniform,
   isTopRawSajuAllZero,
   selectPremiumTopWithHighSajuQuota,
   summarizePremiumQuality,
@@ -224,6 +225,43 @@ function runAllZeroRawDetectionTests(): void {
   );
 }
 
+function runUniformRoundedSajuDetectionTests(): void {
+  const allSameRounded: PremiumSortItem[] = Array.from({ length: 20 }, (_, index) => ({
+    nameHangul: `가${String.fromCharCode(0xb098 + index)}`,
+    sajuScore5: 2.5,
+    sajuScoreRaw5: 2.51 + index * 0.0001,
+    engineScore01: 0.8 - index * 0.01,
+    soundScore5: 3
+  }));
+  const mixedRounded: PremiumSortItem[] = [
+    ...allSameRounded.slice(0, 19),
+    {
+      nameHangul: "하나",
+      sajuScore5: 3.0,
+      sajuScoreRaw5: 3.01,
+      engineScore01: 0.1,
+      soundScore5: 2
+    }
+  ];
+  const lessThanTop20 = allSameRounded.slice(0, 10);
+
+  assert.equal(
+    isTopRoundedSajuUniform(allSameRounded, 20),
+    true,
+    "표시용 사주 점수가 topN에서 모두 동일하면 uniform으로 감지해야 합니다."
+  );
+  assert.equal(
+    isTopRoundedSajuUniform(mixedRounded, 20),
+    false,
+    "표시용 사주 점수가 하나라도 다르면 uniform이 아닙니다."
+  );
+  assert.equal(
+    isTopRoundedSajuUniform(lessThanTop20, 20),
+    false,
+    "topN이 꽉 차지 않은 경우는 uniform 재시도 대상으로 보지 않습니다."
+  );
+}
+
 function runRescueExploreSeedGenerationTests(): void {
   const seeds = buildPremiumRescueExploreSeeds(12345, 3);
   assert.equal(seeds.length, 3, "요청한 개수만큼 rescue seed를 생성해야 합니다.");
@@ -239,6 +277,7 @@ function run(): void {
   runAdaptiveExpansionGateTests();
   runHighSajuQuotaSelectionTests();
   runAllZeroRawDetectionTests();
+  runUniformRoundedSajuDetectionTests();
   runRescueExploreSeedGenerationTests();
   console.log("[test:premium:service] all tests passed");
 }

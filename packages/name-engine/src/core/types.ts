@@ -69,6 +69,8 @@ export interface NamePreselectOptions {
   limit: number;
   explorationMinRatio?: number;
   explorationMinCount?: number;
+  poolMinRatio?: number;
+  poolMinCount?: number;
 }
 
 export interface NamePreselectRow<TPayload> {

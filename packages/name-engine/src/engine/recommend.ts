@@ -66,6 +66,7 @@ const PRESELECT_NAME_MULTIPLIER = 12;
 const PRESELECT_NAME_MIN = 120;
 const PRESELECT_EXPLORATION_MIN = 12;
 const PRESELECT_EXPLORATION_RATIO = 0.12;
+const PRESELECT_POOL_MIN_RATIO = 0.8;
 const DIVERSE_EXPLORE_MULTIPLIER = 6;
 const DIVERSE_EXPLORE_MIN = 20;
 
@@ -562,7 +563,8 @@ export function recommendNames(dataset: HanjaDataset, request: RecommendRequest)
     {
       limit: resolveNamePreselectLimit(limit),
       explorationMinRatio: PRESELECT_EXPLORATION_RATIO,
-      explorationMinCount: PRESELECT_EXPLORATION_MIN
+      explorationMinCount: PRESELECT_EXPLORATION_MIN,
+      poolMinRatio: PRESELECT_POOL_MIN_RATIO
     }
   );
   preselectUniqueNameCount = preselectedNameSeeds.stats.totalUnique;
