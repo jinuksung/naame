@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {
+  buildWhyLines,
   buildPremiumRescueExploreSeeds,
   isTopRoundedSajuUniform,
   isTopRawSajuAllZero,
@@ -270,6 +271,26 @@ function runRescueExploreSeedGenerationTests(): void {
   assert.ok(!seeds.includes(12345), "기존 exploreSeed와 동일한 값은 제외해야 합니다.");
 }
 
+function runPremiumWhyLineTemplateTests(): void {
+  const improveLines = buildWhyLines({
+    mode: "IMPROVE",
+    weakTop3: ["WATER", "WOOD", "FIRE"],
+    improveRatio: 0.62,
+    harmonyRatio: null,
+    soundScore5: 4.5,
+    meaningKwPair: ["윤택할", "빛날"]
+  });
+
+  assert.equal(improveLines.length, 3, "프리미엄 이유 문구는 3줄 템플릿이어야 합니다.");
+  assert.ok(improveLines[0].includes("보완"), "1줄차는 사주 보완 맥락이어야 합니다.");
+  assert.ok(improveLines[1].includes("발음"), "2줄차는 발음 흐름 맥락이어야 합니다.");
+  assert.ok(improveLines[2].includes("의미"), "3줄차는 한자 의미 맥락이어야 합니다.");
+  assert.ok(
+    !improveLines.some((line: string) => line.includes("엔진 점수")),
+    "사용자 노출 이유 문구에는 내부 엔진 점수 용어를 포함하지 않아야 합니다."
+  );
+}
+
 function run(): void {
   runInputParsingTests();
   runSortingTests();
@@ -279,6 +300,7 @@ function run(): void {
   runAllZeroRawDetectionTests();
   runUniformRoundedSajuDetectionTests();
   runRescueExploreSeedGenerationTests();
+  runPremiumWhyLineTemplateTests();
   console.log("[test:premium:service] all tests passed");
 }
 

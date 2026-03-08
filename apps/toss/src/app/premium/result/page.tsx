@@ -515,7 +515,7 @@ export default function PremiumResultPage(): JSX.Element {
                   발음 조화 ⭐ {item.soundScore5.toFixed(1)}
                 </p>
                 <ul className="reason-list">
-                  {item.why.slice(0, 2).map((reason, index) => (
+                  {item.why.slice(0, 3).map((reason, index) => (
                     <li key={`${itemKey}-${index}`}>{reason}</li>
                   ))}
                 </ul>

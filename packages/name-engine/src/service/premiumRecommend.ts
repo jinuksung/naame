@@ -368,24 +368,31 @@ function buildDistFullName(
   };
 }
 
-function buildWhyLines(input: {
+export function buildWhyLines(input: {
   mode: "IMPROVE" | "HARMONY";
   weakTop3: ElementKey[];
   improveRatio: number | null;
   harmonyRatio: number | null;
   soundScore5: number;
-  engineScore01: number;
+  meaningKwPair: [string, string];
 }): string[] {
   const top3Ko = input.weakTop3.map((key) => ELEMENT_LABELS_KO[key]).join("/");
   const firstLine =
     input.mode === "IMPROVE"
-      ? `${top3Ko} 보완 기여도가 ${Math.round((input.improveRatio ?? 0) * 100)}%입니다.`
-      : `사주 분포와의 조화도가 ${Math.round((input.harmonyRatio ?? 0) * 100)}%입니다.`;
+      ? `${top3Ko} 기운 보완에 도움이 되는 구성이에요 (보완도 ${Math.round((input.improveRatio ?? 0) * 100)}%).`
+      : `사주 분포와 조화로운 흐름을 만드는 구성이에요 (조화도 ${Math.round((input.harmonyRatio ?? 0) * 100)}%).`;
 
-  const secondLine =
-    `발음 조화 ${input.soundScore5.toFixed(1)}점 · 엔진 점수 ${(input.engineScore01 * 100).toFixed(1)}점`;
+  const secondLine = `발음 흐름이 안정적이고 부르기 좋아요 (발음 조화 ${input.soundScore5.toFixed(1)}점).`;
+  const meaning1 = input.meaningKwPair[0]?.trim() ?? "";
+  const meaning2 = input.meaningKwPair[1]?.trim() ?? "";
+  const thirdLine =
+    meaning1 && meaning2
+      ? `한자 의미는 "${meaning1} · ${meaning2}"의 뜻을 담고 있어요.`
+      : meaning1 || meaning2
+        ? `한자 의미는 "${meaning1 || meaning2}"의 뜻을 담고 있어요.`
+        : "한자 의미는 긍정적인 뜻으로 구성했어요.";
 
-  return [firstLine, secondLine];
+  return [firstLine, secondLine, thirdLine];
 }
 
 export function sortPremiumItems<T extends PremiumSortItem>(items: T[]): T[] {
@@ -609,7 +616,7 @@ function buildPremiumCandidates(input: {
         improveRatio: sajuEval.improveRatio,
         harmonyRatio: sajuEval.harmonyRatio,
         soundScore5: soundEval.soundScore5,
-        engineScore01
+        meaningKwPair: candidate.meaningKwPair
       })
     };
   });
@@ -674,7 +681,7 @@ function toPremiumResultItem(
     sajuScore5: row.sajuScore5,
     soundScore5: row.soundScore5,
     engineScore01: toFixed4(row.engineScore01),
-    why: row.why.slice(0, 2)
+    why: row.why.slice(0, 3)
   };
 }
 

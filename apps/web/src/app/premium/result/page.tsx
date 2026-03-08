@@ -184,7 +184,7 @@ export default function PremiumResultPage(): JSX.Element {
               <p className="nf-premium-star">사주 보완 ⭐ {item.sajuScore5.toFixed(1)}</p>
               <p className="nf-premium-star">발음 조화 ⭐ {item.soundScore5.toFixed(1)}</p>
               <ul className="nf-reason-list">
-                {item.why.slice(0, 2).map((reason, index) => (
+                {item.why.slice(0, 3).map((reason, index) => (
                   <li key={`${buildNameKey(item)}-${index}`}>{reason}</li>
                 ))}
               </ul>
