@@ -10,7 +10,11 @@ import {
 } from "@/lib/localQuickPremium";
 import { isLocalAdminToolsEnabled } from "@namefit/engine/lib/localAdminVisibility";
 import { usePremiumRecommendStore } from "@/store/usePremiumRecommendStore";
-import { PremiumRecommendResultItem, RecommendElement } from "@/types/recommend";
+import {
+  PremiumRecommendResultItem,
+  PremiumRecommendSummary,
+  RecommendElement
+} from "@/types/recommend";
 
 const ELEMENT_LABELS_KO: Record<RecommendElement, string> = {
   WOOD: "목",
@@ -41,6 +45,19 @@ function formatDisplayName(surnameHangul: string, nameHangul: string): string {
 
 function toElementKo(element: RecommendElement): string {
   return ELEMENT_LABELS_KO[element] ?? element;
+}
+
+function getWeakTopElements(summary: PremiumRecommendSummary): RecommendElement[] {
+  const compat = summary as PremiumRecommendSummary & {
+    weakTop2?: RecommendElement[];
+  };
+  if (Array.isArray(compat.weakTop3)) {
+    return compat.weakTop3;
+  }
+  if (Array.isArray(compat.weakTop2)) {
+    return compat.weakTop2;
+  }
+  return [];
 }
 
 export default function PremiumResultPage(): JSX.Element {
@@ -82,6 +99,7 @@ export default function PremiumResultPage(): JSX.Element {
   if (!summary) {
     return <></>;
   }
+  const weakTopElements = getWeakTopElements(summary);
 
   const handleAddSyllableRule = async (
     item: Pick<PremiumRecommendResultItem, "nameHangul" | "hanjaPair">
@@ -131,12 +149,13 @@ export default function PremiumResultPage(): JSX.Element {
 
         <p className="nf-premium-summary-line">{summary.oneLineSummary}</p>
         <p className="nf-premium-weak">
-          부족 TOP2: {summary.weakTop2.map((element) => toElementKo(element)).join(" / ")}
+          부족 TOP{weakTopElements.length > 0 ? weakTopElements.length : 3}:{" "}
+          {weakTopElements.map((element) => toElementKo(element)).join(" / ")}
         </p>
 
         <ul className="nf-premium-dist-list">
           {summary.distStatus.map((item) => {
-            const isWeak = summary.weakTop2.includes(item.element);
+            const isWeak = weakTopElements.includes(item.element);
             return (
               <li
                 key={item.element}

@@ -6,6 +6,20 @@ import {
   SurnameHanjaOptionsResponse
 } from "@/types/recommend";
 
+type PremiumSummaryCompat = PremiumRecommendResponse["summary"] & {
+  weakTop2?: PremiumRecommendResponse["summary"]["weakTop3"];
+};
+
+function readWeakTop3Compat(summary: PremiumSummaryCompat): PremiumRecommendResponse["summary"]["weakTop3"] {
+  if (Array.isArray(summary.weakTop3) && (summary.weakTop3.length === 2 || summary.weakTop3.length === 3)) {
+    return summary.weakTop3;
+  }
+  if (Array.isArray(summary.weakTop2) && summary.weakTop2.length === 2) {
+    return summary.weakTop2;
+  }
+  return [];
+}
+
 const API_BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 function withBasePath(path: string): string {
@@ -59,14 +73,14 @@ function isValidPremiumResponse(value: unknown): value is PremiumRecommendRespon
     return false;
   }
 
-  const summary = response.summary;
+  const summary = response.summary as PremiumSummaryCompat;
   if (summary.mode !== "IMPROVE" && summary.mode !== "HARMONY") {
     return false;
   }
   if (typeof summary.oneLineSummary !== "string") {
     return false;
   }
-  if (!Array.isArray(summary.weakTop2) || summary.weakTop2.length !== 2) {
+  if (readWeakTop3Compat(summary).length === 0) {
     return false;
   }
   if (typeof summary.hasHourPillar !== "boolean") {
@@ -266,8 +280,13 @@ export async function fetchPremiumRecommendations(
     throw new Error("[api] invalid premium response shape");
   }
 
+  const normalizedSummary = data.summary as PremiumSummaryCompat;
+
   return {
-    summary: data.summary,
+    summary: {
+      ...normalizedSummary,
+      weakTop3: readWeakTop3Compat(normalizedSummary)
+    },
     results: data.results.slice(0, 20)
   };
 }
