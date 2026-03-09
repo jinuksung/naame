@@ -2,7 +2,12 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { PrimaryButton, Screen, SegmentedControl } from "@/components/ui";
+import {
+  PrimaryButton,
+  Screen,
+  SecondaryButton,
+  SegmentedControl
+} from "@/components/ui";
 import { normalizeHangulReadingWithLimit } from "@namefit/engine/lib/korean/normalizeHangulReading";
 import { fetchSurnameHanjaOptions } from "@/lib/api";
 import { genderOptions, useRecommendStore } from "@/store/useRecommendStore";
@@ -132,7 +137,7 @@ export default function InputPage(): JSX.Element {
     const nextInput: FreeRecommendInput = {
       surnameHangul: normalizeHangulReadingWithLimit(surnameHangul, 2),
       surnameHanja: surnameHanja.trim(),
-      gender,
+      gender
     };
 
     const validationErrors = validateInput(nextInput);
@@ -229,6 +234,14 @@ export default function InputPage(): JSX.Element {
         <PrimaryButton type="submit" disabled={isSubmitDisabled}>
           이름 추천받기
         </PrimaryButton>
+        <SecondaryButton
+          type="button"
+          onClick={() => {
+            router.push("/liked?mode=free");
+          }}
+        >
+          찜한 이름 보기
+        </SecondaryButton>
 
         <section
           className="nf-basic-mode-guide"

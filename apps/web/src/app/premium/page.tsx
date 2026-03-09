@@ -2,7 +2,14 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Field, PrimaryButton, Screen, SegmentedControl, Toggle } from "@/components/ui";
+import {
+  Field,
+  PrimaryButton,
+  Screen,
+  SecondaryButton,
+  SegmentedControl,
+  Toggle
+} from "@/components/ui";
 import {
   buildLocalQuickPremiumPayload,
   resolvePremiumLoadingPath
@@ -197,6 +204,14 @@ export default function PremiumInputPage(): JSX.Element {
         />
 
         <PrimaryButton type="submit">사주 기반 분석 시작</PrimaryButton>
+        <SecondaryButton
+          type="button"
+          onClick={() => {
+            router.push("/liked?mode=premium");
+          }}
+        >
+          찜한 이름 보기
+        </SecondaryButton>
 
         {localAdminEnabled ? (
           <div className="nf-local-admin-name-row">

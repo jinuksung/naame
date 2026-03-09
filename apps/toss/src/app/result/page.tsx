@@ -667,7 +667,7 @@ export default function ResultPage(): JSX.Element {
       <div className="result-actions">
         <TdsSecondaryButton
           onClick={() => {
-            router.push(likedPath);
+            router.push(`${likedPath}?mode=free`);
           }}
         >
           찜한 이름 보기

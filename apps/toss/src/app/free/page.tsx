@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import {
   TdsPrimaryButton,
   TdsScreen,
+  TdsSecondaryButton,
   TdsSegmentedControl,
 } from "@/components/tds";
 import { normalizeHangulReadingWithLimit } from "@/lib/korean/normalizeHangulReading";
 import { fetchSurnameHanjaOptions } from "@/lib/api";
+import { resolveLikedPath } from "@/lib/likedRoute";
 import { genderOptions, useRecommendStore } from "@/store/useRecommendStore";
 import { FreeRecommendInput, SurnameHanjaOption } from "@/types/recommend";
 
@@ -150,6 +152,9 @@ export default function InputPage(): JSX.Element {
     router.push("/loading");
   };
 
+  const likedPath =
+    typeof window === "undefined" ? "/liked" : resolveLikedPath(window.location.pathname);
+
   return (
     <TdsScreen
       title="네임핏: 우리 아이 이름 찾기"
@@ -233,6 +238,14 @@ export default function InputPage(): JSX.Element {
         <TdsPrimaryButton type="submit" disabled={isSubmitDisabled}>
           이름 추천받기
         </TdsPrimaryButton>
+        <TdsSecondaryButton
+          type="button"
+          onClick={() => {
+            router.push(`${likedPath}?mode=free`);
+          }}
+        >
+          찜한 이름 보기
+        </TdsSecondaryButton>
 
         <section
           className="tds-basic-mode-guide"

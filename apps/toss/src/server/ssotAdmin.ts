@@ -5,6 +5,13 @@ interface SupabaseConfig {
   serviceRoleKey: string;
 }
 
+interface SupabaseHanjaMeaningRow {
+  char?: unknown;
+  meanings?: {
+    inmyong?: unknown;
+  };
+}
+
 async function readTextSafely(response: Response): Promise<string> {
   try {
     return await response.text();
@@ -35,6 +42,14 @@ function buildHeaders(config: SupabaseConfig): HeadersInit {
 
 function normalizeSingleChar(value: string): string {
   return Array.from(value.trim().normalize("NFC")).slice(0, 1).join("");
+}
+
+function toMeaningKeyword(raw: unknown): string | null {
+  if (typeof raw !== "string") {
+    return null;
+  }
+  const normalized = raw.trim();
+  return normalized.length > 0 ? normalized : null;
 }
 
 export async function markCharAsNotInmyong(rawChar: string): Promise<void> {
@@ -201,4 +216,52 @@ export async function addNameBlockSyllableRule(rawNameHangul: string): Promise<{
   }
 
   return { inserted: true };
+}
+
+export async function fetchHanjaMeaningKeywords(rawChars: readonly string[]): Promise<Record<string, string>> {
+  const chars = Array.from(
+    new Set(
+      rawChars
+        .map((char) => normalizeSingleChar(char))
+        .filter((char) => char.length > 0)
+    )
+  );
+  if (chars.length === 0) {
+    return {};
+  }
+
+  const config = resolveSupabaseConfig();
+  const headers = buildHeaders(config);
+  const pairs = await Promise.all(
+    chars.map(async (char): Promise<[string, string | null]> => {
+      const endpoint = `${config.baseUrl}/rest/v1/ssot_hanname_master?select=char,meanings&char=eq.${encodeURIComponent(char)}&is_inmyong=eq.true&limit=1`;
+      const response = await fetch(endpoint, {
+        method: "GET",
+        headers,
+        cache: "no-store"
+      });
+      if (!response.ok) {
+        const body = await readTextSafely(response);
+        throw new Error(`[ssot-admin] meaning lookup failed: ${response.status} ${body}`);
+      }
+
+      const rows = (await response.json()) as unknown;
+      if (!Array.isArray(rows) || rows.length === 0) {
+        return [char, null];
+      }
+      const row = rows[0] as SupabaseHanjaMeaningRow;
+      const meaningValues = Array.isArray(row.meanings?.inmyong) ? row.meanings?.inmyong : [];
+      const keyword = toMeaningKeyword(meaningValues[0]);
+      return [char, keyword];
+    })
+  );
+
+  const result: Record<string, string> = {};
+  for (const [char, keyword] of pairs) {
+    if (!keyword) {
+      continue;
+    }
+    result[char] = keyword;
+  }
+  return result;
 }

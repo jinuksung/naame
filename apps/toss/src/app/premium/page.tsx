@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import {
   TdsPrimaryButton,
   TdsScreen,
+  TdsSecondaryButton,
   TdsSegmentedControl,
   TdsSwitch
 } from "@/components/tds";
 import { fetchSurnameHanjaOptions } from "@/lib/api";
 import { normalizeHangulReadingWithLimit } from "@/lib/korean/normalizeHangulReading";
+import { resolveLikedPath } from "@/lib/likedRoute";
 import {
   buildLocalQuickPremiumPayload,
   resolvePremiumLoadingPath
@@ -262,6 +264,9 @@ export default function PremiumInputPage(): JSX.Element {
     router.push(loadingPath);
   };
 
+  const likedPath =
+    typeof window === "undefined" ? "/liked" : resolveLikedPath(window.location.pathname);
+
   return (
     <TdsScreen
       title="네임핏 프리미엄(베타)"
@@ -482,6 +487,14 @@ export default function PremiumInputPage(): JSX.Element {
         <TdsPrimaryButton type="submit" disabled={isSubmitDisabled}>
           사주 기반 분석 시작
         </TdsPrimaryButton>
+        <TdsSecondaryButton
+          type="button"
+          onClick={() => {
+            router.push(`${likedPath}?mode=premium`);
+          }}
+        >
+          찜한 이름 보기
+        </TdsSecondaryButton>
 
         {localAdminEnabled ? (
           <div className="local-admin-name-row">

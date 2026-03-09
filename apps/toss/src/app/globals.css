@@ -855,6 +855,12 @@ a {
   gap: 6px;
 }
 
+.liked-list {
+  margin-top: 10px;
+  display: grid;
+  gap: 12px;
+}
+
 .tds-landing {
   display: grid;
   gap: 14px;

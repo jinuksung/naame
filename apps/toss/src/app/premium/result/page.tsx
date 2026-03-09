@@ -712,7 +712,7 @@ export default function PremiumResultPage(): JSX.Element {
       <div className="result-actions">
         <TdsSecondaryButton
           onClick={() => {
-            router.push(likedPath);
+            router.push(`${likedPath}?mode=premium`);
           }}
         >
           찜한 이름 보기
