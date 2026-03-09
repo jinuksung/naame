@@ -223,7 +223,7 @@ function defaultCacheDirRaw(env: NodeJS.ProcessEnv = process.env): string {
 }
 
 function getVersionCheckIntervalMs(): number {
-  return parsePositiveInteger(process.env.SUPABASE_SSOT_VERSION_CHECK_INTERVAL_MS, 3000);
+  return parsePositiveInteger(process.env.SUPABASE_SSOT_VERSION_CHECK_INTERVAL_MS, 60000);
 }
 
 function isVersionCheckEnabled(): boolean {

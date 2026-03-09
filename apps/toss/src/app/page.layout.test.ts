@@ -108,12 +108,12 @@ function testRobotsRouteDisallowsAllCrawling(): void {
   );
 }
 
-function testRootLandingHasPremiumAndFreeRoutes(): void {
+function testRootRedirectsToFreeWhenPremiumDefaultIsOff(): void {
   const source = readFileSync(ROOT_PAGE_PATH, "utf8");
   assert.equal(
-    source.includes('href="/premium"') && source.includes('href="/free"'),
+    source.includes('redirect("/free")'),
     true,
-    "루트 랜딩에는 /premium 과 /free 선택 링크가 있어야 합니다.",
+    "루트는 프리미엄 기본 라우트 조건이 아니면 선택화면 대신 /free 로 리다이렉트해야 합니다.",
   );
 }
 
@@ -125,7 +125,7 @@ function run(): void {
   testViewportDisablesUnnecessaryZoom();
   testLightModeIsForcedForTossNonGamePolicy();
   testRobotsRouteDisallowsAllCrawling();
-  testRootLandingHasPremiumAndFreeRoutes();
+  testRootRedirectsToFreeWhenPremiumDefaultIsOff();
   console.log("[test:input-page-layout:toss] all tests passed");
 }
 

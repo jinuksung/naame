@@ -216,8 +216,8 @@ async function run(): Promise<void> {
   const originalFetch = globalThis.fetch;
   const requiredPaths = getDefaultSupabaseSsotFilePaths();
   const rowsByTable = buildRowsByTable(requiredPaths);
-  // resolveSurnameHanjaSelection() preloads surname_map once before runtime SSOT snapshot fetches.
-  const EXPECTED_RUNTIME_TABLE_FETCHES = getDefaultRuntimeSupabaseSsotFilePaths().length + 1;
+  // runtime SSOT snapshot fetch should cover surname_map without an additional preload fetch.
+  const EXPECTED_RUNTIME_TABLE_FETCHES = getDefaultRuntimeSupabaseSsotFilePaths().length;
   let fetchCalled = 0;
 
   globalThis.fetch = (async (input: unknown, _init?: unknown) => {

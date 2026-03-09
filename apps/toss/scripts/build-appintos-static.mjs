@@ -157,8 +157,8 @@ function assertApiBaseUrlEnv() {
 
 const routeSourceMap = [
   // Root route is force-dynamic and doesn't emit index.html in next build output.
-  // Serve premium entry at "/" for appintos static package.
-  { source: "premium.html", route: "/" },
+  // Serve free entry at "/" for appintos static package.
+  { source: "free.html", route: "/" },
   { source: "free.html", route: "/free" },
   { source: "premium.html", route: "/premium" },
   { source: path.join("premium", "loading.html"), route: "/premium/loading" },

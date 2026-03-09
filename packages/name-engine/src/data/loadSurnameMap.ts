@@ -27,6 +27,10 @@ const MAX_HANJA_LENGTH = 2;
 let surnameMapPromise: Promise<Map<string, SurnameHanjaOption[]>> | null = null;
 let surnameMapVersionSignature: string | null = null;
 
+interface SurnameMapLoadOptions {
+  versionSignature?: string;
+}
+
 function uniquePaths(paths: string[]): string[] {
   return Array.from(new Set(paths));
 }
@@ -219,11 +223,15 @@ async function loadSurnameMap(sourcePath: string): Promise<Map<string, SurnameHa
   return byReading;
 }
 
-async function getSurnameMap(): Promise<Map<string, SurnameHanjaOption[]>> {
-  const snapshot = await ensureSupabaseSsotSnapshot({
-    requiredPaths: SURNAME_SSOT_REQUIRED_PATHS
-  });
-  const nextSignature = snapshot.versionSignature ?? snapshot.source;
+async function getSurnameMap(options: SurnameMapLoadOptions = {}): Promise<Map<string, SurnameHanjaOption[]>> {
+  const hintedVersionSignature = options.versionSignature?.trim();
+  let nextSignature = hintedVersionSignature ?? "";
+  if (!nextSignature) {
+    const snapshot = await ensureSupabaseSsotSnapshot({
+      requiredPaths: SURNAME_SSOT_REQUIRED_PATHS
+    });
+    nextSignature = snapshot.versionSignature ?? snapshot.source;
+  }
   if (surnameMapPromise && surnameMapVersionSignature === nextSignature) {
     return surnameMapPromise;
   }
@@ -246,12 +254,15 @@ export function resetSurnameMapCacheForRuntime(): void {
   surnameMapVersionSignature = null;
 }
 
-export async function getSurnameHanjaOptions(surnameReading: string): Promise<SurnameHanjaOption[]> {
+export async function getSurnameHanjaOptions(
+  surnameReading: string,
+  options: SurnameMapLoadOptions = {}
+): Promise<SurnameHanjaOption[]> {
   const reading = normalizeReading(surnameReading);
   if (!reading) {
     return [];
   }
-  const map = await getSurnameMap();
+  const map = await getSurnameMap(options);
   return cloneOptions(map.get(reading) ?? []);
 }
 
@@ -265,18 +276,19 @@ export function pickDefaultSurnameHanja(options: SurnameHanjaOption[]): string |
 
 export async function resolveSurnameHanjaSelection(
   surnameReading: string,
-  requestedHanja?: string
+  requestedHanja?: string,
+  options: SurnameMapLoadOptions = {}
 ): Promise<SurnameHanjaResolution> {
-  const options = await getSurnameHanjaOptions(surnameReading);
-  const defaultHanja = pickDefaultSurnameHanja(options);
+  const hanjaOptions = await getSurnameHanjaOptions(surnameReading, options);
+  const defaultHanja = pickDefaultSurnameHanja(hanjaOptions);
   const normalizedRequested = normalizeHanja(requestedHanja);
   const selectedFromRequest =
-    normalizedRequested && options.some((option) => option.hanja === normalizedRequested)
+    normalizedRequested && hanjaOptions.some((option) => option.hanja === normalizedRequested)
       ? normalizedRequested
       : null;
 
   return {
-    options,
+    options: hanjaOptions,
     defaultHanja,
     selectedHanja: selectedFromRequest ?? defaultHanja
   };

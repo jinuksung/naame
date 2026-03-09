@@ -68,6 +68,11 @@ function testRouteSourceMapIncludesPremiumRoutes() {
   const scriptPath = new URL("./build-appintos-static.mjs", import.meta.url);
   const source = readFileSync(scriptPath, "utf8");
   assert.equal(
+    source.includes('{ source: "free.html", route: "/" }'),
+    true,
+    "appintos 정적 빌드의 루트(/) 엔트리는 free.html 이어야 합니다.",
+  );
+  assert.equal(
     source.includes('route: "/premium"'),
     true,
     "appintos 정적 빌드는 /premium 라우트를 포함해야 합니다.",
