@@ -232,6 +232,7 @@ export default function PremiumResultPage(): JSX.Element {
     () => top5.map((item) => buildNameKey(item)),
     [top5],
   );
+  const top5KeySignature = useMemo(() => top5Keys.join("|"), [top5Keys]);
   const hasFeedbackContext =
     surnameHangul.trim().length > 0 && input.surnameHanja.trim().length > 0;
   const premiumLoadingPath =
@@ -248,7 +249,7 @@ export default function PremiumResultPage(): JSX.Element {
   useEffect(() => {
     setFeedbackStatus((prev) => syncFeedbackStatus(prev, top5Keys));
     setFeedbackVote((prev) => syncFeedbackVote(prev, top5Keys));
-  }, [top5Keys]);
+  }, [top5KeySignature, top5Keys]);
 
   useEffect(() => {
     setExpandedCardId((prev) => {
@@ -260,7 +261,7 @@ export default function PremiumResultPage(): JSX.Element {
       }
       return top5Keys[0] ?? null;
     });
-  }, [top5, top5Keys]);
+  }, [top5KeySignature, top5Keys]);
 
   useEffect(() => {
     if (!likedToast) {

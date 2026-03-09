@@ -159,6 +159,7 @@ export default function PremiumResultPage(): JSX.Element {
 
   const top5 = useMemo(() => results.slice(0, 5), [results]);
   const top5Keys = useMemo(() => top5.map((item) => buildNameKey(item)), [top5]);
+  const top5KeySignature = useMemo(() => top5Keys.join("|"), [top5Keys]);
   const likedIdSet = useMemo(() => new Set(likedNames.map((entry) => entry.id)), [likedNames]);
   const premiumLoadingPath =
     typeof window === "undefined"
@@ -172,7 +173,7 @@ export default function PremiumResultPage(): JSX.Element {
   useEffect(() => {
     setFeedbackStatus((prev) => syncFeedbackStatus(prev, top5Keys));
     setFeedbackVote((prev) => syncFeedbackVote(prev, top5Keys));
-  }, [top5Keys]);
+  }, [top5KeySignature, top5Keys]);
 
   useEffect(() => {
     setExpandedCardId((prev) => {
@@ -184,7 +185,7 @@ export default function PremiumResultPage(): JSX.Element {
       }
       return top5Keys[0] ?? null;
     });
-  }, [top5, top5Keys]);
+  }, [top5KeySignature, top5Keys]);
 
   useEffect(() => {
     if (!likedToast) {

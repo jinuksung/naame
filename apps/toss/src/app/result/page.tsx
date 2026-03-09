@@ -172,6 +172,7 @@ export default function ResultPage(): JSX.Element {
     () => top5.map((item) => buildNameKey(item)),
     [top5],
   );
+  const top5KeySignature = useMemo(() => top5Keys.join("|"), [top5Keys]);
   const quickSurnames = useMemo(
     () => buildQuickSurnameCandidates(input.surnameHangul),
     [input.surnameHangul],
@@ -192,7 +193,7 @@ export default function ResultPage(): JSX.Element {
   useEffect(() => {
     setFeedbackStatus((prev) => syncFeedbackStatus(prev, top5Keys));
     setFeedbackVote((prev) => syncFeedbackVote(prev, top5Keys));
-  }, [top5Keys]);
+  }, [top5KeySignature, top5Keys]);
 
   useEffect(() => {
     if (!likedToast) {
