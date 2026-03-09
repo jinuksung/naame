@@ -337,7 +337,10 @@ export default function ResultPage(): JSX.Element {
 
     setSharingCardId(itemKey);
     try {
-      await shareFreeResultCard(shareNode, displayName);
+      const shareMode = await shareFreeResultCard(shareNode, displayName);
+      if (shareMode === "download") {
+        setLikedToast("공유 기능이 제한돼 이미지를 파일로 저장했어요.");
+      }
     } catch (error) {
       console.error("[result] share failed", error);
       setLikedToast("공유에 실패했어요. 다시 시도해 주세요.");
@@ -455,6 +458,9 @@ export default function ResultPage(): JSX.Element {
       title="추천 이름 TOP 5"
       description="입력하신 정보를 바탕으로 선별했습니다"
     >
+      <p className="nf-description">
+        여기 밑에 좋아요를 누르면 찜한 이름 목록에 저장됩니다.
+      </p>
       {top5.length === 0 ? (
         <div className="nf-result-actions">
           <p className="nf-description">
@@ -626,7 +632,7 @@ export default function ResultPage(): JSX.Element {
                     >
                       <span className="nf-feedback-content">
                         <ThumbUpIcon />
-                        <span>{isLiked ? "찜해제" : "좋아요"}</span>
+                        <span>좋아요</span>
                       </span>
                     </button>
                     <button

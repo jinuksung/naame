@@ -212,11 +212,11 @@ export default function LikedPage(): JSX.Element {
                   <span className="hanja-meaning">{displayMeaning(entry.meaningPair?.[1])}</span>
                 </li>
               </ul>
-              <p className="result-candidate-meta">저장 시각 {formatSavedAt(entry.createdAt)}</p>
-              <div className="local-admin-name-row">
+              <p className="liked-saved-at">저장 시각 {formatSavedAt(entry.createdAt)}</p>
+              <div className="share-row">
                 <button
                   type="button"
-                  className="local-admin-btn local-admin-btn-minimal"
+                  className="feedback-btn is-share"
                   onClick={() => {
                     try {
                       removeLiked(entry.id);

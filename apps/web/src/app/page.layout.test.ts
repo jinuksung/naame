@@ -8,6 +8,10 @@ const LAYOUT_PAGE_PATH = path.resolve(__dirname, "layout.tsx");
 const MAIN_DESCRIPTION_TEXT = "발음·의미·사용 데이터를 기준으로 조건에 맞는 이름을 찾습니다";
 const BASIC_MODE_HEADER_TEXT = "기본모드에서는 아래 기준으로 이름을 선정합니다.";
 const BASIC_MODE_SAJU_NOTE_TEXT = "※ 오행 균형은";
+const FREE_TITLE_WITH_LINE_BREAK = "네임핏:\\n우리 아이 이름 찾기";
+const BASIC_MODE_RULE_PHONETIC = "발음오행: 이름을 읽었을 때 발음 흐름과 소리 균형을 봅니다.";
+const BASIC_MODE_RULE_MEANING = "의미: 한자 조합이 전달하는 의미의 조화와 선명도를 봅니다.";
+const BASIC_MODE_RULE_BALANCE = "오행 균형: 이름의 오행조합이 조화로운지 봅니다.";
 const TITLE_BRAND_IMAGE_PATH = "/namefit-mark-inline.svg";
 const FAVICON_IMAGE_PATH = "/namefit-mark.svg";
 
@@ -36,6 +40,23 @@ function testMainDescriptionRemovedAndBasicModeGuideVisible(): void {
     source.includes(BASIC_MODE_SAJU_NOTE_TEXT),
     true,
     "기본모드에서 사주 미반영 안내 문구가 보여야 합니다.",
+  );
+  assert.equal(
+    source.includes(BASIC_MODE_RULE_PHONETIC) &&
+      source.includes(BASIC_MODE_RULE_MEANING) &&
+      source.includes(BASIC_MODE_RULE_BALANCE),
+    true,
+    "기본모드 설명 문구는 최신 안내 문구로 교체되어야 합니다.",
+  );
+}
+
+function testMainTitleSupportsForcedLineBreak(): void {
+  const source = readFileSync(INPUT_PAGE_PATH, "utf8");
+  assert.equal(
+    source.includes(`FREE_INPUT_TITLE = "${FREE_TITLE_WITH_LINE_BREAK}"`) &&
+      source.includes("title={FREE_INPUT_TITLE}"),
+    true,
+    "입력 화면 타이틀은 '네임핏:' 다음 줄로 강제 줄바꿈되어야 합니다.",
   );
 }
 
@@ -70,6 +91,7 @@ function testRootLandingHasPremiumAndFreeRoutes(): void {
 function run(): void {
   testBirthInputsAreNotRenderedInBasicMode();
   testMainDescriptionRemovedAndBasicModeGuideVisible();
+  testMainTitleSupportsForcedLineBreak();
   testMainPageRendersBrandImage();
   testMetadataUsesBrandFavicon();
   testRootLandingHasPremiumAndFreeRoutes();

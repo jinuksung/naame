@@ -77,7 +77,7 @@ export function TdsScreen({
                   aria-hidden={titleIconAlt ? undefined : true}
                 />
               ) : null}
-              <span>{title}</span>
+              <span className="tds-title-text">{title}</span>
             </span>
           </h1>
         ) : null}

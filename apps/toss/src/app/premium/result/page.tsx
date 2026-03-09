@@ -455,7 +455,10 @@ export default function PremiumResultPage(): JSX.Element {
 
     setSharingCardId(itemKey);
     try {
-      await sharePremiumResultCard(shareNode, displayName);
+      const shareMode = await sharePremiumResultCard(shareNode, displayName);
+      if (shareMode === "download") {
+        setLikedToast("공유 기능이 제한돼 이미지를 파일로 저장했어요.");
+      }
     } catch (error) {
       console.error("[premium-result] share failed", error);
       setLikedToast("공유에 실패했어요. 다시 시도해 주세요.");
@@ -696,7 +699,7 @@ export default function PremiumResultPage(): JSX.Element {
                   >
                     <span className="feedback-content">
                       <ThumbUpIcon />
-                      <span>{isLiked ? "찜해제" : "좋아요"}</span>
+                      <span>좋아요</span>
                     </span>
                   </button>
                   <button

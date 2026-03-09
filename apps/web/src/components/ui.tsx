@@ -70,7 +70,7 @@ export function Screen({
                   aria-hidden={titleIconAlt ? undefined : true}
                 />
               ) : null}
-              <span>{title}</span>
+              <span className="nf-title-text">{title}</span>
             </span>
           </h1>
         ) : null}

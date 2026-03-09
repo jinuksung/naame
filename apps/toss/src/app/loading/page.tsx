@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { TdsScreen } from "@/components/tds";
 import { fetchFreeRecommendations } from "@/lib/api";
@@ -30,11 +30,19 @@ export default function LoadingPage(): JSX.Element {
   const hasHydrated = useRecommendStore((state) => state.hasHydrated);
   const setInput = useRecommendStore((state) => state.setInput);
   const setResults = useRecommendStore((state) => state.setResults);
+  const requestBaseInput = useMemo(
+    () => ({
+      surnameHangul: input.surnameHangul,
+      surnameHanja: input.surnameHanja,
+      gender: input.gender,
+    }),
+    [input.gender, input.surnameHangul, input.surnameHanja],
+  );
 
   const [messageIndex, setMessageIndex] = useState(0);
   const hasInput =
-    input.surnameHangul.trim().length > 0 &&
-    input.surnameHanja.trim().length > 0;
+    requestBaseInput.surnameHangul.trim().length > 0 &&
+    requestBaseInput.surnameHanja.trim().length > 0;
 
   useEffect(() => {
     if (!hasHydrated) {
@@ -52,7 +60,7 @@ export default function LoadingPage(): JSX.Element {
     }, MESSAGE_ROTATE_MS);
 
     const run = async (): Promise<void> => {
-      const seededInput = { ...input, exploreSeed: buildFreeExploreSeed() };
+      const seededInput = { ...requestBaseInput, exploreSeed: buildFreeExploreSeed() };
       setInput(seededInput);
       try {
         const requestPromise = fetchFreeRecommendations(seededInput).catch((error) => {
@@ -83,7 +91,7 @@ export default function LoadingPage(): JSX.Element {
       isCancelled = true;
       clearInterval(rotateTimer);
     };
-  }, [hasHydrated, hasInput, input, router, setInput, setResults]);
+  }, [hasHydrated, hasInput, requestBaseInput, router, setInput, setResults]);
 
   return (
     <TdsScreen title="이름을 추천하고 있어요" description="잠시만 기다려 주세요.">

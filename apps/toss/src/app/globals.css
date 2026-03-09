@@ -80,6 +80,10 @@ a {
   gap: 0.42em;
 }
 
+.tds-title-text {
+  white-space: pre-line;
+}
+
 .tds-title-icon {
   height: 1em;
   width: auto;
@@ -1029,6 +1033,14 @@ a {
   margin-top: 10px;
   display: grid;
   gap: 12px;
+}
+
+.liked-saved-at {
+  margin: 8px 0 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 500;
 }
 
 .tds-landing {

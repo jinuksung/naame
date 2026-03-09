@@ -206,11 +206,11 @@ export default function LikedPage(): JSX.Element {
                   </span>
                 </li>
               </ul>
-              <p className="nf-liked-card-sub">저장 시각 {formatSavedAt(entry.createdAt)}</p>
-              <div className="nf-local-admin-name-row">
+              <p className="nf-liked-saved-at">저장 시각 {formatSavedAt(entry.createdAt)}</p>
+              <div className="nf-share-row">
                 <button
                   type="button"
-                  className="nf-local-admin-btn nf-local-admin-btn-minimal"
+                  className="nf-feedback-btn is-share"
                   onClick={() => {
                     try {
                       removeLiked(entry.id);

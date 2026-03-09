@@ -20,6 +20,7 @@ interface FormErrors {
 }
 
 const BRAND_TITLE_IMAGE_PATH = "/namefit-mark-inline.svg";
+const FREE_INPUT_TITLE = "네임핏:\n우리 아이 이름 찾기";
 
 function countChars(value: string): number {
   return Array.from(value).length;
@@ -157,7 +158,7 @@ export default function InputPage(): JSX.Element {
 
   return (
     <TdsScreen
-      title="네임핏: 우리 아이 이름 찾기"
+      title={FREE_INPUT_TITLE}
       titleIconSrc={BRAND_TITLE_IMAGE_PATH}
       titleIconAlt="네임핏 로고"
     >
@@ -255,19 +256,12 @@ export default function InputPage(): JSX.Element {
             기본모드에서는 아래 기준으로 이름을 선정합니다.
           </p>
           <ul className="tds-basic-mode-guide-list">
-            <li>
-              발음오행: 성과 이름을 붙여 읽었을 때 발음 흐름과 소리 균형을
-              봅니다.
-            </li>
+            <li>발음오행: 이름을 읽었을 때 발음 흐름과 소리 균형을 봅니다.</li>
             <li>의미: 한자 조합이 전달하는 의미의 조화와 선명도를 봅니다.</li>
-            <li>
-              오행 균형: 성씨와 이름의 오행 조합이 한쪽으로 치우치지 않는지
-              봅니다.
-            </li>
+            <li>오행 균형: 이름의 오행조합이 조화로운지 봅니다.</li>
           </ul>
           <p className="tds-basic-mode-guide-note">
-            ※ 오행 균형은 사주가 반영된 결과가 아닌, 성+이름의 오행만
-            반영합니다.
+            ※ 오행 균형은 성과 이름의 한자 오행 분포를 의미합니다.
           </p>
         </section>
       </form>

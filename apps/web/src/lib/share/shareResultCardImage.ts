@@ -6,6 +6,8 @@ interface ShareResultCardImageOptions {
   title: string;
 }
 
+export type ShareResultMode = "native_file" | "native_text" | "download";
+
 function sanitizeFileBaseName(value: string): string {
   return value
     .trim()
@@ -29,7 +31,7 @@ function downloadBlob(blob: Blob, fileName: string): void {
 
 export async function shareResultCardImage(
   options: ShareResultCardImageOptions,
-): Promise<void> {
+): Promise<ShareResultMode> {
   const blob = await toBlob(options.element, {
     pixelRatio: 2,
     cacheBust: true,
@@ -54,24 +56,39 @@ export async function shareResultCardImage(
         files: [file],
         title: options.title,
       });
-      return;
+      return "native_file";
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") {
-        return;
+        return "native_file";
       }
       throw error;
     }
   }
 
+  if (typeof navigatorWithCanShare.share === "function") {
+    try {
+      await navigatorWithCanShare.share({
+        title: options.title,
+        text: options.title,
+      });
+      return "native_text";
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return "native_text";
+      }
+    }
+  }
+
   downloadBlob(blob, options.fileName);
+  return "download";
 }
 
 export async function shareFreeResultCard(
   element: HTMLElement,
   displayName: string,
-): Promise<void> {
+): Promise<ShareResultMode> {
   const namePart = sanitizeFileBaseName(displayName) || "name";
-  await shareResultCardImage({
+  return shareResultCardImage({
     element,
     title: `${displayName} 이름 카드`,
     fileName: `namefit-free-${namePart}.png`,
@@ -81,9 +98,9 @@ export async function shareFreeResultCard(
 export async function sharePremiumResultCard(
   element: HTMLElement,
   displayName: string,
-): Promise<void> {
+): Promise<ShareResultMode> {
   const namePart = sanitizeFileBaseName(displayName) || "name";
-  await shareResultCardImage({
+  return shareResultCardImage({
     element,
     title: `${displayName} 프리미엄 리포트`,
     fileName: `namefit-premium-${namePart}.png`,

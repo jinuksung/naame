@@ -82,6 +82,10 @@ input {
   gap: 0.42em;
 }
 
+.nf-title-text {
+  white-space: pre-line;
+}
+
 .nf-title-icon {
   height: 1em;
   width: auto;
@@ -1117,11 +1121,12 @@ input {
   gap: 10px;
 }
 
-.nf-liked-card-sub {
+.nf-liked-saved-at {
   margin: 8px 0 0;
-  color: hsl(var(--muted-foreground));
-  font-size: 0.82rem;
-  line-height: 1.45;
+  color: hsl(var(--muted-foreground) / 0.72);
+  font-size: 0.74rem;
+  line-height: 1.35;
+  font-weight: 500;
 }
 
 .seo-shell {
