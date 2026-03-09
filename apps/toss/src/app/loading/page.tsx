@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { TdsScreen } from "@/components/tds";
 import { fetchFreeRecommendations } from "@/lib/api";
+import { buildFreeExploreSeed } from "@/lib/freeExploreSeed";
 import { buildMockResults } from "@/lib/mock";
 import { useRecommendStore } from "@/store/useRecommendStore";
 
@@ -27,6 +28,7 @@ export default function LoadingPage(): JSX.Element {
   const router = useRouter();
   const input = useRecommendStore((state) => state.input);
   const hasHydrated = useRecommendStore((state) => state.hasHydrated);
+  const setInput = useRecommendStore((state) => state.setInput);
   const setResults = useRecommendStore((state) => state.setResults);
 
   const [messageIndex, setMessageIndex] = useState(0);
@@ -50,10 +52,12 @@ export default function LoadingPage(): JSX.Element {
     }, MESSAGE_ROTATE_MS);
 
     const run = async (): Promise<void> => {
+      const seededInput = { ...input, exploreSeed: buildFreeExploreSeed() };
+      setInput(seededInput);
       try {
-        const requestPromise = fetchFreeRecommendations(input).catch((error) => {
+        const requestPromise = fetchFreeRecommendations(seededInput).catch((error) => {
           console.error("[loading] API 실패, mock fallback 사용", error);
-          return { results: buildMockResults(input) };
+          return { results: buildMockResults(seededInput) };
         });
 
         await wait(MIN_LOADING_MS);
@@ -68,7 +72,7 @@ export default function LoadingPage(): JSX.Element {
         if (isCancelled) {
           return;
         }
-        setResults(buildMockResults(input));
+        setResults(buildMockResults(seededInput));
         router.replace("/result");
       }
     };
@@ -79,7 +83,7 @@ export default function LoadingPage(): JSX.Element {
       isCancelled = true;
       clearInterval(rotateTimer);
     };
-  }, [hasHydrated, hasInput, input, router, setResults]);
+  }, [hasHydrated, hasInput, input, router, setInput, setResults]);
 
   return (
     <TdsScreen title="이름을 추천하고 있어요" description="잠시만 기다려 주세요.">
