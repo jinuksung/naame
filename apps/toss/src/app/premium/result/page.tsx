@@ -621,21 +621,13 @@ export default function PremiumResultPage(): JSX.Element {
 
             return (
               <TdsCard key={itemKey}>
-                <button
-                  type="button"
-                  className={`premium-toggle${isExpanded ? " is-expanded" : ""}`}
-                  onClick={() => {
-                    setExpandedCardId(itemKey);
-                  }}
-                >
-                  <div className="result-header-row">
-                    {index === 0 ? (
-                      <span className="top-rank-badge">가장 잘 맞는 이름</span>
-                    ) : null}
-                    <span className="score-chip">#{item.rank}</span>
-                  </div>
-                  <p className="pron-emphasis">{displayName}</p>
-                </button>
+                <div className="result-header-row">
+                  {index === 0 ? (
+                    <span className="top-rank-badge">가장 잘 맞는 이름</span>
+                  ) : null}
+                  <span className="score-chip">#{item.rank}</span>
+                </div>
+                <p className="pron-emphasis">{displayName}</p>
                 <ul className="hanja-detail-list">
                   {hanjaDetails.map((detail, detailIndex) => (
                     <li
@@ -735,6 +727,17 @@ export default function PremiumResultPage(): JSX.Element {
                     }}
                   >
                     공유하기
+                  </button>
+                </div>
+                <div className="premium-accordion-row">
+                  <button
+                    type="button"
+                    className="premium-accordion-btn"
+                    onClick={() => {
+                      setExpandedCardId((prev) => (prev === itemKey ? null : itemKey));
+                    }}
+                  >
+                    {isExpanded ? "상세 리포트 접기" : "상세 리포트 펼치기"}
                   </button>
                 </div>
                 {localAdminEnabled ? (

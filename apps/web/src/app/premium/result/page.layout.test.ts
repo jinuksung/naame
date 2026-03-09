@@ -53,6 +53,19 @@ function testPremiumResultUsesTop5SingleAccordionAndShareRow(): void {
     "웹 프리미엄 결과 카드는 단일 아코디언 상태(expandedCardId)로 제어해야 합니다.",
   );
   assert.equal(
+    source.includes("상세 리포트 펼치기") &&
+      source.includes("상세 리포트 접기") &&
+      source.includes('className="nf-premium-accordion-row"') &&
+      source.includes('className="nf-premium-accordion-btn"'),
+    true,
+    "웹 프리미엄 결과 카드는 하단 펼침/접힘 버튼(nf-premium-accordion-*)으로 아코디언을 제어해야 합니다.",
+  );
+  assert.equal(
+    source.includes("className={`nf-premium-toggle"),
+    false,
+    "웹 프리미엄 결과 카드 헤더 전체 클릭 방식(nf-premium-toggle)은 제거해야 합니다.",
+  );
+  assert.equal(
     source.includes('className="nf-share-row"') && source.includes("공유하기"),
     true,
     "웹 프리미엄 결과 카드 액션 하단에는 공유하기 단독 행(nf-share-row)이 있어야 합니다.",

@@ -896,17 +896,25 @@ input {
   width: 100%;
 }
 
-.nf-premium-toggle {
+.nf-premium-accordion-row {
+  margin-top: 8px;
+}
+
+.nf-premium-accordion-btn {
   width: 100%;
-  border: 0;
-  background: transparent;
-  padding: 0;
-  text-align: left;
+  border-radius: 12px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  padding: 10px 12px;
+  color: hsl(var(--foreground));
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
   cursor: pointer;
 }
 
-.nf-premium-toggle.is-expanded .nf-pron-emphasis {
-  color: #0b5f88;
+.nf-premium-accordion-btn:hover {
+  background: hsl(var(--muted));
 }
 
 .nf-premium-report-panel {

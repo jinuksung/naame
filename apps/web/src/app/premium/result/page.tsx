@@ -430,21 +430,13 @@ export default function PremiumResultPage(): JSX.Element {
 
             return (
               <Card key={itemKey}>
-                <button
-                  type="button"
-                  className={`nf-premium-toggle${isExpanded ? " is-expanded" : ""}`}
-                  onClick={() => {
-                    setExpandedCardId(itemKey);
-                  }}
-                >
-                  <div className="nf-result-header-row">
-                    {index === 0 ? (
-                      <span className="nf-top-rank-badge">가장 잘 맞는 이름</span>
-                    ) : null}
-                    <span className="nf-score-chip">#{item.rank}</span>
-                  </div>
-                  <p className="nf-pron-emphasis">{displayName}</p>
-                </button>
+                <div className="nf-result-header-row">
+                  {index === 0 ? (
+                    <span className="nf-top-rank-badge">가장 잘 맞는 이름</span>
+                  ) : null}
+                  <span className="nf-score-chip">#{item.rank}</span>
+                </div>
+                <p className="nf-pron-emphasis">{displayName}</p>
                 <ul className="nf-hanja-detail-list">
                   {hanjaDetails.map((detail, detailIndex) => (
                     <li
@@ -520,6 +512,17 @@ export default function PremiumResultPage(): JSX.Element {
                     }}
                   >
                     공유하기
+                  </button>
+                </div>
+                <div className="nf-premium-accordion-row">
+                  <button
+                    type="button"
+                    className="nf-premium-accordion-btn"
+                    onClick={() => {
+                      setExpandedCardId((prev) => (prev === itemKey ? null : itemKey));
+                    }}
+                  >
+                    {isExpanded ? "상세 리포트 접기" : "상세 리포트 펼치기"}
                   </button>
                 </div>
 
