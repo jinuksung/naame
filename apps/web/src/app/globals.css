@@ -880,6 +880,166 @@ input {
   cursor: not-allowed;
 }
 
+.nf-feedback-btn.is-share {
+  border-right: 0;
+}
+
+.nf-share-row {
+  margin-top: 8px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 12px;
+  overflow: hidden;
+  background: hsl(var(--card));
+}
+
+.nf-share-row .nf-feedback-btn {
+  width: 100%;
+}
+
+.nf-premium-toggle {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nf-premium-toggle.is-expanded .nf-pron-emphasis {
+  color: #0b5f88;
+}
+
+.nf-premium-report-panel {
+  margin-top: 10px;
+  display: grid;
+  gap: 10px;
+}
+
+.nf-premium-report-summary {
+  margin: 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.nf-premium-ageband-list {
+  display: grid;
+  gap: 8px;
+}
+
+.nf-premium-ageband-card {
+  border: 1px solid hsl(var(--border));
+  border-radius: 12px;
+  background: hsl(var(--card));
+  padding: 10px 12px;
+  display: grid;
+  gap: 6px;
+}
+
+.nf-premium-ageband-card h4 {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.nf-premium-ageband-card p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.45;
+}
+
+.nf-share-render-host {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  width: 360px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.nf-share-free-card {
+  padding: 16px;
+}
+
+.nf-share-free-name {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: #075985;
+  text-align: left;
+}
+
+.nf-share-free-card .nf-hanja-detail-list {
+  margin-top: 16px;
+  justify-content: center;
+}
+
+.nf-share-premium-card {
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.nf-share-premium-name {
+  margin: 0;
+  font-size: 1.9rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: #075985;
+}
+
+.nf-share-premium-hanja {
+  margin: 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.8rem;
+}
+
+.nf-share-premium-summary {
+  margin: 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.nf-share-premium-bullets {
+  margin: 0;
+  padding-left: 18px;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.75rem;
+  line-height: 1.4;
+  display: grid;
+  gap: 4px;
+}
+
+.nf-share-premium-agebands {
+  display: grid;
+  gap: 8px;
+}
+
+.nf-share-premium-ageband-card {
+  border: 1px solid hsl(var(--border));
+  border-radius: 10px;
+  background: hsl(var(--card));
+  padding: 8px 10px;
+  display: grid;
+  gap: 5px;
+}
+
+.nf-share-premium-ageband-card h4 {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.nf-share-premium-ageband-card p {
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: hsl(var(--muted-foreground));
+}
+
 .nf-local-admin-name-row {
   margin-top: 10px;
   display: flex;

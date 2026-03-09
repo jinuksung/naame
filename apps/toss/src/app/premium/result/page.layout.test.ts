@@ -198,6 +198,26 @@ function testPremiumWeakSummaryUsesDynamicTop2OrTop3(): void {
   );
 }
 
+function testPremiumResultUsesTop5SingleAccordionAndShareRow(): void {
+  const source = readFileSync(PREMIUM_RESULT_PAGE_PATH, "utf8");
+
+  assert.equal(
+    source.includes("results.slice(0, 5)"),
+    true,
+    "프리미엄 결과는 상위 5개만 노출해야 합니다.",
+  );
+  assert.equal(
+    source.includes("expandedCardId"),
+    true,
+    "프리미엄 결과 카드는 단일 아코디언 상태(expandedCardId)로 제어해야 합니다.",
+  );
+  assert.equal(
+    source.includes('className="share-row"') && source.includes("공유하기"),
+    true,
+    "프리미엄 결과 카드 액션 하단에는 공유하기 단독 행(share-row)이 있어야 합니다.",
+  );
+}
+
 function run(): void {
   testPremiumNameAndHanjaUseFreeCardDesign();
   testHanjaCardAreaIsCenterAligned();
@@ -206,6 +226,7 @@ function run(): void {
   testPremiumSummaryExplainsWhatIlganMeans();
   testPremiumPillarsExplainWhatEachPillarMeans();
   testPremiumWeakSummaryUsesDynamicTop2OrTop3();
+  testPremiumResultUsesTop5SingleAccordionAndShareRow();
   console.log("[test:premium-result-layout:toss] all tests passed");
 }
 

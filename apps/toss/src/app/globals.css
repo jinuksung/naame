@@ -745,6 +745,168 @@ a {
   cursor: not-allowed;
 }
 
+.feedback-btn.is-share {
+  border-right: 0;
+  border-left: 0;
+}
+
+.share-row {
+  margin-top: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.share-row .feedback-btn {
+  width: 100%;
+}
+
+.premium-toggle {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+}
+
+.premium-toggle.is-expanded .pron-emphasis {
+  color: #0f3f94;
+}
+
+.tds-premium-report-panel {
+  margin-top: 10px;
+  display: grid;
+  gap: 10px;
+}
+
+.tds-premium-report-summary {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.tds-premium-ageband-list {
+  display: grid;
+  gap: 8px;
+}
+
+.tds-premium-ageband-card {
+  border: 1px solid #dbe3f2;
+  border-radius: 12px;
+  background: #fff;
+  padding: 10px 12px;
+  display: grid;
+  gap: 6px;
+}
+
+.tds-premium-ageband-card h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.tds-premium-ageband-card p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.share-render-host {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  width: 360px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.share-free-card {
+  padding: 16px;
+}
+
+.share-free-name {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: #1749aa;
+  text-align: left;
+}
+
+.share-free-card .hanja-detail-list {
+  margin-top: 16px;
+}
+
+.share-premium-card {
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.share-premium-name {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: #1749aa;
+}
+
+.share-premium-hanja {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.share-premium-summary {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.share-premium-bullets {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+  display: grid;
+  gap: 4px;
+}
+
+.share-premium-agebands {
+  display: grid;
+  gap: 8px;
+}
+
+.share-premium-ageband-card {
+  border: 1px solid #dbe3f2;
+  border-radius: 10px;
+  background: #fff;
+  padding: 8px 10px;
+  display: grid;
+  gap: 5px;
+}
+
+.share-premium-ageband-card h4 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.share-premium-ageband-card p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
 .local-admin-name-row {
   margin-top: 10px;
   display: flex;

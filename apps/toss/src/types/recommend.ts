@@ -7,6 +7,9 @@ export type {
   FreeRecommendResultItem,
   FreeRecommendResponse,
   PremiumRecommendInput,
+  PremiumAgeBandKey,
+  PremiumAgeBandReport,
+  PremiumNameReport,
   PremiumRecommendSummary,
   PremiumRecommendResultItem,
   PremiumRecommendResponse

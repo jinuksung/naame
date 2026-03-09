@@ -1,14 +1,17 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, PrimaryButton, Screen, SecondaryButton } from "@/components/ui";
+import { PremiumResultShareCard } from "@/components/share/PremiumResultShareCard";
 import { addNameBlockSyllableRule, submitNameFeedback } from "@/lib/api";
+import { syncFeedbackStatus, syncFeedbackVote } from "@/lib/feedbackState";
 import { buildLikedNameEntryFromPremium } from "@/lib/likedNameEntry";
 import {
   buildLocalQuickPremiumPayload,
   resolvePremiumLoadingPath
 } from "@/lib/localQuickPremium";
+import { sharePremiumResultCard } from "@/lib/share/shareResultCardImage";
 import { isLocalAdminToolsEnabled } from "@namefit/engine/lib/localAdminVisibility";
 import { ToggleLikedError, useLikedNamesStore } from "@/store/useLikedNamesStore";
 import { usePremiumRecommendStore } from "@/store/usePremiumRecommendStore";
@@ -33,6 +36,11 @@ const STATUS_LABELS_KO = {
   HIGH: "강함",
   VERY_HIGH: "매우 강함"
 } as const;
+
+function displayMeaning(meaning: string): string {
+  const normalized = meaning.trim();
+  return normalized.length > 0 ? normalized : "의미 미상";
+}
 
 function buildNameKey(item: Pick<PremiumRecommendResultItem, "nameHangul" | "hanjaPair">): string {
   return `${item.nameHangul}:${item.hanjaPair[0]}${item.hanjaPair[1]}`;
@@ -62,6 +70,46 @@ function getWeakTopElements(summary: PremiumRecommendSummary): RecommendElement[
   return [];
 }
 
+function ThumbUpIcon(): JSX.Element {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className="nf-feedback-icon"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M7 11v9M7 20H4a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h3m0 8h8.36a2 2 0 0 0 1.96-1.62l1.2-6A2 2 0 0 0 16.56 10H13V6.5A2.5 2.5 0 0 0 10.5 4L7 11Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function ThumbDownIcon(): JSX.Element {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className="nf-feedback-icon"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M7 13V4M7 4H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h3m0-8h8.36a2 2 0 0 1 1.96 1.62l1.2 6A2 2 0 0 1 16.56 14H13v3.5A2.5 2.5 0 0 1 10.5 20L7 13Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export default function PremiumResultPage(): JSX.Element {
   const router = useRouter();
   const input = usePremiumRecommendStore((state) => state.input);
@@ -80,8 +128,17 @@ export default function PremiumResultPage(): JSX.Element {
   const [syllableRuleActionStatus, setSyllableRuleActionStatus] = useState<
     Record<string, "idle" | "pending" | "done" | "error">
   >({});
+  const [feedbackStatus, setFeedbackStatus] = useState<
+    Record<string, "idle" | "pending" | "done">
+  >({});
+  const [feedbackVote, setFeedbackVote] = useState<
+    Record<string, "like" | "dislike" | undefined>
+  >({});
   const [likedToast, setLikedToast] = useState<string | null>(null);
   const [likePendingIds, setLikePendingIds] = useState<Record<string, boolean>>({});
+  const [sharingCardId, setSharingCardId] = useState<string | null>(null);
+  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+  const shareCardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
     if (!summary) {
@@ -100,7 +157,8 @@ export default function PremiumResultPage(): JSX.Element {
     );
   }, []);
 
-  const top20 = useMemo(() => results.slice(0, 20), [results]);
+  const top5 = useMemo(() => results.slice(0, 5), [results]);
+  const top5Keys = useMemo(() => top5.map((item) => buildNameKey(item)), [top5]);
   const likedIdSet = useMemo(() => new Set(likedNames.map((entry) => entry.id)), [likedNames]);
   const premiumLoadingPath =
     typeof window === "undefined"
@@ -110,6 +168,23 @@ export default function PremiumResultPage(): JSX.Element {
   useEffect(() => {
     hydrateLikedNames();
   }, [hydrateLikedNames]);
+
+  useEffect(() => {
+    setFeedbackStatus((prev) => syncFeedbackStatus(prev, top5Keys));
+    setFeedbackVote((prev) => syncFeedbackVote(prev, top5Keys));
+  }, [top5Keys]);
+
+  useEffect(() => {
+    setExpandedCardId((prev) => {
+      if (top5.length === 0) {
+        return null;
+      }
+      if (prev && top5Keys.includes(prev)) {
+        return prev;
+      }
+      return top5Keys[0] ?? null;
+    });
+  }, [top5, top5Keys]);
 
   useEffect(() => {
     if (!likedToast) {
@@ -127,6 +202,7 @@ export default function PremiumResultPage(): JSX.Element {
     return <></>;
   }
   const weakTopElements = getWeakTopElements(summary);
+  const hasFeedbackContext = surnameHangul.trim().length > 0 && input.surnameHanja.trim().length > 0;
 
   const handleAddSyllableRule = async (
     item: Pick<PremiumRecommendResultItem, "nameHangul" | "hanjaPair">
@@ -185,7 +261,7 @@ export default function PremiumResultPage(): JSX.Element {
       return;
     }
 
-    if (hasDbLikeSent(likedId) || !surnameHangul.trim() || !input.surnameHanja.trim()) {
+    if (!hasFeedbackContext || hasDbLikeSent(likedId)) {
       return;
     }
 
@@ -217,6 +293,54 @@ export default function PremiumResultPage(): JSX.Element {
         delete next[likedId];
         return next;
       });
+    }
+  };
+
+  const handleDislikeClick = async (item: PremiumRecommendResultItem): Promise<void> => {
+    const key = buildNameKey(item);
+    if (!hasFeedbackContext || feedbackStatus[key] === "pending" || feedbackStatus[key] === "done") {
+      return;
+    }
+
+    setFeedbackStatus((prev) => ({ ...prev, [key]: "pending" }));
+    setFeedbackVote((prev) => ({ ...prev, [key]: "dislike" }));
+    try {
+      await submitNameFeedback({
+        surnameHangul,
+        surnameHanja: input.surnameHanja,
+        nameHangul: item.nameHangul,
+        hanjaPair: item.hanjaPair,
+        vote: "dislike"
+      });
+      setFeedbackStatus((prev) => ({ ...prev, [key]: "done" }));
+    } catch (error) {
+      console.error("[premium-result] feedback submit failed", error);
+      setFeedbackStatus((prev) => ({ ...prev, [key]: "idle" }));
+      setFeedbackVote((prev) => ({ ...prev, [key]: undefined }));
+    }
+  };
+
+  const handleShareCard = async (
+    itemKey: string,
+    displayName: string
+  ): Promise<void> => {
+    if (sharingCardId) {
+      return;
+    }
+    const shareNode = shareCardRefs.current[itemKey];
+    if (!shareNode) {
+      setLikedToast("공유 카드를 준비하지 못했어요.");
+      return;
+    }
+
+    setSharingCardId(itemKey);
+    try {
+      await sharePremiumResultCard(shareNode, displayName);
+    } catch (error) {
+      console.error("[premium-result] share failed", error);
+      setLikedToast("공유에 실패했어요. 다시 시도해 주세요.");
+    } finally {
+      setSharingCardId(null);
     }
   };
 
@@ -263,11 +387,9 @@ export default function PremiumResultPage(): JSX.Element {
         </ul>
       </section>
 
-      <p className="nf-premium-notice">
-        추천 정렬은 사주 점수 기준이며 발음 점수는 참고용입니다.
-      </p>
+      <p className="nf-premium-notice">사주 보완 점수 순서대로 상위 5개를 보여드려요.</p>
 
-      {top20.length === 0 ? (
+      {top5.length === 0 ? (
         <div className="nf-result-actions">
           <p className="nf-description">추천 결과가 비어 있어요. 다시 시도해 주세요.</p>
           <PrimaryButton
@@ -280,7 +402,8 @@ export default function PremiumResultPage(): JSX.Element {
         </div>
       ) : (
         <section className="nf-result-list">
-          {top20.map((item, index) => {
+          {top5.map((item, index) => {
+            const itemKey = buildNameKey(item);
             const likedEntry = buildLikedNameEntryFromPremium({
               surnameHangul,
               surnameHanja: input.surnameHanja,
@@ -289,71 +412,156 @@ export default function PremiumResultPage(): JSX.Element {
             });
             const likedId = likedEntry.id;
             const isLiked = likedIdSet.has(likedId);
+            const isExpanded = expandedCardId === itemKey;
+            const displayName = formatDisplayName(surnameHangul, item.nameHangul);
+            const hanjaDetails = [
+              {
+                hanja: item.hanjaPair[0],
+                reading: item.readingPair[0],
+                meaning: displayMeaning(item.meaningKwPair[0])
+              },
+              {
+                hanja: item.hanjaPair[1],
+                reading: item.readingPair[1],
+                meaning: displayMeaning(item.meaningKwPair[1])
+              }
+            ];
 
             return (
-              <Card key={buildNameKey(item)}>
-              <div className="nf-premium-card-head">
-                <strong className="nf-pron-emphasis">
-                  {formatDisplayName(surnameHangul, item.nameHangul)}
-                </strong>
-                <div className="nf-rank-meta">
-                  {index === 0 ? (
-                    <span className="nf-top-rank-badge">가장 잘 맞는 이름</span>
-                  ) : null}
-                  <span className="nf-score-chip">#{item.rank}</span>
-                </div>
-              </div>
-              <p className="nf-premium-hanja">
-                {item.hanjaPair[0]}({item.readingPair[0]}) · {item.hanjaPair[1]}({item.readingPair[1]})
-              </p>
-              <p className="nf-premium-star">사주 보완 ⭐ {item.sajuScore5.toFixed(1)}</p>
-              <p className="nf-premium-star">발음 조화 ⭐ {item.soundScore5.toFixed(1)}</p>
-              <ul className="nf-reason-list">
-                {item.why.slice(0, 3).map((reason, index) => (
-                  <li key={`${buildNameKey(item)}-${index}`}>{reason}</li>
-                ))}
-              </ul>
-              <div className="nf-feedback-row is-single">
+              <Card key={itemKey}>
                 <button
                   type="button"
-                  className={`nf-feedback-btn is-like${isLiked ? " is-selected" : ""}`}
-                  disabled={Boolean(likePendingIds[likedId])}
+                  className={`nf-premium-toggle${isExpanded ? " is-expanded" : ""}`}
                   onClick={() => {
-                    void handleLikeToggle(item);
+                    setExpandedCardId(itemKey);
                   }}
                 >
-                  <span className="nf-feedback-content">
-                    <span>{isLiked ? "찜해제" : "좋아요"}</span>
-                  </span>
+                  <div className="nf-result-header-row">
+                    {index === 0 ? (
+                      <span className="nf-top-rank-badge">가장 잘 맞는 이름</span>
+                    ) : null}
+                    <span className="nf-score-chip">#{item.rank}</span>
+                  </div>
+                  <p className="nf-pron-emphasis">{displayName}</p>
                 </button>
-              </div>
-              {localAdminEnabled ? (
-                <div className="nf-local-admin-name-row">
+                <ul className="nf-hanja-detail-list">
+                  {hanjaDetails.map((detail, detailIndex) => (
+                    <li
+                      key={`${itemKey}-${detail.hanja}-${detail.reading}-${detailIndex}`}
+                      className="nf-hanja-detail-item"
+                    >
+                      <span className="nf-hanja-char">{detail.hanja}</span>
+                      <span className="nf-hanja-reading">{detail.reading}</span>
+                      <span className="nf-hanja-meaning">{detail.meaning}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {isExpanded ? (
+                  <section className="nf-premium-report-panel">
+                    <p className="nf-premium-report-summary">{item.report.summary}</p>
+                    <ul className="nf-reason-list">
+                      {item.report.bullets.slice(0, 4).map((reason, reasonIndex) => (
+                        <li key={`${itemKey}-report-${reasonIndex}`}>{reason}</li>
+                      ))}
+                    </ul>
+                    <div className="nf-premium-ageband-list">
+                      {item.report.ageBands.map((band) => (
+                        <article key={`${itemKey}-${band.key}`} className="nf-premium-ageband-card">
+                          <h4>{band.label}</h4>
+                          <p>{band.lines[0]}</p>
+                          <p>{band.lines[1]}</p>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
+
+                <div className="nf-feedback-row is-split">
                   <button
                     type="button"
-                    className={`nf-local-admin-btn nf-local-admin-btn-minimal${
-                      syllableRuleActionStatus[buildNameKey(item)] === "done"
-                        ? " is-done"
-                        : syllableRuleActionStatus[buildNameKey(item)] === "error"
-                          ? " is-error"
-                          : ""
-                    }`}
-                    disabled={syllableRuleActionStatus[buildNameKey(item)] === "pending"}
+                    className={`nf-feedback-btn is-like${isLiked ? " is-selected" : ""}`}
+                    disabled={!hasFeedbackContext || Boolean(likePendingIds[likedId])}
                     onClick={() => {
-                      void handleAddSyllableRule(item);
+                      void handleLikeToggle(item);
                     }}
                   >
-                    음절패턴 차단
+                    <span className="nf-feedback-content">
+                      <ThumbUpIcon />
+                      <span>{isLiked ? "찜해제" : "좋아요"}</span>
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`nf-feedback-btn is-dislike${feedbackVote[itemKey] === "dislike" ? " is-selected" : ""}`}
+                    disabled={
+                      !hasFeedbackContext ||
+                      feedbackStatus[itemKey] === "pending" ||
+                      feedbackStatus[itemKey] === "done"
+                    }
+                    onClick={() => {
+                      void handleDislikeClick(item);
+                    }}
+                  >
+                    <span className="nf-feedback-content">
+                      <ThumbDownIcon />
+                      <span>싫어요</span>
+                    </span>
                   </button>
                 </div>
-              ) : null}
+                <div className="nf-share-row">
+                  <button
+                    type="button"
+                    className="nf-feedback-btn is-share"
+                    disabled={sharingCardId !== null}
+                    onClick={() => {
+                      void handleShareCard(itemKey, displayName);
+                    }}
+                  >
+                    공유하기
+                  </button>
+                </div>
+
+                {localAdminEnabled ? (
+                  <div className="nf-local-admin-name-row">
+                    <button
+                      type="button"
+                      className={`nf-local-admin-btn nf-local-admin-btn-minimal${
+                        syllableRuleActionStatus[itemKey] === "done"
+                          ? " is-done"
+                          : syllableRuleActionStatus[itemKey] === "error"
+                            ? " is-error"
+                            : ""
+                      }`}
+                      disabled={syllableRuleActionStatus[itemKey] === "pending"}
+                      onClick={() => {
+                        void handleAddSyllableRule(item);
+                      }}
+                    >
+                      음절패턴 차단
+                    </button>
+                  </div>
+                ) : null}
+
+                <div
+                  className="nf-share-render-host"
+                  aria-hidden="true"
+                  ref={(node) => {
+                    shareCardRefs.current[itemKey] = node;
+                  }}
+                >
+                  <PremiumResultShareCard
+                    displayName={displayName}
+                    hanjaPair={item.hanjaPair}
+                    readingPair={item.readingPair}
+                    report={item.report}
+                  />
+                </div>
               </Card>
             );
           })}
         </section>
       )}
-
-      <p className="nf-premium-free-note">현재 한시적 무료로 제공 중입니다.</p>
 
       <div className="nf-result-actions">
         <SecondaryButton

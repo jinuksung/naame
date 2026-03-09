@@ -54,6 +54,32 @@ function testFeedbackButtonsUseSplitLayoutWithEmoji(): void {
     false,
     "웹 결과 화면에서 노란 싫어요 이모지는 제거되어야 합니다.",
   );
+  assert.equal(
+    source.includes('className="nf-share-row"') && source.includes("공유하기"),
+    true,
+    "웹 결과 카드 액션 하단에는 공유하기 단독 행(nf-share-row)이 있어야 합니다.",
+  );
+  assert.equal(
+    source.includes("shareFreeResultCard"),
+    true,
+    "웹 결과 화면은 무료 카드 공유 핸들러(shareFreeResultCard)를 호출해야 합니다.",
+  );
+}
+
+function testPremiumTeaserCopyMatchesCurrentScope(): void {
+  const source = readFileSync(RESULT_PAGE_PATH, "utf8");
+  assert.equal(
+    source.includes("추천 이름 수를 20개로 확대"),
+    false,
+    "무료 결과 유료 안내에는 더 이상 20개 확대 문구가 남아있으면 안 됩니다.",
+  );
+  assert.equal(
+    source.includes("사주 기반 상위 5개 이름 추천") &&
+      source.includes("후보별 상세 리포트(연령대 5구간)") &&
+      source.includes("부족/과중 오행 중심 해설"),
+    true,
+    "무료 결과 유료 안내는 현재 오픈 범위 기준 3개 포인트만 노출해야 합니다.",
+  );
 }
 
 function testLocalAdminControlsArePresentWithVisibilityGuard(): void {
@@ -83,6 +109,7 @@ function testLocalAdminControlsArePresentWithVisibilityGuard(): void {
 function run(): void {
   testResultReasonLabelIsRenderedAsBold();
   testFeedbackButtonsUseSplitLayoutWithEmoji();
+  testPremiumTeaserCopyMatchesCurrentScope();
   testLocalAdminControlsArePresentWithVisibilityGuard();
   console.log("[test:result-reason-render:web] all tests passed");
 }

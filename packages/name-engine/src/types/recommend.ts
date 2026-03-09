@@ -92,6 +92,26 @@ export interface PremiumRecommendResultItem {
   soundScore5: number;
   engineScore01: number;
   why: string[];
+  report: PremiumNameReport;
+}
+
+export type PremiumAgeBandKey =
+  | "0-19"
+  | "20-39"
+  | "40-59"
+  | "60-79"
+  | "80-100";
+
+export interface PremiumAgeBandReport {
+  key: PremiumAgeBandKey;
+  label: string;
+  lines: [string, string];
+}
+
+export interface PremiumNameReport {
+  summary: string;
+  bullets: string[];
+  ageBands: PremiumAgeBandReport[];
 }
 
 export interface PremiumRecommendResponse {

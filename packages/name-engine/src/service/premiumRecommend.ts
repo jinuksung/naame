@@ -38,6 +38,7 @@ import {
   PremiumRecommendResultItem,
   RecommendGender
 } from "../types/recommend";
+import { composePremiumReport } from "./premiumReportComposer";
 
 const DEFAULT_SOURCE_PATH = "hanname_master.jsonl";
 const DEFAULT_TIMEZONE = "Asia/Seoul";
@@ -623,7 +624,12 @@ function buildPremiumCandidates(input: {
 }
 
 function finalizePremiumCandidates(
-  premiumCandidates: PremiumRankedCandidate[]
+  premiumCandidates: PremiumRankedCandidate[],
+  reportContext: {
+    weakTop3: ElementKey[];
+    strongTop1: ElementKey | null;
+    oneLineSummary: string;
+  }
 ): {
   sorted: PremiumRankedCandidate[];
   diversified: PremiumRankedCandidate[];
@@ -659,7 +665,9 @@ function finalizePremiumCandidates(
   return {
     sorted,
     diversified,
-    results: diversified.map((row, index) => toPremiumResultItem(row, index + 1)),
+    results: diversified.map((row, index) =>
+      toPremiumResultItem(row, index + 1, reportContext)
+    ),
     preDiversityQuality: summarizePremiumQuality(sorted),
     postDiversityQuality: summarizePremiumQuality(diversified),
     preDiversityRawSaju: summarizeTopRawSaju(sorted),
@@ -669,8 +677,19 @@ function finalizePremiumCandidates(
 
 function toPremiumResultItem(
   row: PremiumRankedCandidate,
-  rank: number
+  rank: number,
+  reportContext: {
+    weakTop3: ElementKey[];
+    strongTop1: ElementKey | null;
+    oneLineSummary: string;
+  }
 ): PremiumRecommendResultItem {
+  const why = row.why.slice(0, 3);
+  const reportSeed =
+    Math.round(row.engineScore01 * 10000) +
+    Math.round(row.sajuScore5 * 100) +
+    rank * 97;
+
   return {
     rank,
     nameHangul: row.candidate.nameHangul,
@@ -681,7 +700,15 @@ function toPremiumResultItem(
     sajuScore5: row.sajuScore5,
     soundScore5: row.soundScore5,
     engineScore01: toFixed4(row.engineScore01),
-    why: row.why.slice(0, 3)
+    why,
+    report: composePremiumReport({
+      displayName: row.candidate.nameHangul,
+      weakTop3: reportContext.weakTop3,
+      strongTop1: reportContext.strongTop1,
+      oneLineSummary: reportContext.oneLineSummary,
+      why,
+      seed: reportSeed
+    })
   };
 }
 
@@ -733,6 +760,12 @@ export async function recommendPremiumNames(payload: unknown): Promise<PremiumRe
     const sumNeed = ELEMENT_KEYS.reduce((sum, key) => sum + need[key], 0);
     const mode = sumNeed > 0 ? "IMPROVE" : "HARMONY";
     const weakTop3 = pickWeakTop2Or3(distSaju);
+    const strongTop1 = ELEMENT_KEYS.reduce<ElementKey | null>((current, element) => {
+      if (!current) {
+        return element;
+      }
+      return distSaju[element] > distSaju[current] ? element : current;
+    }, null);
     const dayStem = Array.from(sajuSnapshot.pillars.dayPillar)[0] ?? "일간";
     const dayStemHanja = Array.from(sajuSnapshot.pillars.dayPillarHanja)[0] ?? "";
     const oneLineSummary = buildSajuOneLineSummary(mode, dayStem, weakTop3, dayStemHanja);
@@ -770,7 +803,11 @@ export async function recommendPremiumNames(payload: unknown): Promise<PremiumRe
         surnameElements
       });
 
-      return finalizePremiumCandidates(premiumCandidates);
+      return finalizePremiumCandidates(premiumCandidates, {
+        weakTop3,
+        strongTop1,
+        oneLineSummary
+      });
     };
 
     const premiumPassStartedAt = Date.now();

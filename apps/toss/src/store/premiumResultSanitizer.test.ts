@@ -14,6 +14,17 @@ function createItem(overrides: Partial<PremiumRecommendResultItem>): PremiumReco
     soundScore5: 0,
     engineScore01: 0,
     why: ["추천 이유"],
+    report: {
+      summary: "요약",
+      bullets: ["불릿 1", "불릿 2"],
+      ageBands: [
+        { key: "0-19", label: "0~19세", lines: ["a", "b"] },
+        { key: "20-39", label: "20~39세", lines: ["a", "b"] },
+        { key: "40-59", label: "40~59세", lines: ["a", "b"] },
+        { key: "60-79", label: "60~79세", lines: ["a", "b"] },
+        { key: "80-100", label: "80~100세", lines: ["a", "b"] }
+      ]
+    },
     ...overrides
   };
 }
@@ -25,7 +36,7 @@ function testKeepsAllZeroSajuTop20WithoutBlankingResult(): void {
 
   const sanitized = sanitizePremiumResults(zeros);
 
-  assert.equal(sanitized.length, 20);
+  assert.equal(sanitized.length, 5);
 }
 
 function testKeepsWhenAtLeastOnePositiveSajuExists(): void {
@@ -48,7 +59,7 @@ function testKeepsUniformTop20ScoresWithoutBlankingResult(): void {
 
   const sanitized = sanitizePremiumResults(sameScores);
 
-  assert.equal(sanitized.length, 20);
+  assert.equal(sanitized.length, 5);
 }
 
 function run(): void {

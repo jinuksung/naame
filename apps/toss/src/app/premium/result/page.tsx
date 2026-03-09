@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   TdsCard,
@@ -8,6 +8,7 @@ import {
   TdsScreen,
   TdsSecondaryButton,
 } from "@/components/tds";
+import { PremiumResultShareCard } from "@/components/share/PremiumResultShareCard";
 import {
   addNameBlockSyllableRule,
   addNameToBlacklist,
@@ -22,6 +23,7 @@ import {
   buildLocalQuickPremiumPayload,
   resolvePremiumLoadingPath,
 } from "@/lib/localQuickPremium";
+import { sharePremiumResultCard } from "@/lib/share/shareResultCardImage";
 import { isLocalAdminToolsEnabled } from "@namefit/engine/lib/localAdminVisibility";
 import { ToggleLikedError, useLikedNamesStore } from "@/store/useLikedNamesStore";
 import { usePremiumRecommendStore } from "@/store/usePremiumRecommendStore";
@@ -56,7 +58,7 @@ const PILLAR_HELP_TEXT = {
 
 function displayMeaning(meaning: string): string {
   const normalized = meaning.trim();
-  return normalized.length > 0 ? normalized : "뜻 정보 없음";
+  return normalized.length > 0 ? normalized : "의미 미상";
 }
 
 function buildNameKey(
@@ -197,6 +199,9 @@ export default function PremiumResultPage(): JSX.Element {
   >("idle");
   const [likedToast, setLikedToast] = useState<string | null>(null);
   const [likePendingIds, setLikePendingIds] = useState<Record<string, boolean>>({});
+  const [sharingCardId, setSharingCardId] = useState<string | null>(null);
+  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+  const shareCardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
     if (!hasHydrated) {
@@ -218,14 +223,14 @@ export default function PremiumResultPage(): JSX.Element {
     );
   }, []);
 
-  const top20 = useMemo(() => results.slice(0, 20), [results]);
+  const top5 = useMemo(() => results.slice(0, 5), [results]);
   const likedIdSet = useMemo(
     () => new Set(likedNames.map((entry) => entry.id)),
     [likedNames],
   );
-  const top20Keys = useMemo(
-    () => top20.map((item) => buildNameKey(item)),
-    [top20],
+  const top5Keys = useMemo(
+    () => top5.map((item) => buildNameKey(item)),
+    [top5],
   );
   const hasFeedbackContext =
     surnameHangul.trim().length > 0 && input.surnameHanja.trim().length > 0;
@@ -241,9 +246,21 @@ export default function PremiumResultPage(): JSX.Element {
   }, [hydrateLikedNames]);
 
   useEffect(() => {
-    setFeedbackStatus((prev) => syncFeedbackStatus(prev, top20Keys));
-    setFeedbackVote((prev) => syncFeedbackVote(prev, top20Keys));
-  }, [top20Keys]);
+    setFeedbackStatus((prev) => syncFeedbackStatus(prev, top5Keys));
+    setFeedbackVote((prev) => syncFeedbackVote(prev, top5Keys));
+  }, [top5Keys]);
+
+  useEffect(() => {
+    setExpandedCardId((prev) => {
+      if (top5.length === 0) {
+        return null;
+      }
+      if (prev && top5Keys.includes(prev)) {
+        return prev;
+      }
+      return top5Keys[0] ?? null;
+    });
+  }, [top5, top5Keys]);
 
   useEffect(() => {
     if (!likedToast) {
@@ -422,6 +439,30 @@ export default function PremiumResultPage(): JSX.Element {
     }
   };
 
+  const handleShareCard = async (
+    itemKey: string,
+    displayName: string,
+  ): Promise<void> => {
+    if (sharingCardId) {
+      return;
+    }
+    const shareNode = shareCardRefs.current[itemKey];
+    if (!shareNode) {
+      setLikedToast("공유 카드를 준비하지 못했어요.");
+      return;
+    }
+
+    setSharingCardId(itemKey);
+    try {
+      await sharePremiumResultCard(shareNode, displayName);
+    } catch (error) {
+      console.error("[premium-result] share failed", error);
+      setLikedToast("공유에 실패했어요. 다시 시도해 주세요.");
+    } finally {
+      setSharingCardId(null);
+    }
+  };
+
   const handleLocalQuickStart = async (): Promise<void> => {
     if (localQuickStatus === "pending") {
       return;
@@ -534,7 +575,7 @@ export default function PremiumResultPage(): JSX.Element {
 
       <p className="tds-premium-notice">사주 보완 점수 순서대로 정렬했어요.</p>
 
-      {top20.length === 0 ? (
+      {top5.length === 0 ? (
         <div className="result-actions">
           <p className="tds-description">
             추천 결과가 비어 있어요. 다시 시도해 주세요.
@@ -549,7 +590,7 @@ export default function PremiumResultPage(): JSX.Element {
         </div>
       ) : (
         <section className="result-list">
-          {top20.map((item, index) => {
+          {top5.map((item, index) => {
             const itemKey = buildNameKey(item);
             const likedEntry = buildLikedNameEntryFromPremium({
               surnameHangul,
@@ -563,6 +604,7 @@ export default function PremiumResultPage(): JSX.Element {
               surnameHangul,
               item.nameHangul,
             );
+            const isExpanded = expandedCardId === itemKey;
             const hanjaDetails = [
               {
                 hanja: item.hanjaPair[0],
@@ -578,13 +620,21 @@ export default function PremiumResultPage(): JSX.Element {
 
             return (
               <TdsCard key={itemKey}>
-                <div className="result-header-row">
-                  {index === 0 ? (
-                    <span className="top-rank-badge">가장 잘 맞는 이름</span>
-                  ) : null}
-                  <span className="score-chip">#{item.rank}</span>
-                </div>
-                <p className="pron-emphasis">{displayName}</p>
+                <button
+                  type="button"
+                  className={`premium-toggle${isExpanded ? " is-expanded" : ""}`}
+                  onClick={() => {
+                    setExpandedCardId(itemKey);
+                  }}
+                >
+                  <div className="result-header-row">
+                    {index === 0 ? (
+                      <span className="top-rank-badge">가장 잘 맞는 이름</span>
+                    ) : null}
+                    <span className="score-chip">#{item.rank}</span>
+                  </div>
+                  <p className="pron-emphasis">{displayName}</p>
+                </button>
                 <ul className="hanja-detail-list">
                   {hanjaDetails.map((detail, detailIndex) => (
                     <li
@@ -617,17 +667,28 @@ export default function PremiumResultPage(): JSX.Element {
                     </li>
                   ))}
                 </ul>
-                <p className="tds-premium-star">
-                  사주 보완 ⭐ {item.sajuScore5.toFixed(1)}
-                </p>
-                <p className="tds-premium-star">
-                  발음 조화 ⭐ {item.soundScore5.toFixed(1)}
-                </p>
-                <ul className="reason-list">
-                  {item.why.slice(0, 3).map((reason, index) => (
-                    <li key={`${itemKey}-${index}`}>{reason}</li>
-                  ))}
-                </ul>
+                {isExpanded ? (
+                  <section className="tds-premium-report-panel">
+                    <p className="tds-premium-report-summary">{item.report.summary}</p>
+                    <ul className="reason-list">
+                      {item.report.bullets.slice(0, 4).map((reason, index) => (
+                        <li key={`${itemKey}-${index}`}>{reason}</li>
+                      ))}
+                    </ul>
+                    <div className="tds-premium-ageband-list">
+                      {item.report.ageBands.map((band) => (
+                        <article
+                          key={`${itemKey}-${band.key}`}
+                          className="tds-premium-ageband-card"
+                        >
+                          <h4>{band.label}</h4>
+                          <p>{band.lines[0]}</p>
+                          <p>{band.lines[1]}</p>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
                 <div className="feedback-row is-split">
                   <button
                     type="button"
@@ -661,6 +722,18 @@ export default function PremiumResultPage(): JSX.Element {
                       <ThumbDownIcon />
                       <span>싫어요</span>
                     </span>
+                  </button>
+                </div>
+                <div className="share-row">
+                  <button
+                    type="button"
+                    className="feedback-btn is-share"
+                    disabled={sharingCardId !== null}
+                    onClick={() => {
+                      void handleShareCard(itemKey, displayName);
+                    }}
+                  >
+                    공유하기
                   </button>
                 </div>
                 {localAdminEnabled ? (
@@ -699,6 +772,20 @@ export default function PremiumResultPage(): JSX.Element {
                     </button>
                   </div>
                 ) : null}
+                <div
+                  className="share-render-host"
+                  aria-hidden="true"
+                  ref={(node) => {
+                    shareCardRefs.current[itemKey] = node;
+                  }}
+                >
+                  <PremiumResultShareCard
+                    displayName={displayName}
+                    hanjaPair={item.hanjaPair}
+                    readingPair={item.readingPair}
+                    report={item.report}
+                  />
+                </div>
               </TdsCard>
             );
           })}

@@ -8,6 +8,7 @@ import {
   TdsScreen,
   TdsSecondaryButton,
 } from "@/components/tds";
+import { FreeResultShareCard } from "@/components/share/FreeResultShareCard";
 import {
   addNameBlockSyllableRule,
   addNameToBlacklist,
@@ -19,6 +20,7 @@ import {
 import { syncFeedbackStatus, syncFeedbackVote } from "@/lib/feedbackState";
 import { buildLikedNameEntryFromFree } from "@/lib/likedNameEntry";
 import { resolveLikedPath } from "@/lib/likedRoute";
+import { shareFreeResultCard } from "@/lib/share/shareResultCardImage";
 import { isLocalAdminToolsEnabled } from "@namefit/engine/lib/localAdminVisibility";
 import {
   buildQuickExploreSeed,
@@ -50,6 +52,13 @@ function buildNameKey(
   item: Pick<FreeRecommendResultItem, "nameHangul" | "hanjaPair">,
 ): string {
   return `${item.nameHangul}:${item.hanjaPair[0]}${item.hanjaPair[1]}`;
+}
+
+function formatDisplayName(surnameHangul: string, nameHangul: string): string {
+  const normalizedSurnameHangul = surnameHangul.trim();
+  return normalizedSurnameHangul.length > 0
+    ? `${normalizedSurnameHangul}${nameHangul}`
+    : nameHangul;
 }
 
 function splitReasonLabel(reason: string): { label: string; body: string } {
@@ -140,7 +149,9 @@ export default function ResultPage(): JSX.Element {
   >({});
   const [likedToast, setLikedToast] = useState<string | null>(null);
   const [likePendingIds, setLikePendingIds] = useState<Record<string, boolean>>({});
+  const [sharingCardId, setSharingCardId] = useState<string | null>(null);
   const quickExploreCounterRef = useRef(0);
+  const shareCardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const hasInput =
     input.surnameHangul.trim().length > 0 &&
@@ -320,6 +331,30 @@ export default function ResultPage(): JSX.Element {
       console.error("[result] feedback submit failed", error);
       setFeedbackStatus((prev) => ({ ...prev, [key]: "idle" }));
       setFeedbackVote((prev) => ({ ...prev, [key]: undefined }));
+    }
+  };
+
+  const handleShareCard = async (
+    itemKey: string,
+    displayName: string,
+  ): Promise<void> => {
+    if (sharingCardId) {
+      return;
+    }
+    const shareNode = shareCardRefs.current[itemKey];
+    if (!shareNode) {
+      setLikedToast("공유 카드를 준비하지 못했어요.");
+      return;
+    }
+
+    setSharingCardId(itemKey);
+    try {
+      await shareFreeResultCard(shareNode, displayName);
+    } catch (error) {
+      console.error("[result] share failed", error);
+      setLikedToast("공유에 실패했어요. 다시 시도해 주세요.");
+    } finally {
+      setSharingCardId(null);
     }
   };
 
@@ -518,6 +553,10 @@ export default function ResultPage(): JSX.Element {
               });
               const likedId = likedEntry.id;
               const isLiked = likedIdSet.has(likedId);
+              const displayName = formatDisplayName(
+                input.surnameHangul,
+                item.nameHangul,
+              );
               const pronunciation = `${input.surnameHangul} ${item.readingPair[0]} ${item.readingPair[1]}`;
               const hanjaDetails = [
                 {
@@ -617,6 +656,18 @@ export default function ResultPage(): JSX.Element {
                       </span>
                     </button>
                   </div>
+                  <div className="share-row">
+                    <button
+                      type="button"
+                      className="feedback-btn is-share"
+                      disabled={sharingCardId !== null}
+                      onClick={() => {
+                        void handleShareCard(itemKey, displayName);
+                      }}
+                    >
+                      공유하기
+                    </button>
+                  </div>
                   {localAdminEnabled ? (
                     <div className="local-admin-name-row">
                       <button
@@ -647,18 +698,31 @@ export default function ResultPage(): JSX.Element {
                       </button>
                     </div>
                   ) : null}
+                  <div
+                    className="share-render-host"
+                    aria-hidden="true"
+                    ref={(node) => {
+                      shareCardRefs.current[itemKey] = node;
+                    }}
+                  >
+                    <FreeResultShareCard
+                      displayName={displayName}
+                      hanjaPair={item.hanjaPair}
+                      readingPair={item.readingPair}
+                      meaningPair={item.meaningKwPair}
+                    />
+                  </div>
                 </TdsCard>
               );
             })}
           </section>
 
           <section className="tds-premium-teaser">
-            <h3 className="tds-premium-title">유료 모드도 곧 오픈해요 ✨</h3>
+            <h3 className="tds-premium-title">프리미엄 리포트 곧 오픈</h3>
             <ul className="tds-premium-list">
-              <li>추천 이름 수를 20개로 확대</li>
-              <li>사주를 반영한 맞춤 결과 제공</li>
-              <li>이름 의미 심층 분석 리포트 제공</li>
-              <li>동일 이름의 다양한 한자 조합 제공</li>
+              <li>사주 기반 상위 5개 이름 추천</li>
+              <li>후보별 상세 리포트(연령대 5구간)</li>
+              <li>부족/과중 오행 중심 해설</li>
             </ul>
           </section>
         </>

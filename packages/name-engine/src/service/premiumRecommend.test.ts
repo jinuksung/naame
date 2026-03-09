@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import {
   buildWhyLines,
   buildPremiumRescueExploreSeeds,
@@ -291,6 +293,22 @@ function runPremiumWhyLineTemplateTests(): void {
   );
 }
 
+function runPremiumReportContractTests(): void {
+  const sourcePath = path.resolve(__dirname, "premiumRecommend.ts");
+  const source = readFileSync(sourcePath, "utf8");
+
+  assert.equal(
+    source.includes("composePremiumReport"),
+    true,
+    "프리미엄 결과 생성 로직은 상세 리포트 컴포저를 호출해야 합니다.",
+  );
+  assert.equal(
+    source.includes("report:"),
+    true,
+    "프리미엄 결과 item에는 report 필드가 포함되어야 합니다.",
+  );
+}
+
 function run(): void {
   runInputParsingTests();
   runSortingTests();
@@ -301,6 +319,7 @@ function run(): void {
   runUniformRoundedSajuDetectionTests();
   runRescueExploreSeedGenerationTests();
   runPremiumWhyLineTemplateTests();
+  runPremiumReportContractTests();
   console.log("[test:premium:service] all tests passed");
 }
 
