@@ -579,7 +579,23 @@ a {
 
 .result-header-row {
   display: flex;
+  align-items: center;
+  gap: 6px;
   justify-content: flex-end;
+}
+
+.top-rank-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgb(245 158 11 / 46%);
+  background: #fffbeb;
+  color: #92400e;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
 .score-chip {
@@ -592,6 +608,16 @@ a {
   color: #2a66d9;
   font-size: 12px;
   font-weight: 700;
+}
+
+.result-list > .tds-card:first-child {
+  border-color: #8ab2ff;
+  background: linear-gradient(145deg, #f4f9ff, #ffffff);
+  box-shadow: 0 8px 24px rgb(66 133 244 / 12%);
+}
+
+.result-list > .tds-card:first-child .pron-emphasis {
+  color: #0f3f94;
 }
 
 .pron-emphasis {
@@ -805,6 +831,28 @@ a {
   margin-top: 16px;
   display: grid;
   gap: 10px;
+}
+
+.liked-toast {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #d6e4ff;
+  background: #f6fbff;
+  color: #2f5fbf;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.liked-empty {
+  margin-top: 8px;
+  padding: 16px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  background: #fff;
+  display: grid;
+  gap: 6px;
 }
 
 .tds-landing {

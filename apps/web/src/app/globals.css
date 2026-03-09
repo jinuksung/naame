@@ -512,7 +512,23 @@ input {
 
 .nf-result-header-row {
   display: flex;
+  align-items: center;
+  gap: 6px;
   justify-content: flex-end;
+}
+
+.nf-top-rank-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgb(245 158 11 / 45%);
+  background: #fffbeb;
+  color: #92400e;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
 .nf-score-chip {
@@ -525,6 +541,16 @@ input {
   color: #0369a1;
   font-size: 0.74rem;
   font-weight: 700;
+}
+
+.nf-result-list > .nf-card:first-child {
+  border-color: rgb(2 132 199 / 42%);
+  background: linear-gradient(145deg, rgb(240 249 255), rgb(255 255 255));
+  box-shadow: 0 8px 22px rgb(14 116 144 / 10%);
+}
+
+.nf-result-list > .nf-card:first-child .nf-pron-emphasis {
+  color: #0b5f88;
 }
 
 .nf-pron-emphasis {
@@ -610,6 +636,18 @@ input {
   margin-top: 16px;
   display: grid;
   gap: 10px;
+}
+
+.nf-liked-toast {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgb(14 165 233 / 26%);
+  background: rgb(14 165 233 / 8%);
+  color: #075985;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .nf-helper-text {
@@ -741,6 +779,13 @@ input {
   gap: 10px;
 }
 
+.nf-rank-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
 .nf-premium-hanja {
   margin: 8px 0 0;
   color: hsl(var(--muted-foreground));
@@ -771,6 +816,10 @@ input {
   background: hsl(var(--card));
 }
 
+.nf-feedback-row.is-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .nf-feedback-btn {
   min-height: 40px;
   padding: 0 12px;
@@ -799,6 +848,10 @@ input {
 }
 
 .nf-feedback-btn:last-child {
+  border-right: 0;
+}
+
+.nf-feedback-row.is-single .nf-feedback-btn {
   border-right: 0;
 }
 
@@ -871,6 +924,36 @@ input {
 .nf-local-admin-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+.nf-liked-empty {
+  margin-top: 8px;
+  padding: 16px;
+  border: 1px dashed hsl(var(--border));
+  border-radius: var(--radius);
+  background: hsl(var(--card));
+  display: grid;
+  gap: 6px;
+}
+
+.nf-liked-list {
+  margin-top: 10px;
+  display: grid;
+  gap: 12px;
+}
+
+.nf-liked-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.nf-liked-card-sub {
+  margin: 8px 0 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.82rem;
+  line-height: 1.45;
 }
 
 .seo-shell {

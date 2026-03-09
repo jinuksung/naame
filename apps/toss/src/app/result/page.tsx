@@ -17,6 +17,8 @@ import {
   submitNameFeedback,
 } from "@/lib/api";
 import { syncFeedbackStatus, syncFeedbackVote } from "@/lib/feedbackState";
+import { buildLikedNameEntryFromFree } from "@/lib/likedNameEntry";
+import { resolveLikedPath } from "@/lib/likedRoute";
 import { isLocalAdminToolsEnabled } from "@namefit/engine/lib/localAdminVisibility";
 import {
   buildQuickExploreSeed,
@@ -24,6 +26,7 @@ import {
   isQuickComboEnabled,
   pickPreferredSurnameHanja,
 } from "@/lib/quickCombo";
+import { ToggleLikedError, useLikedNamesStore } from "@/store/useLikedNamesStore";
 import { genderOptions, useRecommendStore } from "@/store/useRecommendStore";
 import type {
   FreeRecommendInput,
@@ -33,7 +36,7 @@ import type {
 
 function displayScore(score: unknown): string {
   if (typeof score === "number" && Number.isFinite(score)) {
-    return `${Math.round(score)}%`;
+    return `${Math.round(score)}점`;
   }
   return "--";
 }
@@ -108,6 +111,11 @@ export default function ResultPage(): JSX.Element {
   const setInput = useRecommendStore((state) => state.setInput);
   const setResults = useRecommendStore((state) => state.setResults);
   const reset = useRecommendStore((state) => state.reset);
+  const likedNames = useLikedNamesStore((state) => state.likedNames);
+  const hydrateLikedNames = useLikedNamesStore((state) => state.hydrate);
+  const toggleLiked = useLikedNamesStore((state) => state.toggleLiked);
+  const hasDbLikeSent = useLikedNamesStore((state) => state.hasDbLikeSent);
+  const markDbLikeSent = useLikedNamesStore((state) => state.markDbLikeSent);
   const [feedbackStatus, setFeedbackStatus] = useState<
     Record<string, "idle" | "pending" | "done">
   >({});
@@ -130,6 +138,8 @@ export default function ResultPage(): JSX.Element {
   const [syllableRuleActionStatus, setSyllableRuleActionStatus] = useState<
     Record<string, "idle" | "pending" | "done" | "error">
   >({});
+  const [likedToast, setLikedToast] = useState<string | null>(null);
+  const [likePendingIds, setLikePendingIds] = useState<Record<string, boolean>>({});
   const quickExploreCounterRef = useRef(0);
 
   const hasInput =
@@ -155,13 +165,35 @@ export default function ResultPage(): JSX.Element {
     () => buildQuickSurnameCandidates(input.surnameHangul),
     [input.surnameHangul],
   );
+  const likedIdSet = useMemo(
+    () => new Set(likedNames.map((entry) => entry.id)),
+    [likedNames],
+  );
   const isQuickLoading = quickLoadingKey !== null;
   const quickComboEnabled = isQuickComboEnabled();
+  const likedPath =
+    typeof window === "undefined" ? "/liked" : resolveLikedPath(window.location.pathname);
+
+  useEffect(() => {
+    hydrateLikedNames();
+  }, [hydrateLikedNames]);
 
   useEffect(() => {
     setFeedbackStatus((prev) => syncFeedbackStatus(prev, top5Keys));
     setFeedbackVote((prev) => syncFeedbackVote(prev, top5Keys));
   }, [top5Keys]);
+
+  useEffect(() => {
+    if (!likedToast) {
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      setLikedToast(null);
+    }, 2200);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [likedToast]);
 
   useEffect(() => {
     setQuickGender(input.gender);
@@ -199,9 +231,74 @@ export default function ResultPage(): JSX.Element {
     return <></>;
   }
 
-  const handleFeedbackClick = async (
+  const handleLikeToggle = async (
     item: FreeRecommendResultItem,
-    vote: "like" | "dislike",
+  ): Promise<void> => {
+    const entry = buildLikedNameEntryFromFree({
+      surnameHangul: input.surnameHangul,
+      surnameHanja: input.surnameHanja,
+      gender: input.gender,
+      item,
+    });
+    const likedId = entry.id;
+    if (likePendingIds[likedId]) {
+      return;
+    }
+
+    try {
+      const toggleResult = toggleLiked(entry);
+      if (toggleResult === "removed") {
+        setLikedToast("내가 찜한 이름에서 제거됐어요");
+        return;
+      }
+      setLikedToast("내가 찜한 이름에 저장됐어요");
+    } catch (error) {
+      if (error instanceof ToggleLikedError && error.code === "max_limit_reached") {
+        setLikedToast("찜한 이름은 최대 10개까지 저장할 수 있어요.");
+        return;
+      }
+      console.error("[result] liked toggle failed", error);
+      setLikedToast("저장 공간 문제로 찜을 저장하지 못했어요.");
+      return;
+    }
+
+    if (hasDbLikeSent(likedId)) {
+      return;
+    }
+
+    setLikePendingIds((prev) => ({ ...prev, [likedId]: true }));
+    try {
+      await submitNameFeedback({
+        surnameHangul: input.surnameHangul,
+        surnameHanja: input.surnameHanja,
+        nameHangul: item.nameHangul,
+        hanjaPair: item.hanjaPair,
+        vote: "like",
+      });
+      try {
+        markDbLikeSent(likedId);
+      } catch (markError) {
+        console.error("[result] mark db-like flag failed", markError);
+      }
+    } catch (error) {
+      console.error("[result] feedback submit failed", error);
+      try {
+        toggleLiked(entry);
+      } catch (rollbackError) {
+        console.error("[result] liked rollback failed", rollbackError);
+      }
+      setLikedToast("저장에 실패했어요. 다시 시도해 주세요.");
+    } finally {
+      setLikePendingIds((prev) => {
+        const next = { ...prev };
+        delete next[likedId];
+        return next;
+      });
+    }
+  };
+
+  const handleDislikeClick = async (
+    item: FreeRecommendResultItem,
   ): Promise<void> => {
     const key = buildNameKey(item);
     if (feedbackStatus[key] === "pending" || feedbackStatus[key] === "done") {
@@ -209,14 +306,14 @@ export default function ResultPage(): JSX.Element {
     }
 
     setFeedbackStatus((prev) => ({ ...prev, [key]: "pending" }));
-    setFeedbackVote((prev) => ({ ...prev, [key]: vote }));
+    setFeedbackVote((prev) => ({ ...prev, [key]: "dislike" }));
     try {
       await submitNameFeedback({
         surnameHangul: input.surnameHangul,
         surnameHanja: input.surnameHanja,
         nameHangul: item.nameHangul,
         hanjaPair: item.hanjaPair,
-        vote,
+        vote: "dislike",
       });
       setFeedbackStatus((prev) => ({ ...prev, [key]: "done" }));
     } catch (error) {
@@ -413,6 +510,14 @@ export default function ResultPage(): JSX.Element {
           <section className="result-list">
             {top5.map((item, index) => {
               const itemKey = buildNameKey(item);
+              const likedEntry = buildLikedNameEntryFromFree({
+                surnameHangul: input.surnameHangul,
+                surnameHanja: input.surnameHanja,
+                gender: input.gender,
+                item,
+              });
+              const likedId = likedEntry.id;
+              const isLiked = likedIdSet.has(likedId);
               const pronunciation = `${input.surnameHangul} ${item.readingPair[0]} ${item.readingPair[1]}`;
               const hanjaDetails = [
                 {
@@ -432,8 +537,11 @@ export default function ResultPage(): JSX.Element {
                   key={`${item.nameHangul}-${item.hanjaPair.join("")}-${index}`}
                 >
                   <div className="result-header-row">
+                    {index === 0 ? (
+                      <span className="top-rank-badge">가장 잘 맞는 이름</span>
+                    ) : null}
                     <span className="score-chip">
-                      추천 적합도 {displayScore(item.score)}
+                      추천 점수 {displayScore(item.score)}
                     </span>
                   </div>
                   <p className="pron-emphasis">{pronunciation}</p>
@@ -481,18 +589,15 @@ export default function ResultPage(): JSX.Element {
                   <div className="feedback-row is-split">
                     <button
                       type="button"
-                      className={`feedback-btn is-like${feedbackVote[itemKey] === "like" ? " is-selected" : ""}`}
-                      disabled={
-                        feedbackStatus[itemKey] === "pending" ||
-                        feedbackStatus[itemKey] === "done"
-                      }
+                      className={`feedback-btn is-like${isLiked ? " is-selected" : ""}`}
+                      disabled={Boolean(likePendingIds[likedId])}
                       onClick={() => {
-                        void handleFeedbackClick(item, "like");
+                        void handleLikeToggle(item);
                       }}
                     >
                       <span className="feedback-content">
                         <ThumbUpIcon />
-                        <span>좋아요</span>
+                        <span>{isLiked ? "찜해제" : "좋아요"}</span>
                       </span>
                     </button>
                     <button
@@ -503,7 +608,7 @@ export default function ResultPage(): JSX.Element {
                         feedbackStatus[itemKey] === "done"
                       }
                       onClick={() => {
-                        void handleFeedbackClick(item, "dislike");
+                        void handleDislikeClick(item);
                       }}
                     >
                       <span className="feedback-content">
@@ -562,12 +667,20 @@ export default function ResultPage(): JSX.Element {
       <div className="result-actions">
         <TdsSecondaryButton
           onClick={() => {
+            router.push(likedPath);
+          }}
+        >
+          찜한 이름 보기
+        </TdsSecondaryButton>
+        <TdsSecondaryButton
+          onClick={() => {
             reset();
             router.replace("/feature/recommend");
           }}
         >
           다시 입력
         </TdsSecondaryButton>
+        {likedToast ? <p className="liked-toast">{likedToast}</p> : null}
       </div>
     </TdsScreen>
   );

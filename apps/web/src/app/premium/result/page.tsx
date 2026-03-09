@@ -2,13 +2,15 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, PrimaryButton, Screen } from "@/components/ui";
-import { addNameBlockSyllableRule } from "@/lib/api";
+import { Card, PrimaryButton, Screen, SecondaryButton } from "@/components/ui";
+import { addNameBlockSyllableRule, submitNameFeedback } from "@/lib/api";
+import { buildLikedNameEntryFromPremium } from "@/lib/likedNameEntry";
 import {
   buildLocalQuickPremiumPayload,
   resolvePremiumLoadingPath
 } from "@/lib/localQuickPremium";
 import { isLocalAdminToolsEnabled } from "@namefit/engine/lib/localAdminVisibility";
+import { ToggleLikedError, useLikedNamesStore } from "@/store/useLikedNamesStore";
 import { usePremiumRecommendStore } from "@/store/usePremiumRecommendStore";
 import {
   PremiumRecommendResultItem,
@@ -62,16 +64,24 @@ function getWeakTopElements(summary: PremiumRecommendSummary): RecommendElement[
 
 export default function PremiumResultPage(): JSX.Element {
   const router = useRouter();
+  const input = usePremiumRecommendStore((state) => state.input);
   const setInput = usePremiumRecommendStore((state) => state.setInput);
   const surnameHangul = usePremiumRecommendStore((state) => state.surnameHangul);
   const summary = usePremiumRecommendStore((state) => state.summary);
   const results = usePremiumRecommendStore((state) => state.results);
   const setResults = usePremiumRecommendStore((state) => state.setResults);
   const reset = usePremiumRecommendStore((state) => state.reset);
+  const likedNames = useLikedNamesStore((state) => state.likedNames);
+  const hydrateLikedNames = useLikedNamesStore((state) => state.hydrate);
+  const toggleLiked = useLikedNamesStore((state) => state.toggleLiked);
+  const hasDbLikeSent = useLikedNamesStore((state) => state.hasDbLikeSent);
+  const markDbLikeSent = useLikedNamesStore((state) => state.markDbLikeSent);
   const [localAdminEnabled, setLocalAdminEnabled] = useState(false);
   const [syllableRuleActionStatus, setSyllableRuleActionStatus] = useState<
     Record<string, "idle" | "pending" | "done" | "error">
   >({});
+  const [likedToast, setLikedToast] = useState<string | null>(null);
+  const [likePendingIds, setLikePendingIds] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (!summary) {
@@ -91,10 +101,27 @@ export default function PremiumResultPage(): JSX.Element {
   }, []);
 
   const top20 = useMemo(() => results.slice(0, 20), [results]);
+  const likedIdSet = useMemo(() => new Set(likedNames.map((entry) => entry.id)), [likedNames]);
   const premiumLoadingPath =
     typeof window === "undefined"
       ? "/premium/loading"
       : resolvePremiumLoadingPath(window.location.pathname);
+
+  useEffect(() => {
+    hydrateLikedNames();
+  }, [hydrateLikedNames]);
+
+  useEffect(() => {
+    if (!likedToast) {
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      setLikedToast(null);
+    }, 2200);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [likedToast]);
 
   if (!summary) {
     return <></>;
@@ -127,6 +154,70 @@ export default function PremiumResultPage(): JSX.Element {
     setInput(payload.input);
     setResults([]);
     router.push(premiumLoadingPath);
+  };
+
+  const handleLikeToggle = async (item: PremiumRecommendResultItem): Promise<void> => {
+    const entry = buildLikedNameEntryFromPremium({
+      surnameHangul,
+      surnameHanja: input.surnameHanja,
+      gender: input.gender,
+      item
+    });
+    const likedId = entry.id;
+    if (likePendingIds[likedId]) {
+      return;
+    }
+
+    try {
+      const toggleResult = toggleLiked(entry);
+      if (toggleResult === "removed") {
+        setLikedToast("내가 찜한 이름에서 제거됐어요");
+        return;
+      }
+      setLikedToast("내가 찜한 이름에 저장됐어요");
+    } catch (error) {
+      if (error instanceof ToggleLikedError && error.code === "max_limit_reached") {
+        setLikedToast("찜한 이름은 최대 10개까지 저장할 수 있어요.");
+        return;
+      }
+      console.error("[premium-result] liked toggle failed", error);
+      setLikedToast("저장 공간 문제로 찜을 저장하지 못했어요.");
+      return;
+    }
+
+    if (hasDbLikeSent(likedId) || !surnameHangul.trim() || !input.surnameHanja.trim()) {
+      return;
+    }
+
+    setLikePendingIds((prev) => ({ ...prev, [likedId]: true }));
+    try {
+      await submitNameFeedback({
+        surnameHangul,
+        surnameHanja: input.surnameHanja,
+        nameHangul: item.nameHangul,
+        hanjaPair: item.hanjaPair,
+        vote: "like"
+      });
+      try {
+        markDbLikeSent(likedId);
+      } catch (markError) {
+        console.error("[premium-result] mark db-like flag failed", markError);
+      }
+    } catch (error) {
+      console.error("[premium-result] feedback submit failed", error);
+      try {
+        toggleLiked(entry);
+      } catch (rollbackError) {
+        console.error("[premium-result] liked rollback failed", rollbackError);
+      }
+      setLikedToast("저장에 실패했어요. 다시 시도해 주세요.");
+    } finally {
+      setLikePendingIds((prev) => {
+        const next = { ...prev };
+        delete next[likedId];
+        return next;
+      });
+    }
   };
 
   return (
@@ -189,13 +280,28 @@ export default function PremiumResultPage(): JSX.Element {
         </div>
       ) : (
         <section className="nf-result-list">
-          {top20.map((item) => (
-            <Card key={buildNameKey(item)}>
+          {top20.map((item, index) => {
+            const likedEntry = buildLikedNameEntryFromPremium({
+              surnameHangul,
+              surnameHanja: input.surnameHanja,
+              gender: input.gender,
+              item
+            });
+            const likedId = likedEntry.id;
+            const isLiked = likedIdSet.has(likedId);
+
+            return (
+              <Card key={buildNameKey(item)}>
               <div className="nf-premium-card-head">
                 <strong className="nf-pron-emphasis">
                   {formatDisplayName(surnameHangul, item.nameHangul)}
                 </strong>
-                <span className="nf-score-chip">#{item.rank}</span>
+                <div className="nf-rank-meta">
+                  {index === 0 ? (
+                    <span className="nf-top-rank-badge">가장 잘 맞는 이름</span>
+                  ) : null}
+                  <span className="nf-score-chip">#{item.rank}</span>
+                </div>
               </div>
               <p className="nf-premium-hanja">
                 {item.hanjaPair[0]}({item.readingPair[0]}) · {item.hanjaPair[1]}({item.readingPair[1]})
@@ -207,6 +313,20 @@ export default function PremiumResultPage(): JSX.Element {
                   <li key={`${buildNameKey(item)}-${index}`}>{reason}</li>
                 ))}
               </ul>
+              <div className="nf-feedback-row is-single">
+                <button
+                  type="button"
+                  className={`nf-feedback-btn is-like${isLiked ? " is-selected" : ""}`}
+                  disabled={Boolean(likePendingIds[likedId])}
+                  onClick={() => {
+                    void handleLikeToggle(item);
+                  }}
+                >
+                  <span className="nf-feedback-content">
+                    <span>{isLiked ? "찜해제" : "좋아요"}</span>
+                  </span>
+                </button>
+              </div>
               {localAdminEnabled ? (
                 <div className="nf-local-admin-name-row">
                   <button
@@ -227,14 +347,22 @@ export default function PremiumResultPage(): JSX.Element {
                   </button>
                 </div>
               ) : null}
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </section>
       )}
 
       <p className="nf-premium-free-note">현재 한시적 무료로 제공 중입니다.</p>
 
       <div className="nf-result-actions">
+        <SecondaryButton
+          onClick={() => {
+            router.push("/liked?mode=premium");
+          }}
+        >
+          찜한 이름 보기
+        </SecondaryButton>
         {localAdminEnabled ? (
           <div className="nf-local-admin-name-row">
             <button
@@ -254,6 +382,7 @@ export default function PremiumResultPage(): JSX.Element {
         >
           다시 입력
         </PrimaryButton>
+        {likedToast ? <p className="nf-liked-toast">{likedToast}</p> : null}
       </div>
     </Screen>
   );

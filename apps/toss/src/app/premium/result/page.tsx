@@ -2,7 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { TdsCard, TdsPrimaryButton, TdsScreen } from "@/components/tds";
+import {
+  TdsCard,
+  TdsPrimaryButton,
+  TdsScreen,
+  TdsSecondaryButton,
+} from "@/components/tds";
 import {
   addNameBlockSyllableRule,
   addNameToBlacklist,
@@ -11,11 +16,14 @@ import {
   submitNameFeedback,
 } from "@/lib/api";
 import { syncFeedbackStatus, syncFeedbackVote } from "@/lib/feedbackState";
+import { buildLikedNameEntryFromPremium } from "@/lib/likedNameEntry";
+import { resolveLikedPath } from "@/lib/likedRoute";
 import {
   buildLocalQuickPremiumPayload,
   resolvePremiumLoadingPath,
 } from "@/lib/localQuickPremium";
 import { isLocalAdminToolsEnabled } from "@namefit/engine/lib/localAdminVisibility";
+import { ToggleLikedError, useLikedNamesStore } from "@/store/useLikedNamesStore";
 import { usePremiumRecommendStore } from "@/store/usePremiumRecommendStore";
 import {
   PremiumRecommendResultItem,
@@ -163,6 +171,11 @@ export default function PremiumResultPage(): JSX.Element {
   const setResults = usePremiumRecommendStore((state) => state.setResults);
   const hasHydrated = usePremiumRecommendStore((state) => state.hasHydrated);
   const reset = usePremiumRecommendStore((state) => state.reset);
+  const likedNames = useLikedNamesStore((state) => state.likedNames);
+  const hydrateLikedNames = useLikedNamesStore((state) => state.hydrate);
+  const toggleLiked = useLikedNamesStore((state) => state.toggleLiked);
+  const hasDbLikeSent = useLikedNamesStore((state) => state.hasDbLikeSent);
+  const markDbLikeSent = useLikedNamesStore((state) => state.markDbLikeSent);
   const [feedbackStatus, setFeedbackStatus] = useState<
     Record<string, "idle" | "pending" | "done">
   >({});
@@ -182,6 +195,8 @@ export default function PremiumResultPage(): JSX.Element {
   const [localQuickStatus, setLocalQuickStatus] = useState<
     "idle" | "pending" | "error"
   >("idle");
+  const [likedToast, setLikedToast] = useState<string | null>(null);
+  const [likePendingIds, setLikePendingIds] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (!hasHydrated) {
@@ -204,6 +219,10 @@ export default function PremiumResultPage(): JSX.Element {
   }, []);
 
   const top20 = useMemo(() => results.slice(0, 20), [results]);
+  const likedIdSet = useMemo(
+    () => new Set(likedNames.map((entry) => entry.id)),
+    [likedNames],
+  );
   const top20Keys = useMemo(
     () => top20.map((item) => buildNameKey(item)),
     [top20],
@@ -214,11 +233,29 @@ export default function PremiumResultPage(): JSX.Element {
     typeof window === "undefined"
       ? "/premium/loading"
       : resolvePremiumLoadingPath(window.location.pathname);
+  const likedPath =
+    typeof window === "undefined" ? "/liked" : resolveLikedPath(window.location.pathname);
+
+  useEffect(() => {
+    hydrateLikedNames();
+  }, [hydrateLikedNames]);
 
   useEffect(() => {
     setFeedbackStatus((prev) => syncFeedbackStatus(prev, top20Keys));
     setFeedbackVote((prev) => syncFeedbackVote(prev, top20Keys));
   }, [top20Keys]);
+
+  useEffect(() => {
+    if (!likedToast) {
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      setLikedToast(null);
+    }, 2200);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [likedToast]);
 
   if (!hasHydrated || !summary) {
     return <></>;
@@ -293,28 +330,89 @@ export default function PremiumResultPage(): JSX.Element {
     }
   };
 
-  const handleFeedbackClick = async (
+  const handleLikeToggle = async (
     item: PremiumRecommendResultItem,
-    vote: "like" | "dislike",
   ): Promise<void> => {
-    if (!hasFeedbackContext) {
+    const entry = buildLikedNameEntryFromPremium({
+      surnameHangul,
+      surnameHanja: input.surnameHanja,
+      gender: input.gender,
+      item,
+    });
+    const likedId = entry.id;
+    if (likePendingIds[likedId]) {
       return;
     }
 
-    const key = buildNameKey(item);
-    if (feedbackStatus[key] === "pending" || feedbackStatus[key] === "done") {
+    try {
+      const toggleResult = toggleLiked(entry);
+      if (toggleResult === "removed") {
+        setLikedToast("내가 찜한 이름에서 제거됐어요");
+        return;
+      }
+      setLikedToast("내가 찜한 이름에 저장됐어요");
+    } catch (error) {
+      if (error instanceof ToggleLikedError && error.code === "max_limit_reached") {
+        setLikedToast("찜한 이름은 최대 10개까지 저장할 수 있어요.");
+        return;
+      }
+      console.error("[premium-result] liked toggle failed", error);
+      setLikedToast("저장 공간 문제로 찜을 저장하지 못했어요.");
       return;
     }
 
-    setFeedbackStatus((prev) => ({ ...prev, [key]: "pending" }));
-    setFeedbackVote((prev) => ({ ...prev, [key]: vote }));
+    if (!hasFeedbackContext || hasDbLikeSent(likedId)) {
+      return;
+    }
+
+    setLikePendingIds((prev) => ({ ...prev, [likedId]: true }));
     try {
       await submitNameFeedback({
         surnameHangul,
         surnameHanja: input.surnameHanja,
         nameHangul: item.nameHangul,
         hanjaPair: item.hanjaPair,
-        vote,
+        vote: "like",
+      });
+      try {
+        markDbLikeSent(likedId);
+      } catch (markError) {
+        console.error("[premium-result] mark db-like flag failed", markError);
+      }
+    } catch (error) {
+      console.error("[premium-result] feedback submit failed", error);
+      try {
+        toggleLiked(entry);
+      } catch (rollbackError) {
+        console.error("[premium-result] liked rollback failed", rollbackError);
+      }
+      setLikedToast("저장에 실패했어요. 다시 시도해 주세요.");
+    } finally {
+      setLikePendingIds((prev) => {
+        const next = { ...prev };
+        delete next[likedId];
+        return next;
+      });
+    }
+  };
+
+  const handleDislikeClick = async (
+    item: PremiumRecommendResultItem,
+  ): Promise<void> => {
+    const key = buildNameKey(item);
+    if (feedbackStatus[key] === "pending" || feedbackStatus[key] === "done") {
+      return;
+    }
+
+    setFeedbackStatus((prev) => ({ ...prev, [key]: "pending" }));
+    setFeedbackVote((prev) => ({ ...prev, [key]: "dislike" }));
+    try {
+      await submitNameFeedback({
+        surnameHangul,
+        surnameHanja: input.surnameHanja,
+        nameHangul: item.nameHangul,
+        hanjaPair: item.hanjaPair,
+        vote: "dislike",
       });
       setFeedbackStatus((prev) => ({ ...prev, [key]: "done" }));
     } catch (error) {
@@ -451,8 +549,16 @@ export default function PremiumResultPage(): JSX.Element {
         </div>
       ) : (
         <section className="result-list">
-          {top20.map((item) => {
+          {top20.map((item, index) => {
             const itemKey = buildNameKey(item);
+            const likedEntry = buildLikedNameEntryFromPremium({
+              surnameHangul,
+              surnameHanja: input.surnameHanja,
+              gender: input.gender,
+              item,
+            });
+            const likedId = likedEntry.id;
+            const isLiked = likedIdSet.has(likedId);
             const displayName = formatDisplayName(
               surnameHangul,
               item.nameHangul,
@@ -473,6 +579,9 @@ export default function PremiumResultPage(): JSX.Element {
             return (
               <TdsCard key={itemKey}>
                 <div className="result-header-row">
+                  {index === 0 ? (
+                    <span className="top-rank-badge">가장 잘 맞는 이름</span>
+                  ) : null}
                   <span className="score-chip">#{item.rank}</span>
                 </div>
                 <p className="pron-emphasis">{displayName}</p>
@@ -522,19 +631,18 @@ export default function PremiumResultPage(): JSX.Element {
                 <div className="feedback-row is-split">
                   <button
                     type="button"
-                    className={`feedback-btn is-like${feedbackVote[itemKey] === "like" ? " is-selected" : ""}`}
+                    className={`feedback-btn is-like${isLiked ? " is-selected" : ""}`}
                     disabled={
                       !hasFeedbackContext ||
-                      feedbackStatus[itemKey] === "pending" ||
-                      feedbackStatus[itemKey] === "done"
+                      Boolean(likePendingIds[likedId])
                     }
                     onClick={() => {
-                      void handleFeedbackClick(item, "like");
+                      void handleLikeToggle(item);
                     }}
                   >
                     <span className="feedback-content">
                       <ThumbUpIcon />
-                      <span>좋아요</span>
+                      <span>{isLiked ? "찜해제" : "좋아요"}</span>
                     </span>
                   </button>
                   <button
@@ -546,7 +654,7 @@ export default function PremiumResultPage(): JSX.Element {
                       feedbackStatus[itemKey] === "done"
                     }
                     onClick={() => {
-                      void handleFeedbackClick(item, "dislike");
+                      void handleDislikeClick(item);
                     }}
                   >
                     <span className="feedback-content">
@@ -602,6 +710,13 @@ export default function PremiumResultPage(): JSX.Element {
       </p>
 
       <div className="result-actions">
+        <TdsSecondaryButton
+          onClick={() => {
+            router.push(likedPath);
+          }}
+        >
+          찜한 이름 보기
+        </TdsSecondaryButton>
         {localAdminEnabled ? (
           <div className="local-admin-name-row">
             <button
@@ -630,6 +745,7 @@ export default function PremiumResultPage(): JSX.Element {
         >
           다시 입력
         </TdsPrimaryButton>
+        {likedToast ? <p className="liked-toast">{likedToast}</p> : null}
       </div>
     </TdsScreen>
   );
