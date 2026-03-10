@@ -21,8 +21,25 @@ function testLikedPageUsesMutedSavedAtTextAndShareStyleRemoveButton(): void {
   );
 }
 
+function testLikedPageWrapsSearchParamsWithSuspenseBoundary(): void {
+  const source = readFileSync(LIKED_PAGE_PATH, "utf8");
+
+  assert.equal(
+    source.includes("function LikedPageContent(): JSX.Element"),
+    true,
+    "useSearchParams를 사용하는 찜 화면 본문은 분리된 내부 컴포넌트여야 합니다.",
+  );
+  assert.equal(
+    source.includes("<Suspense fallback={<></>}>") &&
+      source.includes("<LikedPageContent />"),
+    true,
+    "웹 찜 화면은 prerender 오류를 피하기 위해 Suspense 경계로 래핑되어야 합니다.",
+  );
+}
+
 function run(): void {
   testLikedPageUsesMutedSavedAtTextAndShareStyleRemoveButton();
+  testLikedPageWrapsSearchParamsWithSuspenseBoundary();
   console.log("[test:liked-layout:web] all tests passed");
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Card, PrimaryButton, Screen } from "@/components/ui";
 import type { LikedNameEntry } from "@/lib/likedNamesRepository";
@@ -34,7 +34,7 @@ interface HanjaMeaningResponse {
   meanings?: Record<string, string>;
 }
 
-export default function LikedPage(): JSX.Element {
+function LikedPageContent(): JSX.Element {
   const router = useRouter();
   const searchParams = useSearchParams();
   const likedNames = useLikedNamesStore((state) => state.likedNames);
@@ -243,5 +243,13 @@ export default function LikedPage(): JSX.Element {
         {toast ? <p className="nf-liked-toast">{toast}</p> : null}
       </div>
     </Screen>
+  );
+}
+
+export default function LikedPage(): JSX.Element {
+  return (
+    <Suspense fallback={<></>}>
+      <LikedPageContent />
+    </Suspense>
   );
 }
