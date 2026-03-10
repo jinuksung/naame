@@ -53,6 +53,11 @@ function testShareUtilityCapturesFromViewportStagingNode(): void {
     true,
     "공유 이미지 좌하단에는 네임핏 로고와 서비스명이 함께 노출되어야 합니다.",
   );
+  assert.equal(
+    source.includes('brandRow.style.lineHeight = "18px"'),
+    true,
+    "로고와 서비스명 높이가 맞도록 브랜드 라인 높이를 고정해야 합니다.",
+  );
 }
 
 function testShareUtilityUsesFriendlyShareTitle(): void {

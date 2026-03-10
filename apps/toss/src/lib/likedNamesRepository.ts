@@ -127,14 +127,43 @@ function writeEntries(storage: Storage, storageKey: string, entries: LikedNameEn
   storage.setItem(storageKey, JSON.stringify(entries));
 }
 
+function isStorageUsable(storage: Storage): boolean {
+  const probeKey = "__namefit_storage_probe__";
+  try {
+    storage.setItem(probeKey, "1");
+    const probeValue = storage.getItem(probeKey);
+    storage.removeItem(probeKey);
+    return probeValue === "1";
+  } catch {
+    return false;
+  }
+}
+
+function getWindowStorage(name: "localStorage" | "sessionStorage"): Storage | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  try {
+    return window[name];
+  } catch {
+    return null;
+  }
+}
+
 function resolveStorage(explicit?: Storage): Storage | null {
   if (explicit) {
     return explicit;
   }
-  if (typeof window === "undefined") {
-    return null;
+  const candidates = [
+    getWindowStorage("localStorage"),
+    getWindowStorage("sessionStorage"),
+  ];
+  for (const storage of candidates) {
+    if (storage && isStorageUsable(storage)) {
+      return storage;
+    }
   }
-  return window.localStorage;
+  return null;
 }
 
 export function createLikedNamesRepository(

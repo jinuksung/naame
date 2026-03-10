@@ -134,6 +134,8 @@ function createCaptureStagingNode(sourceElement: HTMLElement): {
   brandRow.style.fontSize = "13px";
   brandRow.style.fontWeight = "700";
   brandRow.style.letterSpacing = "-0.01em";
+  brandRow.style.lineHeight = "18px";
+  brandRow.style.height = "18px";
   brandRow.style.justifySelf = "start";
 
   const logoImage = document.createElement("img");
@@ -147,6 +149,9 @@ function createCaptureStagingNode(sourceElement: HTMLElement): {
 
   const brandText = document.createElement("span");
   brandText.textContent = SHARE_BRAND_TEXT;
+  brandText.style.display = "inline-flex";
+  brandText.style.alignItems = "center";
+  brandText.style.lineHeight = "18px";
 
   brandRow.append(logoImage, brandText);
   captureElement.append(cardClone, brandRow);

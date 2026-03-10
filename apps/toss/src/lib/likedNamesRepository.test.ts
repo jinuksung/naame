@@ -108,10 +108,58 @@ function testRepositoryReturnsEmptyListForCorruptedStorage(): void {
   }
 }
 
+function testRepositoryFallsBackToSessionStorageWhenLocalStorageIsBlocked(): void {
+  const previousWindow = (globalThis as { window?: Window }).window;
+  const sessionStorage = new MemoryStorage();
+  const localStorage = {
+    getItem(): string | null {
+      throw new Error("blocked");
+    },
+    setItem(): void {
+      throw new Error("blocked");
+    },
+    removeItem(): void {
+      throw new Error("blocked");
+    },
+    key(): string | null {
+      return null;
+    },
+    clear(): void {
+      throw new Error("blocked");
+    },
+    get length(): number {
+      return 0;
+    }
+  } as Storage;
+
+  try {
+    (globalThis as { window?: Window }).window = {
+      localStorage,
+      sessionStorage
+    } as unknown as Window;
+    const repository = createLikedNamesRepository({
+      storageKey: "liked-names-fallback-test"
+    });
+    const entry = buildSampleEntry("fallback-id", "2026-03-10T00:00:00.000Z");
+
+    repository.upsert(entry);
+    const raw = sessionStorage.getItem("liked-names-fallback-test");
+    assert.notEqual(raw, null);
+    assert.equal(repository.exists("fallback-id"), true);
+  } finally {
+    if (previousWindow === undefined) {
+      delete (globalThis as { window?: Window }).window;
+    } else {
+      (globalThis as { window?: Window }).window = previousWindow;
+    }
+  }
+}
+
 function run(): void {
   testRepositorySupportsUpsertAndDeduplication();
   testRepositorySupportsRemoveAndClear();
   testRepositoryReturnsEmptyListForCorruptedStorage();
+  testRepositoryFallsBackToSessionStorageWhenLocalStorageIsBlocked();
   console.log("[test:liked-names-repository:toss] all tests passed");
 }
 
