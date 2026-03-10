@@ -12,20 +12,22 @@ import {
 function testDetectsDevProcessesInCurrentProject() {
   const rootDir = "/Users/example/work/name/apps/toss";
   const processList = [
-    "12345 node /Users/example/work/name/node_modules/.bin/granite dev",
-    "12346 node /Users/example/work/name/node_modules/.bin/next dev -p 3000",
-    "12347 node /Users/example/other/node_modules/.bin/next dev -p 3000",
+    "12345 node /Users/example/work/name/node_modules/.bin/ait dev",
+    "12346 node /Users/example/work/name/node_modules/.bin/granite dev",
+    "12347 node /Users/example/work/name/node_modules/.bin/next dev -p 3000",
+    "12348 node /Users/example/other/node_modules/.bin/next dev -p 3000",
   ].join("\n");
 
   const conflicts = detectConflictingDevProcesses(processList, rootDir);
-  assert.equal(conflicts.length, 2, "현재 프로젝트 dev 프로세스 2개가 감지되어야 합니다.");
+  assert.equal(conflicts.length, 3, "현재 프로젝트 dev 프로세스 3개가 감지되어야 합니다.");
 }
 
 function testIgnoresUnrelatedProcesses() {
   const rootDir = "/Users/example/work/name/apps/toss";
   const processList = [
-    "22345 node /Users/example/other/node_modules/.bin/granite dev",
-    "22346 node /Users/example/other/node_modules/.bin/next dev -p 3000",
+    "22345 node /Users/example/other/node_modules/.bin/ait dev",
+    "22346 node /Users/example/other/node_modules/.bin/granite dev",
+    "22347 node /Users/example/other/node_modules/.bin/next dev -p 3000",
   ].join("\n");
 
   const conflicts = detectConflictingDevProcesses(processList, rootDir);
@@ -91,6 +93,16 @@ function testRouteSourceMapIncludesPremiumRoutes() {
     source.includes('route: "/free"'),
     true,
     "appintos 정적 빌드는 /free 라우트를 포함해야 합니다.",
+  );
+  assert.equal(
+    source.includes('route: "/liked"'),
+    true,
+    "appintos 정적 빌드는 /liked 라우트를 포함해야 합니다.",
+  );
+  assert.equal(
+    source.includes('route: "/feature/liked"'),
+    true,
+    "appintos 정적 빌드는 /feature/liked 라우트를 포함해야 합니다.",
   );
 }
 

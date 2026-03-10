@@ -10,6 +10,7 @@ const nextAppDir = path.join(rootDir, ".next", "server", "app");
 const nextStaticDir = path.join(rootDir, ".next", "static");
 const publicDir = path.join(rootDir, "public");
 const DEV_SERVER_COMMAND_PATTERNS = [
+  "/node_modules/.bin/ait dev",
   "/node_modules/.bin/granite dev",
   "/node_modules/.bin/next dev",
 ];
@@ -79,7 +80,7 @@ export function assertNoConflictingDevProcesses(
       "Stop dev server before build:appintoss.",
       "Detected running Toss dev process(es):",
       ...conflicts.map((line) => `- ${line}`),
-      "Run: kill $(ps aux | grep \"granite dev\\|next dev -p 3000\" | grep -v grep | awk '{print $2}')",
+      "Run: kill $(ps aux | grep \"ait dev\\|granite dev\\|next dev -p 3000\" | grep -v grep | awk '{print $2}')",
     ].join("\n"),
   );
 }
@@ -165,8 +166,10 @@ const routeSourceMap = [
   { source: path.join("premium", "result.html"), route: "/premium/result" },
   { source: "loading.html", route: "/loading" },
   { source: "result.html", route: "/result" },
+  { source: "liked.html", route: "/liked" },
   { source: path.join("feature", "recommend.html"), route: "/feature/recommend" },
   { source: path.join("feature", "result.html"), route: "/feature/result" },
+  { source: path.join("feature", "liked.html"), route: "/feature/liked" },
 ];
 
 export async function resetNextBuildDir(projectRootDir = rootDir) {
