@@ -99,6 +99,12 @@ input {
   line-height: 1.5;
 }
 
+.nf-save-hint {
+  color: hsl(var(--muted-foreground) / 0.8);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .nf-form {
   margin-top: 22px;
   display: grid;

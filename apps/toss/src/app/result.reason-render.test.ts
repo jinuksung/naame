@@ -70,9 +70,14 @@ function testFeedbackButtonsUseSplitLayoutWithEmoji(): void {
     "토스 결과 화면은 무료 카드 공유 핸들러(shareFreeResultCard)를 호출해야 합니다.",
   );
   assert.equal(
-    source.includes("여기 밑에 좋아요를 누르면 찜한 이름 목록에 저장됩니다."),
+    source.includes("좋아요를 누르면 찜한 이름 목록에 저장됩니다."),
     true,
     "토스 결과 화면 상단에는 좋아요 저장 안내 문구가 노출되어야 합니다.",
+  );
+  assert.equal(
+    source.includes('className="tds-description tds-save-hint"'),
+    true,
+    "토스 결과 화면 상단 저장 안내 문구는 약한 강조 스타일(tds-save-hint)을 사용해야 합니다.",
   );
 }
 

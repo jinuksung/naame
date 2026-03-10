@@ -97,6 +97,12 @@ a {
   line-height: 1.45;
 }
 
+.tds-save-hint {
+  color: var(--text-tertiary);
+  font-size: 15px;
+  line-height: 1.42;
+}
+
 .tds-form {
   margin-top: 20px;
   display: grid;

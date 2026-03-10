@@ -460,8 +460,8 @@ export default function ResultPage(): JSX.Element {
       title="추천 이름 TOP 5"
       description="입력하신 정보를 바탕으로 선별했습니다"
     >
-      <p className="nf-description">
-        여기 밑에 좋아요를 누르면 찜한 이름 목록에 저장됩니다.
+      <p className="nf-description nf-save-hint">
+        좋아요를 누르면 찜한 이름 목록에 저장됩니다.
       </p>
       {top5.length === 0 ? (
         <div className="nf-result-actions">

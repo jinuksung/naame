@@ -25,6 +25,64 @@ function isAbortError(error: unknown): boolean {
   return error instanceof DOMException && error.name === "AbortError";
 }
 
+function nextFrame(): Promise<void> {
+  return new Promise((resolve) => {
+    window.requestAnimationFrame(() => resolve());
+  });
+}
+
+async function waitForCaptureReady(): Promise<void> {
+  const documentWithFonts = document as Document & {
+    fonts?: { ready: Promise<unknown> };
+  };
+  if (documentWithFonts.fonts) {
+    try {
+      await documentWithFonts.fonts.ready;
+    } catch {
+      // Ignore font readiness failures and continue with capture.
+    }
+  }
+  await nextFrame();
+  await nextFrame();
+}
+
+function getCaptureWidth(element: HTMLElement): number {
+  const rectWidth = Math.round(element.getBoundingClientRect().width);
+  const layoutWidth = element.offsetWidth || element.scrollWidth;
+  return Math.max(320, rectWidth || layoutWidth || 360);
+}
+
+function createCaptureStagingNode(sourceElement: HTMLElement): {
+  captureElement: HTMLElement;
+  cleanup: () => void;
+} {
+  const stagingRoot = document.createElement("div");
+  stagingRoot.setAttribute("data-namefit-share-capture", "true");
+  stagingRoot.style.position = "fixed";
+  stagingRoot.style.left = "0";
+  stagingRoot.style.top = "0";
+  stagingRoot.style.pointerEvents = "none";
+  stagingRoot.style.opacity = "0";
+  stagingRoot.style.zIndex = "2147483647";
+
+  const captureElement = sourceElement.cloneNode(true) as HTMLElement;
+  const captureWidth = getCaptureWidth(sourceElement);
+  captureElement.style.width = `${captureWidth}px`;
+  captureElement.style.maxWidth = `${captureWidth}px`;
+  captureElement.style.margin = "0";
+  captureElement.style.boxSizing = "border-box";
+
+  stagingRoot.append(captureElement);
+  document.body.append(stagingRoot);
+
+  return {
+    captureElement,
+    cleanup: () => {
+      stagingRoot.remove();
+    },
+  };
+}
+
 async function withShareTimeout(task: Promise<void>): Promise<void> {
   let timeoutId: number | undefined;
   try {
@@ -84,11 +142,18 @@ function openPreviewBlob(blob: Blob): boolean {
 export async function shareResultCardImage(
   options: ShareResultCardImageOptions,
 ): Promise<ShareResultMode> {
-  const blob = await toBlob(options.element, {
-    pixelRatio: 2,
-    cacheBust: true,
-    backgroundColor: "#ffffff",
-  });
+  const { captureElement, cleanup } = createCaptureStagingNode(options.element);
+  let blob: Blob | null;
+  try {
+    await waitForCaptureReady();
+    blob = await toBlob(captureElement, {
+      pixelRatio: 2,
+      cacheBust: true,
+      backgroundColor: "#ffffff",
+    });
+  } finally {
+    cleanup();
+  }
 
   if (!blob) {
     throw new Error("공유 이미지를 생성하지 못했습니다.");
