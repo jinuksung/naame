@@ -9,9 +9,9 @@ import type {
 } from "../types";
 
 const BASE_BONUS_BY_TIER: Record<Tier, number> = {
-  A: 1,
+  A: 2,
   B: 3,
-  C: 2
+  C: 1
 };
 
 function round2(value: number): number {

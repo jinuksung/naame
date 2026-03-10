@@ -7,6 +7,7 @@
 - `hanja_tags.jsonl`
 - `blacklist_words.jsonl`
 - `blacklist_initials.jsonl`
+- `name_block_syllable_rules.jsonl`
 - `out/name_pool_M.json`
 - `out/name_pool_F.json`
 - `hanname_master_conflicts.jsonl`
@@ -18,13 +19,14 @@ Supabase SQL Editor에서 다음 파일을 실행합니다.
 
 - `scripts/ssot/supabase.ssot.schema.sql`
 
-파일별 물리 테이블 9개를 생성합니다.
+파일별 물리 테이블 10개를 생성합니다.
 
 - `public.ssot_hanname_master`
 - `public.ssot_surname_map`
 - `public.ssot_hanja_tags`
 - `public.ssot_blacklist_words`
 - `public.ssot_blacklist_initials`
+- `public.ssot_name_block_syllable_rules`
 - `public.ssot_name_pool_m`
 - `public.ssot_name_pool_f`
 - `public.ssot_hanname_master_conflicts`
@@ -40,13 +42,15 @@ Supabase SQL Editor에서 다음 파일을 실행합니다.
 - `ssot_hanname_master`
   - `char, detail_url, element_pronunciation, element_resource, fetched_at, is_inmyong, meanings, radical_char, radical_label, reading_c, reading_e, reading_initials, readings, source, strokes`
 - `ssot_surname_map`
-  - `surname_reading, hanja, is_default, popularity_rank`
+  - `surname_reading, hanja, is_default, popularity_rank, element_pronunciation, element_resource`
 - `ssot_hanja_tags`
   - `char, created_at, evidence, risk_flags, tag_scores, tags`
 - `ssot_blacklist_words`
   - `pattern`
 - `ssot_blacklist_initials`
   - `pattern`
+- `ssot_name_block_syllable_rules`
+  - `enabled, s1_jung, s1_jong, s1_has_jong, s2_jung, s2_jong, s2_has_jong, note`
 - `ssot_name_pool_m`, `ssot_name_pool_f`
   - `generated_at, input, gender, total_count, name, tier, score, score_breakdown, features`
 - `ssot_hanname_master_conflicts`
@@ -55,6 +59,7 @@ Supabase SQL Editor에서 다음 파일을 실행합니다.
   - `char, checked_at, page, reading_level, source_url, usage_count, warnings, writing_level`
 
 의미: JSON/JSONL 레코드 1개가 해당 파일 전용 테이블의 row 1개로 저장되며, 속성별 컬럼으로 조회/필터링할 수 있습니다.
+스키마 SQL에는 `ssot_hanname_master`를 기준으로 `ssot_surname_map`의 성씨 오행 컬럼을 백필하는 쿼리도 포함되어 있습니다.
 
 ## 2) 데이터 업로드 (로컬 -> Supabase)
 
@@ -84,6 +89,10 @@ npm run ssot:pull
 SSOT_PULL_INCLUDE_NOT_INMYONG=1 npm run ssot:pull
 ```
 
+`surname_map.jsonl`에는 pull 시점에 성씨 한자의 오행(`elementPronunciation`, `elementResource`)을 채웁니다.  
+기본 pull(`is_inmyong=true`)일 때도 성씨 오행이 비어 있으면 `ssot_hanname_master`에서 성씨 한자 기준 보강 조회를 추가로 수행합니다.
+복성(예: `南宮`)은 각 글자를 순서대로 조회해 오행을 채웁니다.
+
 ## 4) 런타임에서 SSOT 사용
 
 추천 API 런타임에서 아래 플래그를 켭니다.
@@ -108,6 +117,6 @@ npm run test:engine:ssot
 
 - `Could not find the table 'public.ssot_hanname_master' in the schema cache`
 
-원인: Supabase에 per-file 물리 테이블(현재 9개)이 아직 생성되지 않은 상태입니다.
+원인: Supabase에 per-file 물리 테이블(현재 10개)이 아직 생성되지 않은 상태입니다.
 
 조치: SQL Editor에서 `scripts/ssot/supabase.ssot.schema.sql`를 먼저 실행한 뒤, 다시 `npm run ssot:push`를 실행하세요.

@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Screen } from "@/components/ui";
 import { fetchFreeRecommendations } from "@/lib/api";
+import { buildFreeExploreSeed } from "@/lib/freeExploreSeed";
 import { buildMockResults } from "@/lib/mock";
 import { useRecommendStore } from "@/store/useRecommendStore";
 
@@ -26,16 +27,25 @@ function wait(ms: number): Promise<void> {
 export default function LoadingPage(): JSX.Element {
   const router = useRouter();
   const input = useRecommendStore((state) => state.input);
+  const setInput = useRecommendStore((state) => state.setInput);
   const setResults = useRecommendStore((state) => state.setResults);
+  const requestBaseInput = useMemo(
+    () => ({
+      surnameHangul: input.surnameHangul,
+      surnameHanja: input.surnameHanja,
+      gender: input.gender,
+    }),
+    [input.gender, input.surnameHangul, input.surnameHanja],
+  );
 
   const [messageIndex, setMessageIndex] = useState(0);
   const hasInput =
-    input.surnameHangul.trim().length > 0 &&
-    input.surnameHanja.trim().length > 0;
+    requestBaseInput.surnameHangul.trim().length > 0 &&
+    requestBaseInput.surnameHanja.trim().length > 0;
 
   useEffect(() => {
     if (!hasInput) {
-      router.replace("/");
+      router.replace("/free");
       return;
     }
 
@@ -45,10 +55,12 @@ export default function LoadingPage(): JSX.Element {
     }, MESSAGE_ROTATE_MS);
 
     const run = async (): Promise<void> => {
+      const seededInput = { ...requestBaseInput, exploreSeed: buildFreeExploreSeed() };
+      setInput(seededInput);
       try {
-        const requestPromise = fetchFreeRecommendations(input).catch((error) => {
+        const requestPromise = fetchFreeRecommendations(seededInput).catch((error) => {
           console.error("[loading] API 실패, mock fallback 사용", error);
-          return { results: buildMockResults(input) };
+          return { results: buildMockResults(seededInput) };
         });
 
         await wait(MIN_LOADING_MS);
@@ -63,7 +75,7 @@ export default function LoadingPage(): JSX.Element {
         if (isCancelled) {
           return;
         }
-        setResults(buildMockResults(input));
+        setResults(buildMockResults(seededInput));
         router.replace("/result");
       }
     };
@@ -74,10 +86,10 @@ export default function LoadingPage(): JSX.Element {
       isCancelled = true;
       clearInterval(rotateTimer);
     };
-  }, [hasInput, input, router, setResults]);
+  }, [hasInput, requestBaseInput, router, setInput, setResults]);
 
   return (
-    <Screen title="이름을 추천하고 있어요" description="잠시만 기다려 주세요.">
+    <Screen title="이름을 찾고 있어요" description="잠시만 기다려 주세요.">
       <div className="nf-loading-wrap">
         <div className="nf-loading-spinner" aria-label="로딩 중" />
         <p className="nf-loading-text">{LOADING_MESSAGES[messageIndex]}</p>

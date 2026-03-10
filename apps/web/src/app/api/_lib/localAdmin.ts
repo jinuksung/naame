@@ -1,4 +1,4 @@
-import { isLocalAdminToolsEnabled } from "@/lib/localAdminVisibility";
+import { isLocalAdminToolsEnabled } from "@namefit/engine/lib/localAdminVisibility";
 
 export function isLocalAdminRequest(request: Request): boolean {
   const hostname = new URL(request.url).hostname;

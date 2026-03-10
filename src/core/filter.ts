@@ -1,5 +1,10 @@
-import { BLACKLIST_INITIAL_PATTERNS, BLACKLIST_WORD_PATTERNS } from "./blacklist";
-import type { FilterReason, FilterResult, FrequencyProfile, NameCandidate } from "../types";
+import {
+  getBlacklistInitialPatterns,
+  getBlacklistWordPatterns,
+  hasNameBlockSyllableRuleMatch,
+} from "./blacklist";
+import { hasNamePoolSyllablePositionRuleMatch } from "./namePoolSyllablePositionRules";
+import type { FilterReason, FilterResult, FrequencyProfile, Gender, NameCandidate } from "../types";
 
 const HANGUL_TWO_SYLLABLE = /^[가-힣]{2}$/;
 const CHOSEONG = [
@@ -38,12 +43,18 @@ function toInitialConsonants(name: string): string {
 }
 
 function hasBlacklistPattern(name: string): boolean {
-  if (BLACKLIST_WORD_PATTERNS.some((pattern) => name.includes(pattern))) {
+  const wordPatterns = getBlacklistWordPatterns();
+  if (wordPatterns.some((pattern) => name.includes(pattern))) {
     return true;
   }
 
   const initials = toInitialConsonants(name);
-  return BLACKLIST_INITIAL_PATTERNS.some((pattern) => initials.includes(pattern));
+  const initialPatterns = getBlacklistInitialPatterns();
+  if (initialPatterns.some((pattern) => initials.includes(pattern))) {
+    return true;
+  }
+
+  return hasNameBlockSyllableRuleMatch(name);
 }
 
 function emptyReasonCounts(): Record<FilterReason, number> {
@@ -51,6 +62,7 @@ function emptyReasonCounts(): Record<FilterReason, number> {
     repeated_syllable: 0,
     blacklist: 0,
     invalid_chars: 0,
+    position_rule: 0,
     obvious_weird: 0
   };
 }
@@ -58,7 +70,8 @@ function emptyReasonCounts(): Record<FilterReason, number> {
 export function filterCandidates(
   candidates: NameCandidate[],
   profile: FrequencyProfile,
-  sourceTwoSyllableSet: Set<string>
+  sourceTwoSyllableSet: Set<string>,
+  gender: Gender,
 ): FilterResult {
   const removedByReason = emptyReasonCounts();
   const kept: NameCandidate[] = [];
@@ -77,6 +90,11 @@ export function filterCandidates(
 
     if (hasBlacklistPattern(name)) {
       removedByReason.blacklist += 1;
+      continue;
+    }
+
+    if (hasNamePoolSyllablePositionRuleMatch(candidate, gender)) {
+      removedByReason.position_rule += 1;
       continue;
     }
 

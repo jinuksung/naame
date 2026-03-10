@@ -16,6 +16,8 @@ export interface SurnameHanjaOption {
   hanja: string;
   isDefault: boolean;
   popularityRank: number;
+  elementPronunciation?: RecommendElement;
+  elementResource?: RecommendElement;
 }
 
 export interface SurnameHanjaOptionsResponse {
@@ -35,4 +37,84 @@ export interface FreeRecommendResultItem {
 
 export interface FreeRecommendResponse {
   results: FreeRecommendResultItem[];
+}
+
+export type RecommendElement = "WOOD" | "FIRE" | "EARTH" | "METAL" | "WATER";
+export type PremiumSajuMode = "IMPROVE" | "HARMONY";
+export type PremiumElementStatusBand = "VERY_LOW" | "LOW" | "BALANCED" | "HIGH" | "VERY_HIGH";
+
+export interface PremiumRecommendInput {
+  birth: {
+    calendar: "SOLAR" | "LUNAR";
+    date: string;
+    isLeapMonth?: boolean;
+    time?: string;
+  };
+  surnameHanja: string;
+  gender: RecommendGender;
+  exploreSeed?: number;
+}
+
+export interface PremiumPillarItem {
+  hangul: string;
+  hanja: string;
+}
+
+export interface PremiumElementStatusItem {
+  element: RecommendElement;
+  percent: number;
+  status: PremiumElementStatusBand;
+}
+
+export interface PremiumRecommendSummary {
+  mode: PremiumSajuMode;
+  oneLineSummary: string;
+  weakTop3: RecommendElement[];
+  hasHourPillar: boolean;
+  pillars: {
+    year: PremiumPillarItem;
+    month: PremiumPillarItem;
+    day: PremiumPillarItem;
+    hour: PremiumPillarItem | null;
+  };
+  distSaju: Record<RecommendElement, number>;
+  distStatus: PremiumElementStatusItem[];
+}
+
+export interface PremiumRecommendResultItem {
+  rank: number;
+  nameHangul: string;
+  hanjaPair: [string, string];
+  readingPair: [string, string];
+  meaningKwPair: [string, string];
+  score: number;
+  sajuScore5: number;
+  soundScore5: number;
+  engineScore01: number;
+  why: string[];
+  report: PremiumNameReport;
+}
+
+export type PremiumAgeBandKey =
+  | "0-19"
+  | "20-39"
+  | "40-59"
+  | "60-79"
+  | "80-100";
+
+export interface PremiumAgeBandReport {
+  key: PremiumAgeBandKey;
+  label: string;
+  lines: [string, string];
+}
+
+export interface PremiumNameReport {
+  summary: string;
+  bullets: string[];
+  ageBands: PremiumAgeBandReport[];
+}
+
+export interface PremiumRecommendResponse {
+  summary: PremiumRecommendSummary;
+  results: PremiumRecommendResultItem[];
 }

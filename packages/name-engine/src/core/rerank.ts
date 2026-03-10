@@ -9,9 +9,9 @@ import type {
 } from "./types";
 
 export const DEFAULT_SOFT_PRIOR_WEIGHTS: SoftPriorWeights = {
-  wE: 0.7,
-  wP: 0.25,
-  wT: 0.05
+  wE: 0.55,
+  wP: 0.39,
+  wT: 0.06
 };
 
 function clamp01(value: number): number {

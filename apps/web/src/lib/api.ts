@@ -1,8 +1,24 @@
 import {
   FreeRecommendInput,
   FreeRecommendResponse,
+  PremiumRecommendInput,
+  PremiumRecommendResponse,
   SurnameHanjaOptionsResponse
 } from "@/types/recommend";
+
+type PremiumSummaryCompat = PremiumRecommendResponse["summary"] & {
+  weakTop2?: PremiumRecommendResponse["summary"]["weakTop3"];
+};
+
+function readWeakTop3Compat(summary: PremiumSummaryCompat): PremiumRecommendResponse["summary"]["weakTop3"] {
+  if (Array.isArray(summary.weakTop3) && (summary.weakTop3.length === 2 || summary.weakTop3.length === 3)) {
+    return summary.weakTop3;
+  }
+  if (Array.isArray(summary.weakTop2) && summary.weakTop2.length === 2) {
+    return summary.weakTop2;
+  }
+  return [];
+}
 
 const API_BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -44,6 +60,76 @@ function isValidResponse(value: unknown): value is FreeRecommendResponse {
   });
 }
 
+function isValidPremiumResponse(value: unknown): value is PremiumRecommendResponse {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const response = value as PremiumRecommendResponse;
+  if (!response.summary || typeof response.summary !== "object") {
+    return false;
+  }
+  if (!Array.isArray(response.results)) {
+    return false;
+  }
+
+  const summary = response.summary as PremiumSummaryCompat;
+  if (summary.mode !== "IMPROVE" && summary.mode !== "HARMONY") {
+    return false;
+  }
+  if (typeof summary.oneLineSummary !== "string") {
+    return false;
+  }
+  if (readWeakTop3Compat(summary).length === 0) {
+    return false;
+  }
+  if (typeof summary.hasHourPillar !== "boolean") {
+    return false;
+  }
+  if (!summary.pillars || typeof summary.pillars !== "object") {
+    return false;
+  }
+  if (!summary.distSaju || typeof summary.distSaju !== "object") {
+    return false;
+  }
+  if (!Array.isArray(summary.distStatus)) {
+    return false;
+  }
+
+  return response.results.every((item) => {
+    if (!item || typeof item !== "object") {
+      return false;
+    }
+    const result = item as PremiumRecommendResponse["results"][number];
+    return (
+      typeof result.rank === "number" &&
+      Number.isFinite(result.rank) &&
+      typeof result.nameHangul === "string" &&
+      Array.isArray(result.hanjaPair) &&
+      result.hanjaPair.length === 2 &&
+      typeof result.hanjaPair[0] === "string" &&
+      typeof result.hanjaPair[1] === "string" &&
+      Array.isArray(result.readingPair) &&
+      result.readingPair.length === 2 &&
+      typeof result.readingPair[0] === "string" &&
+      typeof result.readingPair[1] === "string" &&
+      Array.isArray(result.meaningKwPair) &&
+      result.meaningKwPair.length === 2 &&
+      typeof result.meaningKwPair[0] === "string" &&
+      typeof result.meaningKwPair[1] === "string" &&
+      typeof result.score === "number" &&
+      Number.isFinite(result.score) &&
+      typeof result.sajuScore5 === "number" &&
+      Number.isFinite(result.sajuScore5) &&
+      typeof result.soundScore5 === "number" &&
+      Number.isFinite(result.soundScore5) &&
+      typeof result.engineScore01 === "number" &&
+      Number.isFinite(result.engineScore01) &&
+      Array.isArray(result.why)
+    );
+  });
+}
+
 function isValidSurnameHanjaOptionsResponse(value: unknown): value is SurnameHanjaOptionsResponse {
   if (!value || typeof value !== "object") {
     return false;
@@ -71,6 +157,13 @@ function isValidSurnameHanjaOptionsResponse(value: unknown): value is SurnameHan
       Number.isFinite(option.popularityRank)
     );
   });
+}
+
+function isValidSurnameReadingResponse(value: unknown): value is { surnameReading: string } {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  return typeof (value as { surnameReading?: unknown }).surnameReading === "string";
 }
 
 export async function fetchSurnameHanjaOptions(
@@ -107,6 +200,37 @@ export async function fetchSurnameHanjaOptions(
   return data;
 }
 
+export async function fetchSurnameReadingByHanja(
+  surnameHanja: string,
+  signal?: AbortSignal
+): Promise<string> {
+  const hanja = surnameHanja.trim().normalize("NFC");
+  if (!hanja) {
+    return "";
+  }
+
+  const response = await fetch(
+    withBasePath(`/api/surname/reading?hanja=${encodeURIComponent(hanja)}`),
+    {
+      method: "GET",
+      cache: "no-store",
+      signal
+    }
+  );
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`[api] surname reading failed: ${response.status} ${text}`);
+  }
+
+  const data = (await response.json()) as unknown;
+  if (!isValidSurnameReadingResponse(data)) {
+    throw new Error("[api] invalid surname reading response");
+  }
+
+  return data.surnameReading.trim();
+}
+
 export async function fetchFreeRecommendations(
   input: FreeRecommendInput
 ): Promise<FreeRecommendResponse> {
@@ -131,6 +255,39 @@ export async function fetchFreeRecommendations(
 
   return {
     results: data.results.slice(0, 5)
+  };
+}
+
+export async function fetchPremiumRecommendations(
+  input: PremiumRecommendInput
+): Promise<PremiumRecommendResponse> {
+  const response = await fetch(withBasePath("/api/recommend/premium"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    cache: "no-store",
+    body: JSON.stringify(input)
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`[api] premium recommend failed: ${response.status} ${text}`);
+  }
+
+  const data = (await response.json()) as unknown;
+  if (!isValidPremiumResponse(data)) {
+    throw new Error("[api] invalid premium response shape");
+  }
+
+  const normalizedSummary = data.summary as PremiumSummaryCompat;
+
+  return {
+    summary: {
+      ...normalizedSummary,
+      weakTop3: readWeakTop3Compat(normalizedSummary)
+    },
+    results: data.results.slice(0, 20)
   };
 }
 
@@ -198,6 +355,32 @@ export async function addNameToBlacklist(nameHangul: string): Promise<{ inserted
   if (!response.ok) {
     const text = await response.text();
     throw new Error(`[api] blacklist update failed: ${response.status} ${text}`);
+  }
+
+  const payload = (await response.json()) as { inserted?: unknown };
+  return {
+    inserted: payload.inserted === true
+  };
+}
+
+export async function addNameBlockSyllableRule(nameHangul: string): Promise<{ inserted: boolean }> {
+  const normalizedName = nameHangul.trim().normalize("NFC");
+  if (!normalizedName) {
+    throw new Error("[api] invalid nameHangul");
+  }
+
+  const response = await fetch("/api/admin/local/name-block-syllable-rule", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    cache: "no-store",
+    body: JSON.stringify({ nameHangul: normalizedName })
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`[api] syllable rule update failed: ${response.status} ${text}`);
   }
 
   const payload = (await response.json()) as { inserted?: unknown };

@@ -25,6 +25,8 @@ export function preselectNameSeeds<TPayload>(
   const limit = Math.max(1, Math.floor(options.limit));
   const explorationMinRatio = clamp01(options.explorationMinRatio ?? 0.2);
   const explorationMinCount = Math.max(0, Math.floor(options.explorationMinCount ?? 20));
+  const poolMinRatio = clamp01(options.poolMinRatio ?? 0);
+  const poolMinCount = Math.max(0, Math.floor(options.poolMinCount ?? 0));
   const byName = new Map<string, NamePreselectResult<TPayload>["selected"][number]>();
 
   for (const input of inputs) {
@@ -62,10 +64,15 @@ export function preselectNameSeeds<TPayload>(
 
   const poolRows = rows.filter((row) => row.bucket === "pool");
   const explorationRows = rows.filter((row) => row.bucket === "exploration");
-  const explorationTarget = Math.min(
+  const baseExplorationTarget = Math.min(
     explorationRows.length,
     Math.max(explorationMinCount, Math.floor(limit * explorationMinRatio))
   );
+  const poolMinTarget = Math.min(
+    poolRows.length,
+    Math.max(poolMinCount, Math.floor(limit * poolMinRatio))
+  );
+  const explorationTarget = Math.min(baseExplorationTarget, Math.max(0, limit - poolMinTarget));
   const poolTarget = Math.max(0, limit - explorationTarget);
 
   const selected: Array<NamePreselectResult<TPayload>["selected"][number]> = [];

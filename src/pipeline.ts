@@ -150,6 +150,7 @@ function buildReport(
     "repeated_syllable",
     "blacklist",
     "invalid_chars",
+    "position_rule",
     "obvious_weird"
   ];
   lines.push(
@@ -349,7 +350,12 @@ function generatePoolForGender(
   diversity: ReturnType<typeof diversifyCandidates>["stats"];
 } {
   const generated = generateCandidatesForGender(gender, context.loaded, context.stats);
-  const filtered = filterCandidates(generated, context.stats.profiles[gender], context.loaded.allTwoSyllableSet);
+  const filtered = filterCandidates(
+    generated,
+    context.stats.profiles[gender],
+    context.loaded.allTwoSyllableSet,
+    gender,
+  );
   const scored = scoreCandidates(filtered.kept, gender, context.loaded, context.stats);
   const diversified = diversifyCandidates(scored, {
     targetCount: options.targetCount,

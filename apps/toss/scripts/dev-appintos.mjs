@@ -6,7 +6,6 @@ const require = createRequire(import.meta.url);
 const nextCliPath = require.resolve("next/dist/bin/next");
 
 export const DEFAULT_PORT = 3000;
-export const DEFAULT_NEXT_DIST_DIR = ".next-granite";
 
 function toPort(value, fallback = DEFAULT_PORT) {
   const parsed = Number(value);
@@ -28,10 +27,7 @@ export function buildNextDevExecution(argv = [], env = process.env) {
   return {
     port,
     args: ["dev", "-p", String(port)],
-    env: {
-      ...env,
-      NEXT_DIST_DIR: DEFAULT_NEXT_DIST_DIR,
-    },
+    env: { ...env },
   };
 }
 

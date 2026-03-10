@@ -54,6 +54,26 @@ function testFeedbackButtonsUseSplitLayoutWithEmoji(): void {
     false,
     "토스 결과 화면에서 노란 싫어요 이모지는 제거되어야 합니다.",
   );
+  assert.equal(
+    source.includes('className="share-row"') && source.includes("공유하기"),
+    true,
+    "토스 결과 카드 액션 하단에는 공유하기 단독 행(share-row)이 있어야 합니다.",
+  );
+  assert.equal(
+    source.includes("공유 준비 중..."),
+    true,
+    "토스 결과 카드 공유 버튼은 처리 중 상태 텍스트(공유 준비 중...)를 제공해야 합니다.",
+  );
+  assert.equal(
+    source.includes("shareFreeResultCard"),
+    true,
+    "토스 결과 화면은 무료 카드 공유 핸들러(shareFreeResultCard)를 호출해야 합니다.",
+  );
+  assert.equal(
+    source.includes("여기 밑에 좋아요를 누르면 찜한 이름 목록에 저장됩니다."),
+    true,
+    "토스 결과 화면 상단에는 좋아요 저장 안내 문구가 노출되어야 합니다.",
+  );
 }
 
 function testPremiumTeaserUsesTossStyledClasses(): void {
@@ -82,6 +102,18 @@ function testPremiumTeaserUsesTossStyledClasses(): void {
     source.includes('className="premium-teaser"'),
     false,
     "토스 결과 화면에서 레거시 premium-teaser 클래스는 사용하지 않아야 합니다.",
+  );
+  assert.equal(
+    source.includes("추천 이름 수를 20개로 확대"),
+    false,
+    "무료 결과 유료 안내에는 더 이상 20개 확대 문구가 남아있으면 안 됩니다.",
+  );
+  assert.equal(
+    source.includes("사주 기반 상위 5개 이름 추천") &&
+      source.includes("후보별 상세 리포트(연령대 5구간)") &&
+      source.includes("부족/과중 오행 중심 해설"),
+    true,
+    "무료 결과 유료 안내는 현재 오픈 범위 기준 3개 포인트만 노출해야 합니다.",
   );
 }
 

@@ -3,7 +3,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, PrimaryButton, Screen, SecondaryButton } from "@/components/ui";
+import { FreeResultShareCard } from "@/components/share/FreeResultShareCard";
 import {
+  addNameBlockSyllableRule,
   addNameToBlacklist,
   fetchFreeRecommendations,
   fetchSurnameHanjaOptions,
@@ -11,13 +13,16 @@ import {
   submitNameFeedback,
 } from "@/lib/api";
 import { syncFeedbackStatus, syncFeedbackVote } from "@/lib/feedbackState";
-import { isLocalAdminToolsEnabled } from "@/lib/localAdminVisibility";
+import { buildLikedNameEntryFromFree } from "@/lib/likedNameEntry";
+import { shareFreeResultCard } from "@/lib/share/shareResultCardImage";
+import { isLocalAdminToolsEnabled } from "@namefit/engine/lib/localAdminVisibility";
 import {
   buildQuickExploreSeed,
   buildQuickSurnameCandidates,
   isQuickComboEnabled,
   pickPreferredSurnameHanja,
 } from "@/lib/quickCombo";
+import { ToggleLikedError, useLikedNamesStore } from "@/store/useLikedNamesStore";
 import { genderOptions, useRecommendStore } from "@/store/useRecommendStore";
 import type {
   FreeRecommendInput,
@@ -27,7 +32,7 @@ import type {
 
 function displayScore(score: unknown): string {
   if (typeof score === "number" && Number.isFinite(score)) {
-    return `${Math.round(score)}%`;
+    return `${Math.round(score)}점`;
   }
   return "--";
 }
@@ -41,6 +46,13 @@ function buildNameKey(
   item: Pick<FreeRecommendResultItem, "nameHangul" | "hanjaPair">,
 ): string {
   return `${item.nameHangul}:${item.hanjaPair[0]}${item.hanjaPair[1]}`;
+}
+
+function formatDisplayName(surnameHangul: string, nameHangul: string): string {
+  const normalizedSurnameHangul = surnameHangul.trim();
+  return normalizedSurnameHangul.length > 0
+    ? `${normalizedSurnameHangul}${nameHangul}`
+    : nameHangul;
 }
 
 function splitReasonLabel(reason: string): { label: string; body: string } {
@@ -101,6 +113,11 @@ export default function ResultPage(): JSX.Element {
   const setInput = useRecommendStore((state) => state.setInput);
   const setResults = useRecommendStore((state) => state.setResults);
   const reset = useRecommendStore((state) => state.reset);
+  const likedNames = useLikedNamesStore((state) => state.likedNames);
+  const hydrateLikedNames = useLikedNamesStore((state) => state.hydrate);
+  const toggleLiked = useLikedNamesStore((state) => state.toggleLiked);
+  const hasDbLikeSent = useLikedNamesStore((state) => state.hasDbLikeSent);
+  const markDbLikeSent = useLikedNamesStore((state) => state.markDbLikeSent);
   const [feedbackStatus, setFeedbackStatus] = useState<
     Record<string, "idle" | "pending" | "done">
   >({});
@@ -120,7 +137,14 @@ export default function ResultPage(): JSX.Element {
   const [nameActionStatus, setNameActionStatus] = useState<
     Record<string, "idle" | "pending" | "done" | "error">
   >({});
+  const [syllableRuleActionStatus, setSyllableRuleActionStatus] = useState<
+    Record<string, "idle" | "pending" | "done" | "error">
+  >({});
+  const [likedToast, setLikedToast] = useState<string | null>(null);
+  const [likePendingIds, setLikePendingIds] = useState<Record<string, boolean>>({});
+  const [sharingCardId, setSharingCardId] = useState<string | null>(null);
   const quickExploreCounterRef = useRef(0);
+  const shareCardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const hasInput =
     input.surnameHangul.trim().length > 0 &&
@@ -128,7 +152,7 @@ export default function ResultPage(): JSX.Element {
 
   useEffect(() => {
     if (!hasInput) {
-      router.replace("/");
+      router.replace("/free");
     }
   }, [hasInput, router]);
 
@@ -137,17 +161,38 @@ export default function ResultPage(): JSX.Element {
     () => top5.map((item) => buildNameKey(item)),
     [top5],
   );
+  const top5KeySignature = useMemo(() => top5Keys.join("|"), [top5Keys]);
   const quickSurnames = useMemo(
     () => buildQuickSurnameCandidates(input.surnameHangul),
     [input.surnameHangul],
+  );
+  const likedIdSet = useMemo(
+    () => new Set(likedNames.map((entry) => entry.id)),
+    [likedNames],
   );
   const isQuickLoading = quickLoadingKey !== null;
   const quickComboEnabled = isQuickComboEnabled();
 
   useEffect(() => {
+    hydrateLikedNames();
+  }, [hydrateLikedNames]);
+
+  useEffect(() => {
     setFeedbackStatus((prev) => syncFeedbackStatus(prev, top5Keys));
     setFeedbackVote((prev) => syncFeedbackVote(prev, top5Keys));
-  }, [top5Keys]);
+  }, [top5KeySignature, top5Keys]);
+
+  useEffect(() => {
+    if (!likedToast) {
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      setLikedToast(null);
+    }, 2200);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [likedToast]);
 
   useEffect(() => {
     setQuickGender(input.gender);
@@ -185,9 +230,74 @@ export default function ResultPage(): JSX.Element {
     return <></>;
   }
 
-  const handleFeedbackClick = async (
+  const handleLikeToggle = async (
     item: FreeRecommendResultItem,
-    vote: "like" | "dislike",
+  ): Promise<void> => {
+    const entry = buildLikedNameEntryFromFree({
+      surnameHangul: input.surnameHangul,
+      surnameHanja: input.surnameHanja,
+      gender: input.gender,
+      item,
+    });
+    const likedId = entry.id;
+    if (likePendingIds[likedId]) {
+      return;
+    }
+
+    try {
+      const toggleResult = toggleLiked(entry);
+      if (toggleResult === "removed") {
+        setLikedToast("내가 찜한 이름에서 제거됐어요");
+        return;
+      }
+      setLikedToast("내가 찜한 이름에 저장됐어요");
+    } catch (error) {
+      if (error instanceof ToggleLikedError && error.code === "max_limit_reached") {
+        setLikedToast("찜한 이름은 최대 10개까지 저장할 수 있어요.");
+        return;
+      }
+      console.error("[result] liked toggle failed", error);
+      setLikedToast("저장 공간 문제로 찜을 저장하지 못했어요.");
+      return;
+    }
+
+    if (hasDbLikeSent(likedId)) {
+      return;
+    }
+
+    setLikePendingIds((prev) => ({ ...prev, [likedId]: true }));
+    try {
+      await submitNameFeedback({
+        surnameHangul: input.surnameHangul,
+        surnameHanja: input.surnameHanja,
+        nameHangul: item.nameHangul,
+        hanjaPair: item.hanjaPair,
+        vote: "like",
+      });
+      try {
+        markDbLikeSent(likedId);
+      } catch (markError) {
+        console.error("[result] mark db-like flag failed", markError);
+      }
+    } catch (error) {
+      console.error("[result] feedback submit failed", error);
+      try {
+        toggleLiked(entry);
+      } catch (rollbackError) {
+        console.error("[result] liked rollback failed", rollbackError);
+      }
+      setLikedToast("저장에 실패했어요. 다시 시도해 주세요.");
+    } finally {
+      setLikePendingIds((prev) => {
+        const next = { ...prev };
+        delete next[likedId];
+        return next;
+      });
+    }
+  };
+
+  const handleDislikeClick = async (
+    item: FreeRecommendResultItem,
   ): Promise<void> => {
     const key = buildNameKey(item);
     if (feedbackStatus[key] === "pending" || feedbackStatus[key] === "done") {
@@ -195,20 +305,49 @@ export default function ResultPage(): JSX.Element {
     }
 
     setFeedbackStatus((prev) => ({ ...prev, [key]: "pending" }));
-    setFeedbackVote((prev) => ({ ...prev, [key]: vote }));
+    setFeedbackVote((prev) => ({ ...prev, [key]: "dislike" }));
     try {
       await submitNameFeedback({
         surnameHangul: input.surnameHangul,
         surnameHanja: input.surnameHanja,
         nameHangul: item.nameHangul,
         hanjaPair: item.hanjaPair,
-        vote,
+        vote: "dislike",
       });
       setFeedbackStatus((prev) => ({ ...prev, [key]: "done" }));
     } catch (error) {
       console.error("[result] feedback submit failed", error);
       setFeedbackStatus((prev) => ({ ...prev, [key]: "idle" }));
       setFeedbackVote((prev) => ({ ...prev, [key]: undefined }));
+    }
+  };
+
+  const handleShareCard = async (
+    itemKey: string,
+    displayName: string,
+  ): Promise<void> => {
+    if (sharingCardId) {
+      return;
+    }
+    const shareNode = shareCardRefs.current[itemKey];
+    if (!shareNode) {
+      setLikedToast("공유 카드를 준비하지 못했어요.");
+      return;
+    }
+
+    setSharingCardId(itemKey);
+    try {
+      const shareMode = await shareFreeResultCard(shareNode, displayName);
+      if (shareMode === "download") {
+        setLikedToast("공유 기능이 제한돼 이미지를 파일로 저장했어요.");
+      } else if (shareMode === "preview") {
+        setLikedToast("공유 기능이 제한돼 이미지를 새 탭에서 열었어요.");
+      }
+    } catch (error) {
+      console.error("[result] share failed", error);
+      setLikedToast("공유에 실패했어요. 다시 시도해 주세요.");
+    } finally {
+      setSharingCardId(null);
     }
   };
 
@@ -296,11 +435,34 @@ export default function ResultPage(): JSX.Element {
     }
   };
 
+  const handleAddSyllableRule = async (
+    item: Pick<FreeRecommendResultItem, "nameHangul" | "hanjaPair">,
+  ): Promise<void> => {
+    const key = buildNameKey(item);
+    if (
+      syllableRuleActionStatus[key] === "pending" ||
+      syllableRuleActionStatus[key] === "done"
+    ) {
+      return;
+    }
+    setSyllableRuleActionStatus((prev) => ({ ...prev, [key]: "pending" }));
+    try {
+      await addNameBlockSyllableRule(item.nameHangul);
+      setSyllableRuleActionStatus((prev) => ({ ...prev, [key]: "done" }));
+    } catch (error) {
+      console.error("[result] syllable-rule update failed", error);
+      setSyllableRuleActionStatus((prev) => ({ ...prev, [key]: "error" }));
+    }
+  };
+
   return (
     <Screen
       title="추천 이름 TOP 5"
       description="입력하신 정보를 바탕으로 선별했습니다"
     >
+      <p className="nf-description">
+        여기 밑에 좋아요를 누르면 찜한 이름 목록에 저장됩니다.
+      </p>
       {top5.length === 0 ? (
         <div className="nf-result-actions">
           <p className="nf-description">
@@ -379,6 +541,18 @@ export default function ResultPage(): JSX.Element {
           <section className="nf-result-list">
             {top5.map((item, index) => {
               const itemKey = buildNameKey(item);
+              const likedEntry = buildLikedNameEntryFromFree({
+                surnameHangul: input.surnameHangul,
+                surnameHanja: input.surnameHanja,
+                gender: input.gender,
+                item,
+              });
+              const likedId = likedEntry.id;
+              const isLiked = likedIdSet.has(likedId);
+              const displayName = formatDisplayName(
+                input.surnameHangul,
+                item.nameHangul,
+              );
               const pronunciation = `${input.surnameHangul} ${item.readingPair[0]} ${item.readingPair[1]}`;
               const hanjaDetails = [
                 {
@@ -398,8 +572,11 @@ export default function ResultPage(): JSX.Element {
                   key={`${item.nameHangul}-${item.hanjaPair.join("")}-${index}`}
                 >
                   <div className="nf-result-header-row">
+                    {index === 0 ? (
+                      <span className="nf-top-rank-badge">가장 잘 맞는 이름</span>
+                    ) : null}
                     <span className="nf-score-chip">
-                      추천 적합도 {displayScore(item.score)}
+                      추천 점수 {displayScore(item.score)}
                     </span>
                   </div>
                   <p className="nf-pron-emphasis">{pronunciation}</p>
@@ -449,13 +626,10 @@ export default function ResultPage(): JSX.Element {
                   <div className="nf-feedback-row is-split">
                     <button
                       type="button"
-                      className={`nf-feedback-btn is-like${feedbackVote[itemKey] === "like" ? " is-selected" : ""}`}
-                      disabled={
-                        feedbackStatus[itemKey] === "pending" ||
-                        feedbackStatus[itemKey] === "done"
-                      }
+                      className={`nf-feedback-btn is-like${isLiked ? " is-selected" : ""}`}
+                      disabled={Boolean(likePendingIds[likedId])}
                       onClick={() => {
-                        void handleFeedbackClick(item, "like");
+                        void handleLikeToggle(item);
                       }}
                     >
                       <span className="nf-feedback-content">
@@ -471,13 +645,26 @@ export default function ResultPage(): JSX.Element {
                         feedbackStatus[itemKey] === "done"
                       }
                       onClick={() => {
-                        void handleFeedbackClick(item, "dislike");
+                        void handleDislikeClick(item);
                       }}
                     >
                       <span className="nf-feedback-content">
                         <ThumbDownIcon />
                         <span>싫어요</span>
                       </span>
+                    </button>
+                  </div>
+                  <div className="nf-share-row">
+                    <button
+                      type="button"
+                      className="nf-feedback-btn is-share"
+                      disabled={sharingCardId !== null}
+                      aria-busy={sharingCardId === itemKey}
+                      onClick={() => {
+                        void handleShareCard(itemKey, displayName);
+                      }}
+                    >
+                      {sharingCardId === itemKey ? "공유 준비 중..." : "공유하기"}
                     </button>
                   </div>
                   {localAdminEnabled ? (
@@ -492,20 +679,49 @@ export default function ResultPage(): JSX.Element {
                       >
                         이름 블랙리스트 처리
                       </button>
+                      <button
+                        type="button"
+                        className={`nf-local-admin-btn${
+                          syllableRuleActionStatus[itemKey] === "done"
+                            ? " is-done"
+                            : syllableRuleActionStatus[itemKey] === "error"
+                              ? " is-error"
+                              : ""
+                        }`}
+                        disabled={syllableRuleActionStatus[itemKey] === "pending"}
+                        onClick={() => {
+                          void handleAddSyllableRule(item);
+                        }}
+                      >
+                        음절패턴 차단
+                      </button>
                     </div>
                   ) : null}
+                  <div
+                    className="nf-share-render-host"
+                    aria-hidden="true"
+                    ref={(node) => {
+                      shareCardRefs.current[itemKey] = node;
+                    }}
+                  >
+                    <FreeResultShareCard
+                      displayName={displayName}
+                      hanjaPair={item.hanjaPair}
+                      readingPair={item.readingPair}
+                      meaningPair={item.meaningKwPair}
+                    />
+                  </div>
                 </Card>
               );
             })}
           </section>
 
           <section className="nf-premium-teaser">
-            <h3 className="nf-premium-title">유료 모드도 곧 오픈해요 ✨</h3>
+            <h3 className="nf-premium-title">프리미엄 리포트 곧 오픈</h3>
             <ul className="nf-premium-list">
-              <li>추천 이름 수를 20개로 확대</li>
-              <li>사주를 반영한 맞춤 결과 제공</li>
-              <li>이름 의미 심층 분석 리포트 제공</li>
-              <li>동일 이름의 다양한 한자 조합 제공</li>
+              <li>사주 기반 상위 5개 이름 추천</li>
+              <li>후보별 상세 리포트(연령대 5구간)</li>
+              <li>부족/과중 오행 중심 해설</li>
             </ul>
           </section>
         </>
@@ -514,12 +730,20 @@ export default function ResultPage(): JSX.Element {
       <div className="nf-result-actions">
         <SecondaryButton
           onClick={() => {
+            router.push("/liked?mode=free");
+          }}
+        >
+          찜한 이름 보기
+        </SecondaryButton>
+        <SecondaryButton
+          onClick={() => {
             reset();
-            router.replace("/");
+            router.replace("/free");
           }}
         >
           다시 입력
         </SecondaryButton>
+        {likedToast ? <p className="nf-liked-toast">{likedToast}</p> : null}
       </div>
     </Screen>
   );

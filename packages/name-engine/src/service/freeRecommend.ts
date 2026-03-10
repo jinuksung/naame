@@ -393,7 +393,11 @@ export async function recommendFreeNames(payload: unknown): Promise<FreeRecommen
 
   let resolvedInput: FreeRecommendInput;
   try {
-    const resolvedSurname = await resolveSurnameHanjaSelection(input.surnameHangul, input.surnameHanja);
+    const resolvedSurname = await resolveSurnameHanjaSelection(
+      input.surnameHangul,
+      input.surnameHanja,
+      { versionSignature: currentVersionSignature }
+    );
     if (!resolvedSurname.selectedHanja) {
       return { ok: false, status: 400, error: "Unsupported surname reading" };
     }

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import {
   isLocalAdminToolsEnabled,
   isLoopbackHostname,
-} from "./localAdminVisibility";
+} from "@namefit/engine";
 
 function testLoopbackHostnameDetection(): void {
   assert.equal(isLoopbackHostname("localhost"), true);

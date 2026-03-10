@@ -1,6 +1,6 @@
 import type { DiversityStats, OutputItem, ScoredCandidate, Tier } from "../types";
 
-const TIER_PRIORITY: Record<Tier, number> = { B: 3, C: 2, A: 1 };
+const TIER_PRIORITY: Record<Tier, number> = { B: 3, A: 2, C: 1 };
 
 export interface DiversifyOptions {
   targetCount: number;

@@ -6,4 +6,7 @@ export * from "./engine/recommend";
 export * from "./engine/scoring/surnameInfluence";
 export * from "./mock";
 export * from "./service/freeRecommend";
+export * from "./service/premiumRecommend";
 export * from "./lib/korean/normalizeHangulReading";
+export * from "./lib/localAdminVisibility";
+export * from "./core/premium";

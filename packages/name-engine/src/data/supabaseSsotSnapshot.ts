@@ -13,6 +13,7 @@ interface SsotDatasetSpec {
   table: string;
   path: string;
   format: SsotFormat;
+  allowEmpty?: boolean;
 }
 
 interface JsonColumnKey {
@@ -47,6 +48,20 @@ const DEFAULT_SSOT_DATASET_SPECS: SsotDatasetSpec[] = [
     path: "blacklist_initials.jsonl",
     format: "jsonl",
   },
+  {
+    dataset: "name_block_syllable_rules",
+    table: "ssot_name_block_syllable_rules",
+    path: "name_block_syllable_rules.jsonl",
+    format: "jsonl",
+    allowEmpty: true,
+  },
+  {
+    dataset: "name_pool_syllable_position_rules",
+    table: "ssot_name_pool_syllable_position_rules",
+    path: "name_pool_syllable_position_rules.jsonl",
+    format: "jsonl",
+    allowEmpty: true,
+  },
   { dataset: "name_pool_M", table: "ssot_name_pool_m", path: "name_pool_M.json", format: "name_pool_json" },
   { dataset: "name_pool_F", table: "ssot_name_pool_f", path: "name_pool_F.json", format: "name_pool_json" },
   {
@@ -63,6 +78,9 @@ const DEFAULT_RUNTIME_SSOT_FILE_PATHS = [
   "surname_map.jsonl",
   "hanja_tags.jsonl",
   "blacklist_words.jsonl",
+  "blacklist_initials.jsonl",
+  "name_block_syllable_rules.jsonl",
+  "name_pool_syllable_position_rules.jsonl",
   "name_pool_M.json",
   "name_pool_F.json",
 ] as const;
@@ -90,6 +108,8 @@ const JSONL_KEY_MAPS: Record<string, JsonColumnKey[]> = {
     { jsonKey: "hanja", column: "hanja" },
     { jsonKey: "isDefault", column: "is_default" },
     { jsonKey: "popularityRank", column: "popularity_rank" },
+    { jsonKey: "elementPronunciation", column: "element_pronunciation" },
+    { jsonKey: "elementResource", column: "element_resource" },
   ],
   hanja_tags: [
     { jsonKey: "char", column: "char" },
@@ -101,6 +121,24 @@ const JSONL_KEY_MAPS: Record<string, JsonColumnKey[]> = {
   ],
   blacklist_words: [{ jsonKey: "pattern", column: "pattern" }],
   blacklist_initials: [{ jsonKey: "pattern", column: "pattern" }],
+  name_block_syllable_rules: [
+    { jsonKey: "enabled", column: "enabled" },
+    { jsonKey: "s1_jung", column: "s1_jung" },
+    { jsonKey: "s1_jong", column: "s1_jong" },
+    { jsonKey: "s1_has_jong", column: "s1_has_jong" },
+    { jsonKey: "s2_jung", column: "s2_jung" },
+    { jsonKey: "s2_jong", column: "s2_jong" },
+    { jsonKey: "s2_has_jong", column: "s2_has_jong" },
+    { jsonKey: "note", column: "note" },
+  ],
+  name_pool_syllable_position_rules: [
+    { jsonKey: "enabled", column: "enabled" },
+    { jsonKey: "syllable", column: "syllable" },
+    { jsonKey: "gender", column: "gender" },
+    { jsonKey: "blockedPosition", column: "blocked_position" },
+    { jsonKey: "tierScope", column: "tier_scope" },
+    { jsonKey: "note", column: "note" },
+  ],
   hanname_master_conflicts: [
     { jsonKey: "char", column: "char" },
     { jsonKey: "existing", column: "existing" },
@@ -138,6 +176,8 @@ const ENV_PATH_MAP: Record<string, string> = {
   "hanja_tags.jsonl": "HANJA_TAGS_PATH",
   "blacklist_words.jsonl": "BLACKLIST_WORDS_PATH",
   "blacklist_initials.jsonl": "BLACKLIST_INITIALS_PATH",
+  "name_block_syllable_rules.jsonl": "NAME_BLOCK_SYLLABLE_RULES_PATH",
+  "name_pool_syllable_position_rules.jsonl": "NAME_POOL_SYLLABLE_POSITION_RULES_PATH",
   "name_pool_M.json": "NAME_POOL_M_PATH",
   "name_pool_F.json": "NAME_POOL_F_PATH",
 };
@@ -183,7 +223,7 @@ function defaultCacheDirRaw(env: NodeJS.ProcessEnv = process.env): string {
 }
 
 function getVersionCheckIntervalMs(): number {
-  return parsePositiveInteger(process.env.SUPABASE_SSOT_VERSION_CHECK_INTERVAL_MS, 3000);
+  return parsePositiveInteger(process.env.SUPABASE_SSOT_VERSION_CHECK_INTERVAL_MS, 60000);
 }
 
 function isVersionCheckEnabled(): boolean {
@@ -490,7 +530,7 @@ async function fetchSupabaseContentByPath(
 
   for (const spec of requiredSpecs) {
     const rows = await fetchTableRows(config, spec);
-    if (rows.length === 0) {
+    if (rows.length === 0 && !spec.allowEmpty) {
       throw new Error(`[supabase-ssot] missing table rows: ${spec.table}`);
     }
 
@@ -609,9 +649,8 @@ async function ensureSupabaseSsotSnapshotInternal(
   }
 
   const strict = parseBoolean(process.env.SUPABASE_SSOT_STRICT, false);
-  await mkdir(cacheDir, { recursive: true });
-
   try {
+    await mkdir(cacheDir, { recursive: true });
     const requiredSpecs = resolveRequiredSpecs(requiredPaths);
     const { contentByPath, versionSignature } = await fetchSupabaseContentByPath(requiredSpecs);
     const writtenFiles = await writeContentToCache(cacheDir, requiredPaths, contentByPath);

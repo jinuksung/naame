@@ -64,6 +64,8 @@ function toTableName(path: string): string {
     "hanja_tags.jsonl": "ssot_hanja_tags",
     "blacklist_words.jsonl": "ssot_blacklist_words",
     "blacklist_initials.jsonl": "ssot_blacklist_initials",
+    "name_block_syllable_rules.jsonl": "ssot_name_block_syllable_rules",
+    "name_pool_syllable_position_rules.jsonl": "ssot_name_pool_syllable_position_rules",
     "name_pool_M.json": "ssot_name_pool_m",
     "name_pool_F.json": "ssot_name_pool_f",
     "hanname_master_conflicts.jsonl": "ssot_hanname_master_conflicts",
@@ -98,6 +100,8 @@ function buildRowsForPath(path: string): SupabaseTableRow[] {
         hanja: "金",
         is_default: true,
         popularity_rank: 1,
+        element_pronunciation: "METAL",
+        element_resource: "METAL",
       },
     ];
   }
@@ -129,6 +133,32 @@ function buildRowsForPath(path: string): SupabaseTableRow[] {
       {
         row_index: 1,
         pattern: "ㅂㅅ",
+      },
+    ];
+  }
+
+  if (path === "name_block_syllable_rules.jsonl") {
+    return [
+      {
+        row_index: 1,
+        enabled: true,
+        s1_has_jong: true,
+        s2_has_jong: false,
+        note: "fixture",
+      },
+    ];
+  }
+
+  if (path === "name_pool_syllable_position_rules.jsonl") {
+    return [
+      {
+        row_index: 1,
+        enabled: true,
+        syllable: "린",
+        gender: "ALL",
+        blocked_position: "START",
+        tier_scope: "NON_A",
+        note: "fixture",
       },
     ];
   }
@@ -265,6 +295,8 @@ async function testFetchWritesSnapshotAndSetsEnvPaths(): Promise<void> {
         HANJA_TAGS_PATH: undefined,
         BLACKLIST_WORDS_PATH: undefined,
         BLACKLIST_INITIALS_PATH: undefined,
+        NAME_BLOCK_SYLLABLE_RULES_PATH: undefined,
+        NAME_POOL_SYLLABLE_POSITION_RULES_PATH: undefined,
         NAME_POOL_M_PATH: undefined,
         NAME_POOL_F_PATH: undefined,
       },
@@ -287,6 +319,14 @@ async function testFetchWritesSnapshotAndSetsEnvPaths(): Promise<void> {
         assert.equal(process.env.HANJA_TAGS_PATH, resolve(tempDir, "hanja_tags.jsonl"));
         assert.equal(process.env.BLACKLIST_WORDS_PATH, resolve(tempDir, "blacklist_words.jsonl"));
         assert.equal(process.env.BLACKLIST_INITIALS_PATH, resolve(tempDir, "blacklist_initials.jsonl"));
+        assert.equal(
+          process.env.NAME_BLOCK_SYLLABLE_RULES_PATH,
+          resolve(tempDir, "name_block_syllable_rules.jsonl"),
+        );
+        assert.equal(
+          process.env.NAME_POOL_SYLLABLE_POSITION_RULES_PATH,
+          resolve(tempDir, "name_pool_syllable_position_rules.jsonl"),
+        );
         assert.equal(process.env.NAME_POOL_M_PATH, resolve(tempDir, "name_pool_M.json"));
         assert.equal(process.env.NAME_POOL_F_PATH, resolve(tempDir, "name_pool_F.json"));
       },
@@ -484,6 +524,8 @@ async function testUsesTmpCacheDirByDefaultOnVercel(): Promise<void> {
         HANJA_TAGS_PATH: undefined,
         BLACKLIST_WORDS_PATH: undefined,
         BLACKLIST_INITIALS_PATH: undefined,
+        NAME_BLOCK_SYLLABLE_RULES_PATH: undefined,
+        NAME_POOL_SYLLABLE_POSITION_RULES_PATH: undefined,
         NAME_POOL_M_PATH: undefined,
         NAME_POOL_F_PATH: undefined,
       },

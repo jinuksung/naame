@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
-const APP_PAGE_PATH = path.resolve(__dirname, "page.tsx");
+const APP_PAGE_PATH = path.resolve(__dirname, "free", "page.tsx");
 const LOADING_PAGE_PATH = path.resolve(__dirname, "loading", "page.tsx");
 const GLOBAL_STYLE_PATH = path.resolve(__dirname, "globals.css");
 const STORE_PATH = path.resolve(__dirname, "..", "store", "useRecommendStore.ts");

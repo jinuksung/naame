@@ -2,7 +2,11 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { getDefaultSupabaseSsotFilePaths, resetSupabaseSsotSnapshotStateForTests } from "../data/supabaseSsotSnapshot";
+import {
+  getDefaultRuntimeSupabaseSsotFilePaths,
+  getDefaultSupabaseSsotFilePaths,
+  resetSupabaseSsotSnapshotStateForTests
+} from "../data/supabaseSsotSnapshot";
 import { recommendFreeNames } from "./freeRecommend";
 
 type FetchLike = typeof fetch;
@@ -34,6 +38,8 @@ function toTableName(path: string): string {
     "hanja_tags.jsonl": "ssot_hanja_tags",
     "blacklist_words.jsonl": "ssot_blacklist_words",
     "blacklist_initials.jsonl": "ssot_blacklist_initials",
+    "name_block_syllable_rules.jsonl": "ssot_name_block_syllable_rules",
+    "name_pool_syllable_position_rules.jsonl": "ssot_name_pool_syllable_position_rules",
     "name_pool_M.json": "ssot_name_pool_m",
     "name_pool_F.json": "ssot_name_pool_f",
     "hanname_master_conflicts.jsonl": "ssot_hanname_master_conflicts",
@@ -117,6 +123,30 @@ function buildRowsForPath(path: string): Array<Record<string, unknown>> {
     ];
   }
 
+  if (path === "name_block_syllable_rules.jsonl") {
+    return [
+      {
+        row_index: 1,
+        enabled: true,
+        s1_has_jong: true,
+        s2_has_jong: false,
+      },
+    ];
+  }
+
+  if (path === "name_pool_syllable_position_rules.jsonl") {
+    return [
+      {
+        row_index: 1,
+        enabled: true,
+        syllable: "린",
+        gender: "ALL",
+        blocked_position: "START",
+        tier_scope: "NON_A",
+      },
+    ];
+  }
+
   if (path === "hanname_master_conflicts.jsonl") {
     return [
       {
@@ -186,7 +216,8 @@ async function run(): Promise<void> {
   const originalFetch = globalThis.fetch;
   const requiredPaths = getDefaultSupabaseSsotFilePaths();
   const rowsByTable = buildRowsByTable(requiredPaths);
-  const EXPECTED_RUNTIME_TABLE_FETCHES = 12;
+  // runtime SSOT snapshot fetch should cover surname_map without an additional preload fetch.
+  const EXPECTED_RUNTIME_TABLE_FETCHES = getDefaultRuntimeSupabaseSsotFilePaths().length;
   let fetchCalled = 0;
 
   globalThis.fetch = (async (input: unknown, _init?: unknown) => {
@@ -205,6 +236,8 @@ async function run(): Promise<void> {
     "HANJA_TAGS_PATH",
     "BLACKLIST_WORDS_PATH",
     "BLACKLIST_INITIALS_PATH",
+    "NAME_BLOCK_SYLLABLE_RULES_PATH",
+    "NAME_POOL_SYLLABLE_POSITION_RULES_PATH",
     "NAME_POOL_M_PATH",
     "NAME_POOL_F_PATH",
     "NAME_PRIOR_PATH",
@@ -226,6 +259,8 @@ async function run(): Promise<void> {
     delete process.env.HANJA_TAGS_PATH;
     delete process.env.BLACKLIST_WORDS_PATH;
     delete process.env.BLACKLIST_INITIALS_PATH;
+    delete process.env.NAME_BLOCK_SYLLABLE_RULES_PATH;
+    delete process.env.NAME_POOL_SYLLABLE_POSITION_RULES_PATH;
     delete process.env.NAME_POOL_M_PATH;
     delete process.env.NAME_POOL_F_PATH;
     delete process.env.NAME_PRIOR_PATH;

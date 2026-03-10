@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
-import { buildPullEndpoint } from "./pull-from-supabase";
-import type { SsotDatasetSpec, SupabaseConfig } from "./common";
+import { buildPullEndpoint, enrichSurnameRowsFromHannameRows } from "./pull-from-supabase";
+import { SSOT_DATASET_SPECS, selectColumnsForSpec } from "./common";
+import type { SsotDatasetSpec, SupabaseConfig, SsotTableRow } from "./common";
 
 function withPatchedEnv<T>(patch: Record<string, string | undefined>, run: () => T): T {
   const backup = new Map<string, string | undefined>();
@@ -71,10 +72,119 @@ function testOtherTablesNeverApplyIsInmyongFilter(): void {
   });
 }
 
+function testSurnameElementEnrichmentUsesNotInmyongRows(): void {
+  const surnameRows: SsotTableRow[] = [
+    {
+      row_index: 1,
+      surname_reading: "가",
+      hanja: "賈",
+      is_default: true,
+      popularity_rank: 1,
+    },
+  ];
+  const hannameRows: SsotTableRow[] = [
+    {
+      row_index: 1,
+      char: "賈",
+      is_inmyong: false,
+      element_pronunciation: "WOOD",
+      element_resource: "WATER",
+    },
+  ];
+
+  const result = enrichSurnameRowsFromHannameRows(surnameRows, hannameRows);
+  assert.equal(result.updated, 2);
+  assert.deepEqual(result.remainingMissingChars, []);
+  assert.equal(surnameRows[0].element_pronunciation, "WOOD");
+  assert.equal(surnameRows[0].element_resource, "WATER");
+}
+
+function testSurnameElementEnrichmentPreservesExistingElement(): void {
+  const surnameRows: SsotTableRow[] = [
+    {
+      row_index: 1,
+      surname_reading: "김",
+      hanja: "金",
+      is_default: true,
+      popularity_rank: 1,
+      element_pronunciation: "METAL",
+      element_resource: null,
+    },
+  ];
+  const hannameRows: SsotTableRow[] = [
+    {
+      row_index: 1,
+      char: "金",
+      is_inmyong: true,
+      element_pronunciation: "WATER",
+      element_resource: "METAL",
+    },
+  ];
+
+  const result = enrichSurnameRowsFromHannameRows(surnameRows, hannameRows);
+  assert.equal(result.updated, 1);
+  assert.deepEqual(result.remainingMissingChars, []);
+  assert.equal(surnameRows[0].element_pronunciation, "METAL");
+  assert.equal(surnameRows[0].element_resource, "METAL");
+}
+
+function testSurnameElementEnrichmentHandlesTwoCharSurname(): void {
+  const surnameRows: SsotTableRow[] = [
+    {
+      row_index: 1,
+      surname_reading: "남궁",
+      hanja: "南宮",
+      is_default: true,
+      popularity_rank: 1,
+    },
+  ];
+  const hannameRows: SsotTableRow[] = [
+    {
+      row_index: 1,
+      char: "南",
+      is_inmyong: true,
+      element_pronunciation: "FIRE",
+      element_resource: null,
+    },
+    {
+      row_index: 2,
+      char: "宮",
+      is_inmyong: true,
+      element_pronunciation: "EARTH",
+      element_resource: "EARTH",
+    },
+  ];
+
+  const result = enrichSurnameRowsFromHannameRows(surnameRows, hannameRows);
+  assert.equal(result.updated, 2);
+  assert.deepEqual(result.remainingMissingChars, []);
+  assert.equal(surnameRows[0].element_pronunciation, "FIRE");
+  assert.equal(surnameRows[0].element_resource, "EARTH");
+}
+
+function testNamePoolSyllablePositionRulesDatasetIsRegistered(): void {
+  const spec = SSOT_DATASET_SPECS.find(
+    (item) => item.dataset === "name_pool_syllable_position_rules",
+  );
+  assert.ok(spec, "name_pool_syllable_position_rules dataset should be registered");
+  assert.equal(spec?.table, "ssot_name_pool_syllable_position_rules");
+  assert.equal(spec?.localPath, "name_pool_syllable_position_rules.jsonl");
+
+  const select = selectColumnsForSpec(spec as SsotDatasetSpec);
+  assert.equal(
+    select,
+    "row_index,enabled,syllable,gender,blocked_position,tier_scope,note",
+  );
+}
+
 function run(): void {
   testHannameMasterPullFiltersToInmyongByDefault();
   testHannameMasterCanIncludeNotInmyongRowsViaEnv();
   testOtherTablesNeverApplyIsInmyongFilter();
+  testSurnameElementEnrichmentUsesNotInmyongRows();
+  testSurnameElementEnrichmentPreservesExistingElement();
+  testSurnameElementEnrichmentHandlesTwoCharSurname();
+  testNamePoolSyllablePositionRulesDatasetIsRegistered();
   console.log("[test:ssot-pull] all tests passed");
 }
 

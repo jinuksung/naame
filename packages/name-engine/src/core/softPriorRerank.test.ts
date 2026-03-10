@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { attachPoolPrior, createPoolIndex } from "./poolAttach";
-import { rerankWithSoftPrior } from "./rerank";
+import { DEFAULT_SOFT_PRIOR_WEIGHTS, rerankWithSoftPrior } from "./rerank";
 import { diversifyByStartEnd } from "./diversify";
 
 function createSequenceRandom(sequence: number[]): () => number {
@@ -28,7 +28,10 @@ function testFinalScoreFormula(): void {
     poolIndex
   );
   assert.equal(result.length, 1);
-  const expected = 0.7 * 1.0 + 0.25 * 0.75 + 0.05 * 0.03;
+  const expected =
+    DEFAULT_SOFT_PRIOR_WEIGHTS.wE * 1.0 +
+    DEFAULT_SOFT_PRIOR_WEIGHTS.wP * 0.75 +
+    DEFAULT_SOFT_PRIOR_WEIGHTS.wT * 0.03;
   assert.equal(result[0].breakdown.finalScore01, Number(expected.toFixed(6)));
 }
 
@@ -58,6 +61,15 @@ function testTierPriorityAcrossPools(): void {
   assert.equal(attached.tier, "A");
 }
 
+function testTierPriorityAcrossPoolsForAllPrefersAOverC(): void {
+  const poolIndex = createPoolIndex({
+    M: [{ name: "지안", tier: "A" }],
+    F: [{ name: "지안", tier: "C" }]
+  });
+  const attached = attachPoolPrior("지안", "ANY", poolIndex);
+  assert.equal(attached.tier, "A");
+}
+
 function testNoCrossGenderPoolFallback(): void {
   const poolIndex = createPoolIndex({
     M: [],
@@ -69,6 +81,129 @@ function testNoCrossGenderPoolFallback(): void {
   assert.equal(attachedM.poolIncluded, false);
   assert.equal(attachedF.tier, "B");
   assert.equal(attachedF.poolIncluded, true);
+}
+
+function testOppositeOnlyNameGetsLowerPoolScoreThanNeutralNone(): void {
+  const poolIndex = createPoolIndex({
+    M: [],
+    F: [{ name: "나리", tier: "B" }]
+  });
+
+  const oppositeOnlyForMale = attachPoolPrior("나리", "M", poolIndex);
+  const neutralMissing = attachPoolPrior("가온", "M", poolIndex);
+
+  assert.equal(oppositeOnlyForMale.tier, "None");
+  assert.equal(oppositeOnlyForMale.poolIncluded, false);
+  assert.equal(neutralMissing.tier, "None");
+  assert.equal(neutralMissing.poolIncluded, false);
+  assert.ok(
+    oppositeOnlyForMale.poolScore01 < neutralMissing.poolScore01,
+    "opposite-only names should be penalized below neutral missing names"
+  );
+}
+
+function testOverlapSameTierCanFlipByGenderFitMetadata(): void {
+  const poolIndex = createPoolIndex({
+    M: [
+      { name: "가온", tier: "A", genderFitScore: -2 },
+      { name: "나리", tier: "A", genderFitScore: 2 }
+    ],
+    F: [
+      { name: "가온", tier: "A", genderFitScore: 2 },
+      { name: "나리", tier: "A", genderFitScore: -2 }
+    ]
+  });
+
+  const candidates = [
+    { name: "가온", engineScore01: 0.9 },
+    { name: "나리", engineScore01: 0.9 }
+  ];
+
+  const maleOrder = rerankWithSoftPrior(candidates, "M", poolIndex, undefined, () => 0.5).map(
+    (row) => row.name
+  );
+  const femaleOrder = rerankWithSoftPrior(candidates, "F", poolIndex, undefined, () => 0.5).map(
+    (row) => row.name
+  );
+
+  assert.deepEqual(maleOrder, ["나리", "가온"]);
+  assert.deepEqual(femaleOrder, ["가온", "나리"]);
+}
+
+function testAnyModePrefersOverlapNameOverSinglePoolNameAtSameTier(): void {
+  const poolIndex = createPoolIndex({
+    M: [
+      { name: "가온", tier: "A" },
+      { name: "나리", tier: "A" }
+    ],
+    F: [{ name: "가온", tier: "A" }]
+  });
+
+  const overlap = attachPoolPrior("가온", "ANY", poolIndex);
+  const singlePool = attachPoolPrior("나리", "ANY", poolIndex);
+  assert.equal(overlap.tier, "A");
+  assert.equal(singlePool.tier, "A");
+  assert.ok(
+    overlap.poolScore01 > singlePool.poolScore01,
+    "UNISEX(ANY) should boost overlap names when best tier is the same"
+  );
+
+  const ranked = rerankWithSoftPrior(
+    [
+      { name: "가온", engineScore01: 0.9 },
+      { name: "나리", engineScore01: 0.9 }
+    ],
+    "ANY",
+    poolIndex,
+    undefined,
+    () => 0.5
+  ).map((row) => row.name);
+
+  assert.deepEqual(ranked, ["가온", "나리"]);
+}
+
+function testPoolPriorScoreOrderingPrefersAOverCAndNone(): void {
+  const poolIndex = createPoolIndex({
+    M: [
+      { name: "비이", tier: "B" },
+      { name: "에이", tier: "A" },
+      { name: "씨이", tier: "C" }
+    ],
+    F: []
+  });
+
+  const b = attachPoolPrior("비이", "M", poolIndex);
+  const a = attachPoolPrior("에이", "M", poolIndex);
+  const c = attachPoolPrior("씨이", "M", poolIndex);
+  const n = attachPoolPrior("없음", "M", poolIndex);
+
+  assert.ok(b.poolScore01 > a.poolScore01, "B should remain strongest pool prior");
+  assert.ok(a.poolScore01 > c.poolScore01, "A should outrank C");
+  assert.ok(c.poolScore01 > n.poolScore01, "C should outrank None");
+}
+
+function testPoolWeightBoostsPoolAppearanceAgainstEngineGap(): void {
+  const poolIndex = createPoolIndex({
+    M: [{ name: "도윤", tier: "B" }],
+    F: []
+  });
+
+  const ranked = rerankWithSoftPrior(
+    [
+      { name: "도윤", engineScore01: 0.65 },
+      { name: "하준", engineScore01: 0.9 }
+    ],
+    "M",
+    poolIndex,
+    undefined,
+    () => 0.5
+  ).map((row) => row.name);
+
+  assert.deepEqual(
+    ranked,
+    ["도윤", "하준"],
+    "name pool 비중을 높인 기본 가중치에서는 pool 포함 이름이 더 자주 상위에 노출되어야 합니다."
+  );
 }
 
 function testDiversifyEndLimit(): void {
@@ -157,7 +292,13 @@ function run(): void {
   testFinalScoreFormula();
   testNonPoolCandidateNotDropped();
   testTierPriorityAcrossPools();
+  testTierPriorityAcrossPoolsForAllPrefersAOverC();
   testNoCrossGenderPoolFallback();
+  testOppositeOnlyNameGetsLowerPoolScoreThanNeutralNone();
+  testOverlapSameTierCanFlipByGenderFitMetadata();
+  testAnyModePrefersOverlapNameOverSinglePoolNameAtSameTier();
+  testPoolPriorScoreOrderingPrefersAOverCAndNone();
+  testPoolWeightBoostsPoolAppearanceAgainstEngineGap();
   testDiversifyEndLimit();
   testDiversifyNoDuplicateNames();
   testTieBreakUsesRandomOrderWhenScoresEqual();

@@ -1,4 +1,7 @@
 import assert from "node:assert/strict";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
 import { buildNamePriorIndex } from "./buildNamePrior";
 import { scoreNamePrior } from "./namePriorScore";
 import { applyFinalScoreWithPrior } from "../rank/finalScore";
@@ -70,6 +73,71 @@ function runTests(): void {
   assert.equal(bad?.dropped, true);
   assert.equal(good?.dropped, false);
   assert.ok((good?.finalScore01 ?? 0) > 0.7);
+
+  const combinedAllowNonWhitelist = applyFinalScoreWithPrior(
+    [{ nameHangul: "가지", scores: { total: 96 } }],
+    "U",
+    priorIndex,
+    { strictGate: true, allowNonWhitelist: true, priorWeight: 0.35 }
+  );
+  assert.equal(
+    combinedAllowNonWhitelist[0]?.dropped,
+    true,
+    "blacklist 이름은 allowNonWhitelist=true 여도 반드시 제외되어야 합니다.",
+  );
+
+  const emptyPriorIndex = buildNamePriorIndex({});
+  const dynamicName = "툴링";
+  const dynamicBlacklistDir = mkdtempSync(join(tmpdir(), "namefit-prior-blacklist-"));
+  const dynamicBlacklistPath = join(dynamicBlacklistDir, "blacklist_words.jsonl");
+  writeFileSync(dynamicBlacklistPath, JSON.stringify({ pattern: dynamicName }) + "\n", "utf8");
+
+  const previousBlacklistPath = process.env.BLACKLIST_WORDS_PATH;
+  const beforeDynamicUpdate = scoreNamePrior(dynamicName, "U", emptyPriorIndex);
+  process.env.BLACKLIST_WORDS_PATH = dynamicBlacklistPath;
+  const afterDynamicUpdate = scoreNamePrior(dynamicName, "U", emptyPriorIndex);
+  if (previousBlacklistPath === undefined) {
+    delete process.env.BLACKLIST_WORDS_PATH;
+  } else {
+    process.env.BLACKLIST_WORDS_PATH = previousBlacklistPath;
+  }
+
+  assert.equal(beforeDynamicUpdate.gate, "PASS");
+  assert.equal(
+    afterDynamicUpdate.gate,
+    "FAIL_BLACKLIST",
+    "BLACKLIST_WORDS_PATH가 런타임에 설정되어도 즉시 blacklist gate에 반영되어야 합니다.",
+  );
+
+  const syllableRuleName = "윤아";
+  const dynamicSyllableRuleDir = mkdtempSync(join(tmpdir(), "namefit-prior-syllable-rule-"));
+  const dynamicSyllableRulePath = join(dynamicSyllableRuleDir, "name_block_syllable_rules.jsonl");
+  writeFileSync(
+    dynamicSyllableRulePath,
+    JSON.stringify({
+      s1_has_jong: true,
+      s2_has_jong: false,
+      note: "받침 패턴만으로 차단",
+    }) + "\n",
+    "utf8",
+  );
+
+  const previousSyllableRulePath = process.env.NAME_BLOCK_SYLLABLE_RULES_PATH;
+  const beforeSyllableRuleUpdate = scoreNamePrior(syllableRuleName, "U", emptyPriorIndex);
+  process.env.NAME_BLOCK_SYLLABLE_RULES_PATH = dynamicSyllableRulePath;
+  const afterSyllableRuleUpdate = scoreNamePrior(syllableRuleName, "U", emptyPriorIndex);
+  if (previousSyllableRulePath === undefined) {
+    delete process.env.NAME_BLOCK_SYLLABLE_RULES_PATH;
+  } else {
+    process.env.NAME_BLOCK_SYLLABLE_RULES_PATH = previousSyllableRulePath;
+  }
+
+  assert.equal(beforeSyllableRuleUpdate.gate, "PASS");
+  assert.equal(
+    afterSyllableRuleUpdate.gate,
+    "FAIL_BLACKLIST",
+    "NAME_BLOCK_SYLLABLE_RULES_PATH의 받침 패턴 룰(NULL=와일드카드)이 prior gate에 즉시 반영되어야 합니다.",
+  );
 
   console.log("[test:prior] all tests passed");
 }
