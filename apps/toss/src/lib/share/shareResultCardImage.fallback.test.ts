@@ -43,11 +43,32 @@ function testShareUtilityCapturesFromViewportStagingNode(): void {
     true,
     "캡처 전 폰트/레이아웃이 준비되도록 대기 로직이 있어야 합니다.",
   );
+  assert.equal(
+    source.includes("share-render-host") && source.includes("firstElementChild"),
+    true,
+    "공유 캡처 시 offscreen host가 아닌 실제 카드 요소를 선택해야 흰 화면 문제를 피할 수 있습니다.",
+  );
+  assert.equal(
+    source.includes("namefit-mark.svg") && source.includes("네임핏"),
+    true,
+    "공유 이미지 좌하단에는 네임핏 로고와 서비스명이 함께 노출되어야 합니다.",
+  );
+}
+
+function testShareUtilityUsesFriendlyShareTitle(): void {
+  const source = readFileSync(SHARE_UTIL_PATH, "utf8");
+
+  assert.equal(
+    source.includes("네임핏이 만들어준 예쁜 이름이에요🐥"),
+    true,
+    "공유 텍스트는 사용자 요청 문구로 고정되어야 합니다.",
+  );
 }
 
 function run(): void {
   testShareUtilityHasTextFallbackWhenFileShareIsUnsupported();
   testShareUtilityCapturesFromViewportStagingNode();
+  testShareUtilityUsesFriendlyShareTitle();
   console.log("[test:share-fallback:toss] all tests passed");
 }
 
