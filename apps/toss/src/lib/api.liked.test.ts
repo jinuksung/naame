@@ -93,10 +93,49 @@ async function testRemoveServerLikedNameThrowsOnServerError(): Promise<void> {
   assert.equal(threw, true, "500 응답에서는 removeServerLikedName이 실패해야 합니다.");
 }
 
+async function testLikedApisIncludeNativeSessionHeaderWhenDeviceIdExists(): Promise<void> {
+  const previousWindow = (globalThis as { window?: Window }).window;
+  const sample = buildSampleEntry("liked-id-device-header");
+  try {
+    (globalThis as { window?: Window }).window = {
+      __CONSTANT_HANDLER_MAP: {
+        getDeviceId: () => "device-123"
+      }
+    } as unknown as Window;
+
+    let getHeader = "";
+    let postHeader = "";
+    await withMockedFetch(async (_input, init) => {
+      const method = init?.method ?? "GET";
+      const headers = new Headers(init?.headers);
+      const sessionHeader = headers.get("x-namefit-liked-session") ?? "";
+      if (method === "GET") {
+        getHeader = sessionHeader;
+        return mockResponse(200, JSON.stringify({ entries: [] }));
+      }
+      postHeader = sessionHeader;
+      return mockResponse(200, JSON.stringify({ ok: true }));
+    }, async () => {
+      await fetchServerLikedNames();
+      await upsertServerLikedName(sample);
+    });
+
+    assert.equal(getHeader.length > 0, true);
+    assert.equal(postHeader.length > 0, true);
+  } finally {
+    if (previousWindow === undefined) {
+      delete (globalThis as { window?: Window }).window;
+    } else {
+      (globalThis as { window?: Window }).window = previousWindow;
+    }
+  }
+}
+
 async function run(): Promise<void> {
   await testFetchServerLikedNamesParsesEntries();
   await testUpsertServerLikedNameCallsApi();
   await testRemoveServerLikedNameThrowsOnServerError();
+  await testLikedApisIncludeNativeSessionHeaderWhenDeviceIdExists();
   console.log("[test:api-liked:toss] all tests passed");
 }
 

@@ -15,6 +15,98 @@ interface ServerLikedNamesResponse {
   entries?: unknown;
 }
 
+const LIKED_SESSION_HEADER = "x-namefit-liked-session";
+const LIKED_SESSION_STORAGE_KEY = "namefit-liked-session-id-v1";
+let volatileLikedSessionId: string | null = null;
+
+function normalizeSessionToken(value: string): string {
+  return value.trim().replace(/[^a-zA-Z0-9:_-]/g, "").slice(0, 160);
+}
+
+function readNativeDeviceId(): string | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  try {
+    const maybeWindow = window as Window & {
+      __CONSTANT_HANDLER_MAP?: Record<string, unknown>;
+    };
+    const handler = maybeWindow.__CONSTANT_HANDLER_MAP?.getDeviceId;
+    if (typeof handler !== "function") {
+      return null;
+    }
+    const raw = String(handler()).trim();
+    if (!raw) {
+      return null;
+    }
+    const normalized = normalizeSessionToken(raw);
+    return normalized.length > 0 ? `did:${normalized}` : null;
+  } catch {
+    return null;
+  }
+}
+
+function readStoredLikedSessionId(): string | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  try {
+    const raw = window.localStorage.getItem(LIKED_SESSION_STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+    const normalized = normalizeSessionToken(raw);
+    return normalized.length > 0 ? normalized : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredLikedSessionId(value: string): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+  try {
+    window.localStorage.setItem(LIKED_SESSION_STORAGE_KEY, value);
+  } catch {
+    // Ignore storage write failures in restricted webviews.
+  }
+}
+
+function createFallbackLikedSessionId(): string {
+  if (volatileLikedSessionId) {
+    return volatileLikedSessionId;
+  }
+
+  const stored = readStoredLikedSessionId();
+  if (stored) {
+    volatileLikedSessionId = stored;
+    return stored;
+  }
+
+  const generated =
+    typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+      ? `sid:${normalizeSessionToken(crypto.randomUUID())}`
+      : `sid:${normalizeSessionToken(Math.random().toString(36).slice(2))}`;
+  volatileLikedSessionId = generated;
+  writeStoredLikedSessionId(generated);
+  return generated;
+}
+
+function resolveLikedSessionHeaderValue(): string {
+  const nativeId = readNativeDeviceId();
+  if (nativeId) {
+    return nativeId;
+  }
+  return createFallbackLikedSessionId();
+}
+
+function withLikedSessionHeaders(headers?: HeadersInit): Headers {
+  const nextHeaders = new Headers(headers);
+  nextHeaders.set(LIKED_SESSION_HEADER, resolveLikedSessionHeaderValue());
+  return nextHeaders;
+}
+
 function readWeakTop3Compat(summary: PremiumSummaryCompat): PremiumRecommendResponse["summary"]["weakTop3"] {
   if (Array.isArray(summary.weakTop3) && (summary.weakTop3.length === 2 || summary.weakTop3.length === 3)) {
     return summary.weakTop3;
@@ -365,7 +457,8 @@ export async function fetchServerLikedNames(): Promise<LikedNameEntry[]> {
   const response = await fetch(buildApiPath("/api/liked/names"), {
     method: "GET",
     cache: "no-store",
-    credentials: "include"
+    credentials: "include",
+    headers: withLikedSessionHeaders()
   });
 
   if (!response.ok) {
@@ -394,9 +487,9 @@ export async function fetchServerLikedNames(): Promise<LikedNameEntry[]> {
 export async function upsertServerLikedName(entry: LikedNameEntry): Promise<void> {
   const response = await fetch(buildApiPath("/api/liked/names"), {
     method: "POST",
-    headers: {
+    headers: withLikedSessionHeaders({
       "Content-Type": "application/json"
-    },
+    }),
     cache: "no-store",
     credentials: "include",
     body: JSON.stringify({ entry })
@@ -411,9 +504,9 @@ export async function upsertServerLikedName(entry: LikedNameEntry): Promise<void
 export async function removeServerLikedName(id: string): Promise<void> {
   const response = await fetch(buildApiPath("/api/liked/names"), {
     method: "DELETE",
-    headers: {
+    headers: withLikedSessionHeaders({
       "Content-Type": "application/json"
-    },
+    }),
     cache: "no-store",
     credentials: "include",
     body: JSON.stringify({ id: id.trim() })

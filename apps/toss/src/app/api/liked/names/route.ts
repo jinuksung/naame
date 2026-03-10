@@ -19,6 +19,7 @@ interface LikedRemovePayload {
 
 const LIKED_SESSION_COOKIE = "namefit_liked_session";
 const SESSION_ID_PATTERN = /^[0-9a-f-]{36}$/i;
+const HEADER_SESSION_PATTERN = /^[a-zA-Z0-9:_-]{8,160}$/;
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -93,6 +94,14 @@ function toSafeLikedNameEntry(value: unknown): LikedNameEntry | null {
 }
 
 function resolveSession(request: NextRequest): { sessionId: string; shouldSetCookie: boolean } {
+  const headerSessionId = request.headers.get("x-namefit-liked-session")?.trim() ?? "";
+  if (HEADER_SESSION_PATTERN.test(headerSessionId)) {
+    return {
+      sessionId: headerSessionId,
+      shouldSetCookie: false
+    };
+  }
+
   const existing = request.cookies.get(LIKED_SESSION_COOKIE)?.value?.trim() ?? "";
   if (SESSION_ID_PATTERN.test(existing)) {
     return {
