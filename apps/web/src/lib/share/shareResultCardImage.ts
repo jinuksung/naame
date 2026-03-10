@@ -6,7 +6,42 @@ interface ShareResultCardImageOptions {
   title: string;
 }
 
-export type ShareResultMode = "native_file" | "native_text" | "download";
+export type ShareResultMode =
+  | "native_file"
+  | "native_text"
+  | "download"
+  | "preview";
+
+const SHARE_TIMEOUT_MS = 4000;
+
+class ShareTimeoutError extends Error {
+  constructor() {
+    super("share timeout");
+    this.name = "ShareTimeoutError";
+  }
+}
+
+function isAbortError(error: unknown): boolean {
+  return error instanceof DOMException && error.name === "AbortError";
+}
+
+async function withShareTimeout(task: Promise<void>): Promise<void> {
+  let timeoutId: number | undefined;
+  try {
+    await Promise.race([
+      task,
+      new Promise<never>((_, reject) => {
+        timeoutId = window.setTimeout(() => {
+          reject(new ShareTimeoutError());
+        }, SHARE_TIMEOUT_MS);
+      }),
+    ]);
+  } finally {
+    if (timeoutId !== undefined) {
+      window.clearTimeout(timeoutId);
+    }
+  }
+}
 
 function sanitizeFileBaseName(value: string): string {
   return value
@@ -29,6 +64,23 @@ function downloadBlob(blob: Blob, fileName: string): void {
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+function isDesktopLikeEnvironment(): boolean {
+  return !/Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent);
+}
+
+function openPreviewBlob(blob: Blob): boolean {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.target = "_blank";
+  anchor.rel = "noopener";
+  document.body.append(anchor);
+  anchor.click();
+  anchor.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 10_000);
+  return true;
+}
+
 export async function shareResultCardImage(
   options: ShareResultCardImageOptions,
 ): Promise<ShareResultMode> {
@@ -46,37 +98,47 @@ export async function shareResultCardImage(
   const navigatorWithCanShare = navigator as Navigator & {
     canShare?: (data: ShareData) => boolean;
   };
-  const canShareFile =
-    typeof navigatorWithCanShare.share === "function" &&
-    navigatorWithCanShare.canShare?.({ files: [file] });
+  const canUseNativeShare = typeof navigatorWithCanShare.share === "function";
+  let fileShareTimedOut = false;
 
-  if (canShareFile) {
+  if (canUseNativeShare) {
     try {
-      await navigatorWithCanShare.share({
-        files: [file],
-        title: options.title,
-      });
+      await withShareTimeout(
+        navigatorWithCanShare.share({
+          files: [file],
+          title: options.title,
+          text: options.title,
+        }),
+      );
       return "native_file";
     } catch (error) {
-      if (error instanceof DOMException && error.name === "AbortError") {
+      if (isAbortError(error)) {
         return "native_file";
       }
-      throw error;
+      fileShareTimedOut = error instanceof ShareTimeoutError;
     }
   }
 
-  if (typeof navigatorWithCanShare.share === "function") {
+  if (canUseNativeShare && !fileShareTimedOut) {
     try {
-      await navigatorWithCanShare.share({
-        title: options.title,
-        text: options.title,
-      });
+      await withShareTimeout(
+        navigatorWithCanShare.share({
+          title: options.title,
+          text: options.title,
+          url: window.location.href,
+        }),
+      );
       return "native_text";
     } catch (error) {
-      if (error instanceof DOMException && error.name === "AbortError") {
+      if (isAbortError(error)) {
         return "native_text";
       }
     }
+  }
+
+  if (isDesktopLikeEnvironment()) {
+    openPreviewBlob(blob);
+    return "preview";
   }
 
   downloadBlob(blob, options.fileName);

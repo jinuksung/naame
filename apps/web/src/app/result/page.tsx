@@ -340,6 +340,8 @@ export default function ResultPage(): JSX.Element {
       const shareMode = await shareFreeResultCard(shareNode, displayName);
       if (shareMode === "download") {
         setLikedToast("공유 기능이 제한돼 이미지를 파일로 저장했어요.");
+      } else if (shareMode === "preview") {
+        setLikedToast("공유 기능이 제한돼 이미지를 새 탭에서 열었어요.");
       }
     } catch (error) {
       console.error("[result] share failed", error);
@@ -657,11 +659,12 @@ export default function ResultPage(): JSX.Element {
                       type="button"
                       className="nf-feedback-btn is-share"
                       disabled={sharingCardId !== null}
+                      aria-busy={sharingCardId === itemKey}
                       onClick={() => {
                         void handleShareCard(itemKey, displayName);
                       }}
                     >
-                      공유하기
+                      {sharingCardId === itemKey ? "공유 준비 중..." : "공유하기"}
                     </button>
                   </div>
                   {localAdminEnabled ? (

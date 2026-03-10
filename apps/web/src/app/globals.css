@@ -582,23 +582,39 @@ input {
   padding: 10px 8px;
   display: grid;
   justify-items: center;
+  align-content: start;
   text-align: center;
   gap: 3px;
 }
 
 .nf-hanja-char {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.1rem;
   font-size: 1.8rem;
   font-weight: 700;
+  line-height: 1;
 }
 
 .nf-hanja-reading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.05rem;
   font-size: 0.9rem;
   font-weight: 700;
+  line-height: 1.1;
 }
 
 .nf-hanja-meaning {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0.95rem;
   font-size: 0.76rem;
   color: hsl(var(--muted-foreground));
+  line-height: 1.2;
 }
 
 .nf-reason-list {

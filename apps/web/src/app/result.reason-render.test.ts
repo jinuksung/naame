@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 
 const RESULT_PAGE_PATH = path.resolve(__dirname, "result/page.tsx");
+const GLOBAL_STYLE_PATH = path.resolve(__dirname, "globals.css");
 const FEEDBACK_LAYOUT_CLASS = "nf-feedback-row is-split";
 const LIKE_BUTTON_LABEL = "좋아요";
 const DISLIKE_BUTTON_LABEL = "싫어요";
@@ -60,6 +61,11 @@ function testFeedbackButtonsUseSplitLayoutWithEmoji(): void {
     "웹 결과 카드 액션 하단에는 공유하기 단독 행(nf-share-row)이 있어야 합니다.",
   );
   assert.equal(
+    source.includes("공유 준비 중..."),
+    true,
+    "웹 결과 카드 공유 버튼은 처리 중 상태 텍스트(공유 준비 중...)를 제공해야 합니다.",
+  );
+  assert.equal(
     source.includes("shareFreeResultCard"),
     true,
     "웹 결과 화면은 무료 카드 공유 핸들러(shareFreeResultCard)를 호출해야 합니다.",
@@ -111,11 +117,55 @@ function testLocalAdminControlsArePresentWithVisibilityGuard(): void {
   );
 }
 
+function testHanjaRowsUseConsistentVerticalAnchors(): void {
+  const styles = readFileSync(GLOBAL_STYLE_PATH, "utf8");
+  const hanjaCharRule = styles.match(/\.nf-hanja-char\s*\{[\s\S]*?\n\}/);
+  const hanjaReadingRule = styles.match(/\.nf-hanja-reading\s*\{[\s\S]*?\n\}/);
+  const hanjaMeaningRule = styles.match(/\.nf-hanja-meaning\s*\{[\s\S]*?\n\}/);
+
+  assert.equal(
+    hanjaCharRule !== null,
+    true,
+    "웹 결과 화면 스타일에는 .nf-hanja-char 규칙이 있어야 합니다.",
+  );
+  assert.equal(
+    hanjaReadingRule !== null,
+    true,
+    "웹 결과 화면 스타일에는 .nf-hanja-reading 규칙이 있어야 합니다.",
+  );
+  assert.equal(
+    hanjaMeaningRule !== null,
+    true,
+    "웹 결과 화면 스타일에는 .nf-hanja-meaning 규칙이 있어야 합니다.",
+  );
+
+  assert.equal(
+    hanjaCharRule?.[0].includes("display: inline-flex") &&
+      hanjaCharRule?.[0].includes("line-height: 1") &&
+      hanjaCharRule?.[0].includes("min-height"),
+    true,
+    "한자 글자는 글꼴 메트릭 차이에 흔들리지 않도록 고정된 줄 높이와 min-height를 가져야 합니다.",
+  );
+  assert.equal(
+    hanjaReadingRule?.[0].includes("display: inline-flex") &&
+      hanjaReadingRule?.[0].includes("min-height"),
+    true,
+    "음독 줄은 카드 간 세로 기준선을 맞추기 위해 inline-flex와 min-height를 가져야 합니다.",
+  );
+  assert.equal(
+    hanjaMeaningRule?.[0].includes("display: inline-flex") &&
+      hanjaMeaningRule?.[0].includes("min-height"),
+    true,
+    "뜻 줄은 카드 간 세로 기준선을 맞추기 위해 inline-flex와 min-height를 가져야 합니다.",
+  );
+}
+
 function run(): void {
   testResultReasonLabelIsRenderedAsBold();
   testFeedbackButtonsUseSplitLayoutWithEmoji();
   testPremiumTeaserCopyMatchesCurrentScope();
   testLocalAdminControlsArePresentWithVisibilityGuard();
+  testHanjaRowsUseConsistentVerticalAnchors();
   console.log("[test:result-reason-render:web] all tests passed");
 }
 

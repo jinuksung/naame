@@ -60,6 +60,11 @@ function testFeedbackButtonsUseSplitLayoutWithEmoji(): void {
     "토스 결과 카드 액션 하단에는 공유하기 단독 행(share-row)이 있어야 합니다.",
   );
   assert.equal(
+    source.includes("공유 준비 중..."),
+    true,
+    "토스 결과 카드 공유 버튼은 처리 중 상태 텍스트(공유 준비 중...)를 제공해야 합니다.",
+  );
+  assert.equal(
     source.includes("shareFreeResultCard"),
     true,
     "토스 결과 화면은 무료 카드 공유 핸들러(shareFreeResultCard)를 호출해야 합니다.",

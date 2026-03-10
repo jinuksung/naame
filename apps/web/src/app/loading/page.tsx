@@ -89,7 +89,7 @@ export default function LoadingPage(): JSX.Element {
   }, [hasInput, requestBaseInput, router, setInput, setResults]);
 
   return (
-    <Screen title="이름을 추천하고 있어요" description="잠시만 기다려 주세요.">
+    <Screen title="이름을 찾고 있어요" description="잠시만 기다려 주세요.">
       <div className="nf-loading-wrap">
         <div className="nf-loading-spinner" aria-label="로딩 중" />
         <p className="nf-loading-text">{LOADING_MESSAGES[messageIndex]}</p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   TdsCard,
@@ -39,7 +39,7 @@ interface HanjaMeaningResponse {
   meanings?: Record<string, string>;
 }
 
-export default function LikedPage(): JSX.Element {
+function LikedPageContent(): JSX.Element {
   const router = useRouter();
   const searchParams = useSearchParams();
   const likedNames = useLikedNamesStore((state) => state.likedNames);
@@ -249,5 +249,13 @@ export default function LikedPage(): JSX.Element {
         {toast ? <p className="liked-toast">{toast}</p> : null}
       </div>
     </TdsScreen>
+  );
+}
+
+export default function LikedPage(): JSX.Element {
+  return (
+    <Suspense fallback={<></>}>
+      <LikedPageContent />
+    </Suspense>
   );
 }

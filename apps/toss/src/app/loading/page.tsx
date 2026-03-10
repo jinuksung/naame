@@ -94,7 +94,7 @@ export default function LoadingPage(): JSX.Element {
   }, [hasHydrated, hasInput, requestBaseInput, router, setInput, setResults]);
 
   return (
-    <TdsScreen title="이름을 추천하고 있어요" description="잠시만 기다려 주세요.">
+    <TdsScreen title="이름을 찾고 있어요" description="잠시만 기다려 주세요.">
       <div className="loading-wrap">
         <div className="loading-spinner" aria-label="로딩 중" />
         <p className="loading-text">{LOADING_MESSAGES[messageIndex]}</p>
