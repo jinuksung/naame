@@ -5,10 +5,15 @@ import {
   PremiumRecommendResponse,
   SurnameHanjaOptionsResponse
 } from "@/types/recommend";
+import type { LikedNameEntry } from "@/lib/likedNamesRepository";
 
 type PremiumSummaryCompat = PremiumRecommendResponse["summary"] & {
   weakTop2?: PremiumRecommendResponse["summary"]["weakTop3"];
 };
+
+interface ServerLikedNamesResponse {
+  entries?: unknown;
+}
 
 function readWeakTop3Compat(summary: PremiumSummaryCompat): PremiumRecommendResponse["summary"]["weakTop3"] {
   if (Array.isArray(summary.weakTop3) && (summary.weakTop3.length === 2 || summary.weakTop3.length === 3)) {
@@ -168,6 +173,75 @@ function isValidSurnameHanjaOptionsResponse(value: unknown): value is SurnameHan
   });
 }
 
+function toStringPair(value: unknown): [string, string] | null {
+  if (!Array.isArray(value) || value.length !== 2) {
+    return null;
+  }
+  const first = typeof value[0] === "string" ? value[0].trim() : "";
+  const second = typeof value[1] === "string" ? value[1].trim() : "";
+  if (!first || !second) {
+    return null;
+  }
+  return [first, second];
+}
+
+function toOptionalMeaningPair(value: unknown): [string, string] | undefined {
+  if (value === null || value === undefined) {
+    return undefined;
+  }
+  return toStringPair(value) ?? undefined;
+}
+
+function toServerLikedNameEntry(value: unknown): LikedNameEntry | null {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+  const row = value as Partial<LikedNameEntry>;
+
+  if (
+    typeof row.id !== "string" ||
+    typeof row.fullName !== "string" ||
+    typeof row.nameHangul !== "string" ||
+    typeof row.surnameHangul !== "string" ||
+    typeof row.surnameHanja !== "string" ||
+    typeof row.gender !== "string" ||
+    typeof row.reason !== "string" ||
+    typeof row.createdAt !== "string" ||
+    (row.source !== "FREE" && row.source !== "PREMIUM")
+  ) {
+    return null;
+  }
+
+  const hanjaPair = toStringPair(row.hanjaPair);
+  const readingPair = toStringPair(row.readingPair);
+  const meaningPair = toOptionalMeaningPair(row.meaningPair);
+
+  if (!hanjaPair || !readingPair) {
+    return null;
+  }
+
+  const score =
+    typeof row.score === "number" && Number.isFinite(row.score)
+      ? row.score
+      : undefined;
+
+  return {
+    id: row.id.trim(),
+    fullName: row.fullName.trim(),
+    nameHangul: row.nameHangul.trim(),
+    surnameHangul: row.surnameHangul.trim(),
+    surnameHanja: row.surnameHanja.trim(),
+    gender: row.gender.trim(),
+    hanjaPair,
+    readingPair,
+    meaningPair,
+    score,
+    reason: row.reason.trim(),
+    createdAt: row.createdAt.trim(),
+    source: row.source
+  };
+}
+
 export async function fetchSurnameHanjaOptions(
   surnameReading: string,
   signal?: AbortSignal
@@ -284,6 +358,70 @@ export async function submitNameFeedback(input: {
       return;
     }
     throw new Error(`[api] feedback submit failed: ${response.status} ${text}`);
+  }
+}
+
+export async function fetchServerLikedNames(): Promise<LikedNameEntry[]> {
+  const response = await fetch(buildApiPath("/api/liked/names"), {
+    method: "GET",
+    cache: "no-store",
+    credentials: "include"
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`[api] server liked fetch failed: ${response.status} ${text}`);
+  }
+
+  const payload = (await response.json()) as ServerLikedNamesResponse;
+  const rawEntries = payload.entries;
+  if (!Array.isArray(rawEntries)) {
+    return [];
+  }
+
+  const parsedEntries: LikedNameEntry[] = [];
+  for (const candidate of rawEntries) {
+    const entry = toServerLikedNameEntry(candidate);
+    if (!entry) {
+      continue;
+    }
+    parsedEntries.push(entry);
+  }
+
+  return parsedEntries;
+}
+
+export async function upsertServerLikedName(entry: LikedNameEntry): Promise<void> {
+  const response = await fetch(buildApiPath("/api/liked/names"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    cache: "no-store",
+    credentials: "include",
+    body: JSON.stringify({ entry })
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`[api] server liked upsert failed: ${response.status} ${text}`);
+  }
+}
+
+export async function removeServerLikedName(id: string): Promise<void> {
+  const response = await fetch(buildApiPath("/api/liked/names"), {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    cache: "no-store",
+    credentials: "include",
+    body: JSON.stringify({ id: id.trim() })
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`[api] server liked remove failed: ${response.status} ${text}`);
   }
 }
 

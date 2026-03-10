@@ -3,6 +3,11 @@
 import { create } from "zustand";
 import type { LikedNameEntry } from "@/lib/likedNamesRepository";
 import { createLikedNamesRepository } from "@/lib/likedNamesRepository";
+import {
+  fetchServerLikedNames,
+  removeServerLikedName,
+  upsertServerLikedName
+} from "@/lib/api";
 
 const MAX_LIKED_NAMES = 10;
 const DB_LIKED_IDS_STORAGE_KEY = "namefit-liked-db-liked-ids-v1";
@@ -27,8 +32,8 @@ interface LikedNamesState {
   hydrate: () => void;
   isLiked: (id: string) => boolean;
   upsertLiked: (entry: LikedNameEntry) => void;
-  toggleLiked: (entry: LikedNameEntry) => ToggleLikedResult;
-  removeLiked: (id: string) => void;
+  toggleLiked: (entry: LikedNameEntry) => Promise<ToggleLikedResult>;
+  removeLiked: (id: string) => Promise<void>;
   markDbLikeSent: (id: string) => void;
   hasDbLikeSent: (id: string) => boolean;
 }
@@ -97,6 +102,28 @@ export const useLikedNamesStore = create<LikedNamesState>((set, get) => ({
       sentDbLikeIds,
       hasHydrated: true
     });
+
+    void (async () => {
+      try {
+        const serverEntries = await fetchServerLikedNames();
+        if (serverEntries.length === 0) {
+          return;
+        }
+        set((state) => ({
+          likedNames: dedupeById([...state.likedNames, ...serverEntries])
+        }));
+        for (const entry of serverEntries) {
+          try {
+            likedNamesRepository.upsert(entry);
+          } catch (error) {
+            console.error("[liked-names] failed to hydrate local cache from server", error);
+            break;
+          }
+        }
+      } catch (error) {
+        console.error("[liked-names] failed to hydrate from server", error);
+      }
+    })();
   },
   isLiked: (id) => get().likedNames.some((entry) => entry.id === id),
   upsertLiked: (entry) => {
@@ -117,8 +144,11 @@ export const useLikedNamesStore = create<LikedNamesState>((set, get) => ({
         cause: error
       });
     }
+    void upsertServerLikedName(entry).catch((error) => {
+      console.error("[liked-names] failed to sync upsert to server", error);
+    });
   },
-  toggleLiked: (entry) => {
+  toggleLiked: async (entry) => {
     const previousState = get();
     const previousLikedNames = previousState.likedNames;
     const alreadyLiked = previousLikedNames.some((item) => item.id === entry.id);
@@ -141,6 +171,19 @@ export const useLikedNamesStore = create<LikedNamesState>((set, get) => ({
           cause: error
         });
       }
+      try {
+        await removeServerLikedName(entry.id);
+      } catch (error) {
+        set({ likedNames: previousLikedNames });
+        try {
+          likedNamesRepository.upsert(entry);
+        } catch (cacheError) {
+          console.error("[liked-names] rollback failed after remove sync failure", cacheError);
+        }
+        throw new ToggleLikedError("storage_failed", "찜 상태를 서버에 저장하지 못했습니다.", {
+          cause: error
+        });
+      }
       return "removed";
     }
 
@@ -154,9 +197,22 @@ export const useLikedNamesStore = create<LikedNamesState>((set, get) => ({
         cause: error
       });
     }
+    try {
+      await upsertServerLikedName(entry);
+    } catch (error) {
+      set({ likedNames: previousLikedNames });
+      try {
+        likedNamesRepository.remove(entry.id);
+      } catch (cacheError) {
+        console.error("[liked-names] rollback failed after upsert sync failure", cacheError);
+      }
+      throw new ToggleLikedError("storage_failed", "찜 상태를 서버에 저장하지 못했습니다.", {
+        cause: error
+      });
+    }
     return "saved";
   },
-  removeLiked: (id) => {
+  removeLiked: async (id) => {
     const previousLikedNames = get().likedNames;
     const nextLikedNames = previousLikedNames.filter((item) => item.id !== id);
     if (nextLikedNames.length === previousLikedNames.length) {
@@ -169,6 +225,14 @@ export const useLikedNamesStore = create<LikedNamesState>((set, get) => ({
     } catch (error) {
       set({ likedNames: previousLikedNames });
       throw new ToggleLikedError("storage_failed", "찜 상태를 저장하지 못했습니다.", {
+        cause: error
+      });
+    }
+    try {
+      await removeServerLikedName(id);
+    } catch (error) {
+      set({ likedNames: previousLikedNames });
+      throw new ToggleLikedError("storage_failed", "찜 상태를 서버에 저장하지 못했습니다.", {
         cause: error
       });
     }

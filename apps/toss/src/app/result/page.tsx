@@ -258,7 +258,7 @@ export default function ResultPage(): JSX.Element {
     }
 
     try {
-      const toggleResult = toggleLiked(entry);
+      const toggleResult = await toggleLiked(entry);
       if (toggleResult === "removed") {
         setLikedToast("내가 찜한 이름에서 제거됐어요");
         return;
@@ -294,12 +294,7 @@ export default function ResultPage(): JSX.Element {
       }
     } catch (error) {
       console.error("[result] feedback submit failed", error);
-      try {
-        toggleLiked(entry);
-      } catch (rollbackError) {
-        console.error("[result] liked rollback failed", rollbackError);
-      }
-      setLikedToast("저장에 실패했어요. 다시 시도해 주세요.");
+      setLikedToast("좋아요는 저장됐어요. 서버 반영은 네트워크 상태에 따라 지연될 수 있어요.");
     } finally {
       setLikePendingIds((prev) => {
         const next = { ...prev };

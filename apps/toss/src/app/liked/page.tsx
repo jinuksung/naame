@@ -218,16 +218,18 @@ function LikedPageContent(): JSX.Element {
                   type="button"
                   className="feedback-btn is-share"
                   onClick={() => {
-                    try {
-                      removeLiked(entry.id);
-                      setToast("내가 찜한 이름에서 제거됐어요");
-                    } catch (error) {
-                      if (error instanceof ToggleLikedError) {
-                        setToast("저장 공간 문제로 찜 해제를 완료하지 못했어요.");
-                        return;
+                    void (async () => {
+                      try {
+                        await removeLiked(entry.id);
+                        setToast("내가 찜한 이름에서 제거됐어요");
+                      } catch (error) {
+                        if (error instanceof ToggleLikedError) {
+                          setToast("저장 공간 문제로 찜 해제를 완료하지 못했어요.");
+                          return;
+                        }
+                        setToast("찜 해제를 완료하지 못했어요.");
                       }
-                      setToast("찜 해제를 완료하지 못했어요.");
-                    }
+                    })();
                   }}
                 >
                   찜 해제

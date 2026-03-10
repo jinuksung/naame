@@ -33,6 +33,30 @@ export interface LikedNamesRepository {
 
 const DEFAULT_STORAGE_KEY = "namefit-liked-names-v1";
 
+function createInMemoryStorage(): Storage {
+  const map = new Map<string, string>();
+  return {
+    get length(): number {
+      return map.size;
+    },
+    clear(): void {
+      map.clear();
+    },
+    getItem(key: string): string | null {
+      return map.has(key) ? map.get(key) ?? null : null;
+    },
+    key(index: number): string | null {
+      return Array.from(map.keys())[index] ?? null;
+    },
+    removeItem(key: string): void {
+      map.delete(key);
+    },
+    setItem(key: string, value: string): void {
+      map.set(key, value);
+    }
+  };
+}
+
 function toPair(value: unknown): [string, string] | null {
   if (!Array.isArray(value) || value.length < 2) {
     return null;
@@ -169,20 +193,14 @@ function resolveStorage(explicit?: Storage): Storage | null {
 export function createLikedNamesRepository(
   options: CreateLikedNamesRepositoryOptions = {}
 ): LikedNamesRepository {
-  const storage = resolveStorage(options.storage);
+  const storage = resolveStorage(options.storage) ?? createInMemoryStorage();
   const storageKey = options.storageKey ?? DEFAULT_STORAGE_KEY;
 
   return {
     getAll(): LikedNameEntry[] {
-      if (!storage) {
-        return [];
-      }
       return readEntries(storage, storageKey);
     },
     upsert(entry: LikedNameEntry): void {
-      if (!storage) {
-        throw new Error("localStorage is unavailable");
-      }
       const next = readEntries(storage, storageKey);
       const index = next.findIndex((item) => item.id === entry.id);
       if (index >= 0) {
@@ -194,9 +212,6 @@ export function createLikedNamesRepository(
       writeEntries(storage, storageKey, next);
     },
     remove(id: string): void {
-      if (!storage) {
-        throw new Error("localStorage is unavailable");
-      }
       const targetId = id.trim();
       const next = readEntries(storage, storageKey).filter((entry) => entry.id !== targetId);
       writeEntries(storage, storageKey, next);
@@ -206,9 +221,6 @@ export function createLikedNamesRepository(
       return this.getAll().some((entry) => entry.id === targetId);
     },
     clear(): void {
-      if (!storage) {
-        throw new Error("localStorage is unavailable");
-      }
       storage.removeItem(storageKey);
     }
   };

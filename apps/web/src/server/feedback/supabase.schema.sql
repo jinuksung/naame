@@ -105,3 +105,28 @@ as $$
     and s.name_hangul = any (p_name_hanguls)
   group by s.surname_hangul, s.name_hangul;
 $$;
+
+create table if not exists public.name_liked_entries (
+  session_id text not null,
+  liked_id text not null,
+  full_name text not null,
+  name_hangul text not null,
+  surname_hangul text not null default '',
+  surname_hanja text not null default '',
+  gender text not null default '',
+  hanja_pair text[] not null,
+  reading_pair text[] not null,
+  meaning_pair text[] null,
+  score double precision null,
+  reason text not null default '',
+  source text not null check (source in ('FREE', 'PREMIUM')),
+  created_at timestamptz not null,
+  updated_at timestamptz not null default now(),
+  primary key (session_id, liked_id),
+  check (array_length(hanja_pair, 1) = 2),
+  check (array_length(reading_pair, 1) = 2),
+  check (meaning_pair is null or array_length(meaning_pair, 1) = 2)
+);
+
+create index if not exists idx_name_liked_entries_session_created
+  on public.name_liked_entries (session_id, created_at desc);
