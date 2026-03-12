@@ -24,10 +24,14 @@ function testShareUtilityHasTextFallbackWhenFileShareIsUnsupported(): void {
     "파일 공유가 불가능한 환경에서도 현재 페이지 URL을 포함한 텍스트 공유 폴백을 시도해야 합니다.",
   );
   assert.equal(
-    source.includes("share as shareViaBridge") &&
-      source.includes("await withShareTimeout(shareViaBridge"),
+    source.includes("!appsInTossWebView && canUseNativeShare && !fileShareTimedOut"),
     true,
-    "앱인토스 웹뷰에서는 네이티브 브릿지 share를 우선 시도해야 합니다.",
+    "앱인토스 웹뷰에서는 URL 링크 텍스트 공유를 건너뛰고, 파일 공유 실패 시에만 저장 폴백으로 내려가야 합니다.",
+  );
+  assert.equal(
+    source.includes("share as shareViaBridge"),
+    false,
+    "앱인토스 웹뷰에서 링크 공유를 유도하는 브릿지 share 호출은 사용하면 안 됩니다.",
   );
   assert.equal(
     source.includes("!isAppsInTossWebView() && isDesktopLikeEnvironment()"),

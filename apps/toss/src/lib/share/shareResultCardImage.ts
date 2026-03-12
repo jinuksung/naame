@@ -1,7 +1,6 @@
 import { toBlob } from "html-to-image";
 import {
   saveBase64Data,
-  share as shareViaBridge,
 } from "@apps-in-toss/web-framework";
 
 interface ShareResultCardImageOptions {
@@ -295,18 +294,8 @@ export async function shareResultCardImage(
   const canUseNativeShare = typeof navigatorWithCanShare.share === "function";
   const appsInTossWebView = isAppsInTossWebView();
   const shareMessage = buildShareMessage(options.title);
+  const fileShareText = appsInTossWebView ? options.title : shareMessage;
   let fileShareTimedOut = false;
-
-  if (appsInTossWebView) {
-    try {
-      await withShareTimeout(shareViaBridge({ message: shareMessage }));
-      return "native_text";
-    } catch (error) {
-      if (isAbortError(error)) {
-        return "native_text";
-      }
-    }
-  }
 
   if (canUseNativeShare) {
     try {
@@ -314,7 +303,7 @@ export async function shareResultCardImage(
         navigatorWithCanShare.share({
           files: [file],
           title: options.title,
-          text: shareMessage,
+          text: fileShareText,
         }),
       );
       return "native_file";
@@ -326,7 +315,7 @@ export async function shareResultCardImage(
     }
   }
 
-  if (canUseNativeShare && !fileShareTimedOut) {
+  if (!appsInTossWebView && canUseNativeShare && !fileShareTimedOut) {
     try {
       await withShareTimeout(
         navigatorWithCanShare.share({
