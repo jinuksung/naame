@@ -19,6 +19,19 @@ function testLikedPageUsesMutedSavedAtTextAndShareStyleRemoveButton(): void {
     true,
     "토스 찜 해제 버튼은 공유하기와 동일한 단독 행 버튼 스타일(share-row / feedback-btn is-share)을 사용해야 합니다.",
   );
+  const shareButtonIndex = source.indexOf("공유하기");
+  const unlikeButtonIndex = source.indexOf("찜 해제");
+  assert.equal(
+    shareButtonIndex >= 0 && unlikeButtonIndex > shareButtonIndex,
+    true,
+    "찜한 이름 카드에는 찜 해제 버튼 위에 동일한 스타일의 공유하기 버튼이 있어야 합니다.",
+  );
+  assert.equal(
+    source.includes("shareFreeResultCard") &&
+      source.includes("FreeResultShareCard"),
+    true,
+    "찜한 이름 카드의 공유하기 버튼은 공유 카드 렌더와 이미지 공유 유틸을 사용해야 합니다.",
+  );
 }
 
 function run(): void {

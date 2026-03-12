@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { FreeResultShareCard } from "@/components/share/FreeResultShareCard";
 import {
   TdsCard,
   TdsPrimaryButton,
@@ -9,6 +10,7 @@ import {
 } from "@/components/tds";
 import type { LikedNameEntry } from "@/lib/likedNamesRepository";
 import { resolveRecommendInputPath } from "@/lib/likedRoute";
+import { shareFreeResultCard } from "@/lib/share/shareResultCardImage";
 import { ToggleLikedError, useLikedNamesStore } from "@/store/useLikedNamesStore";
 
 function formatSavedAt(value: string): string {
@@ -31,6 +33,11 @@ function hasMeaning(value: string | undefined): boolean {
   return (value ?? "").trim().length > 0;
 }
 
+function toShareMeaning(meaning: string | undefined): string {
+  const normalized = (meaning ?? "").trim();
+  return normalized.length > 0 ? normalized : "의미 미상";
+}
+
 function normalizeHanjaChar(value: string): string {
   return Array.from(value.trim().normalize("NFC")).slice(0, 1).join("");
 }
@@ -48,7 +55,9 @@ function LikedPageContent(): JSX.Element {
   const removeLiked = useLikedNamesStore((state) => state.removeLiked);
   const upsertLiked = useLikedNamesStore((state) => state.upsertLiked);
   const [toast, setToast] = useState<string | null>(null);
+  const [sharingEntryId, setSharingEntryId] = useState<string | null>(null);
   const requestedCharsRef = useRef(new Set<string>());
+  const shareCardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const recommendInputPath =
     typeof window === "undefined"
@@ -184,6 +193,32 @@ function LikedPageContent(): JSX.Element {
     [likedNames],
   );
 
+  const handleShare = async (entry: LikedNameEntry): Promise<void> => {
+    if (sharingEntryId) {
+      return;
+    }
+    const shareNode = shareCardRefs.current[entry.id];
+    if (!shareNode) {
+      setToast("공유 카드를 준비하지 못했어요.");
+      return;
+    }
+
+    setSharingEntryId(entry.id);
+    try {
+      const shareMode = await shareFreeResultCard(shareNode, entry.fullName);
+      if (shareMode === "download") {
+        setToast("공유 기능이 제한돼 이미지를 파일로 저장했어요.");
+      } else if (shareMode === "preview") {
+        setToast("공유 기능이 제한돼 이미지를 새 탭에서 열었어요.");
+      }
+    } catch (error) {
+      console.error("[liked] share failed", error);
+      setToast("공유에 실패했어요. 다시 시도해 주세요.");
+    } finally {
+      setSharingEntryId(null);
+    }
+  };
+
   if (!hasHydrated) {
     return <></>;
   }
@@ -217,6 +252,19 @@ function LikedPageContent(): JSX.Element {
                 <button
                   type="button"
                   className="feedback-btn is-share"
+                  disabled={sharingEntryId === entry.id}
+                  aria-busy={sharingEntryId === entry.id}
+                  onClick={() => {
+                    void handleShare(entry);
+                  }}
+                >
+                  {sharingEntryId === entry.id ? "공유 준비 중..." : "공유하기"}
+                </button>
+              </div>
+              <div className="share-row">
+                <button
+                  type="button"
+                  className="feedback-btn is-share"
                   onClick={() => {
                     void (async () => {
                       try {
@@ -234,6 +282,23 @@ function LikedPageContent(): JSX.Element {
                 >
                   찜 해제
                 </button>
+              </div>
+              <div
+                className="share-render-host"
+                aria-hidden="true"
+                ref={(node) => {
+                  shareCardRefs.current[entry.id] = node;
+                }}
+              >
+                <FreeResultShareCard
+                  displayName={entry.fullName}
+                  hanjaPair={entry.hanjaPair}
+                  readingPair={entry.readingPair}
+                  meaningPair={[
+                    toShareMeaning(entry.meaningPair?.[0]),
+                    toShareMeaning(entry.meaningPair?.[1]),
+                  ]}
+                />
               </div>
             </TdsCard>
           ))}
