@@ -29,6 +29,12 @@ function testShareUtilityHasTextFallbackWhenFileShareIsUnsupported(): void {
     "앱인토스 웹뷰에서는 URL 링크 텍스트 공유를 건너뛰고, 파일 공유 실패 시에만 저장 폴백으로 내려가야 합니다.",
   );
   assert.equal(
+    source.includes("if (appsInTossWebView && fileShareTimedOut)") &&
+      source.includes('return "native_file"'),
+    true,
+    "앱인토스 공유 시트가 응답 없이 닫힌 경우에는 저장 폴백으로 넘어가지 말고 즉시 공유 플로우를 종료해야 합니다.",
+  );
+  assert.equal(
     source.includes("share as shareViaBridge"),
     false,
     "앱인토스 웹뷰에서 링크 공유를 유도하는 브릿지 share 호출은 사용하면 안 됩니다.",
@@ -42,6 +48,12 @@ function testShareUtilityHasTextFallbackWhenFileShareIsUnsupported(): void {
     source.includes("saveBase64Data"),
     true,
     "앱인토스 웹뷰의 파일 폴백은 saveBase64Data 브릿지를 사용해야 합니다.",
+  );
+  assert.equal(
+    source.includes("await withShareTimeout(") &&
+      source.includes("saveBase64Data({"),
+    true,
+    "앱인토스 saveBase64Data 폴백도 무응답 방지를 위해 타임아웃 보호가 필요합니다.",
   );
 }
 

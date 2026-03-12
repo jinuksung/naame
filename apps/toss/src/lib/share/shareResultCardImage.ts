@@ -332,6 +332,10 @@ export async function shareResultCardImage(
     }
   }
 
+  if (appsInTossWebView && fileShareTimedOut) {
+    return "native_file";
+  }
+
   if (!isAppsInTossWebView() && isDesktopLikeEnvironment()) {
     openPreviewBlob(blob);
     return "preview";
@@ -340,11 +344,13 @@ export async function shareResultCardImage(
   if (appsInTossWebView) {
     try {
       const data = await blobToBase64Data(blob);
-      await saveBase64Data({
-        data,
-        fileName: options.fileName,
-        mimeType: "image/png",
-      });
+      await withShareTimeout(
+        saveBase64Data({
+          data,
+          fileName: options.fileName,
+          mimeType: "image/png",
+        }),
+      );
       return "download";
     } catch (error) {
       console.error("[share] saveBase64Data fallback failed", error);
