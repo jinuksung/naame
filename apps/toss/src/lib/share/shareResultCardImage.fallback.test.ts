@@ -18,10 +18,26 @@ function testShareUtilityHasTextFallbackWhenFileShareIsUnsupported(): void {
     "공유 유틸은 canShare 결과만 신뢰하지 말고 파일 공유 호출을 먼저 시도해야 합니다.",
   );
   assert.equal(
-    source.includes("text: options.title") &&
+    source.includes("text: shareMessage") &&
       source.includes("url: window.location.href"),
     true,
     "파일 공유가 불가능한 환경에서도 현재 페이지 URL을 포함한 텍스트 공유 폴백을 시도해야 합니다.",
+  );
+  assert.equal(
+    source.includes("share as shareViaBridge") &&
+      source.includes("await withShareTimeout(shareViaBridge"),
+    true,
+    "앱인토스 웹뷰에서는 네이티브 브릿지 share를 우선 시도해야 합니다.",
+  );
+  assert.equal(
+    source.includes("!isAppsInTossWebView() && isDesktopLikeEnvironment()"),
+    true,
+    "앱인토스 웹뷰에서는 blob 새 탭 미리보기를 시도하면 안 됩니다.",
+  );
+  assert.equal(
+    source.includes("saveBase64Data"),
+    true,
+    "앱인토스 웹뷰의 파일 폴백은 saveBase64Data 브릿지를 사용해야 합니다.",
   );
 }
 

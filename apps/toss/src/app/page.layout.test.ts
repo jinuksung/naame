@@ -138,6 +138,16 @@ function testRootRedirectsToFreeWhenPremiumDefaultIsOff(): void {
   );
 }
 
+function testFirstInputPageHandlesNativeBackClose(): void {
+  const source = readFileSync(INPUT_PAGE_PATH, "utf8");
+  assert.equal(
+    source.includes('graniteEvent.addEventListener("backEvent"') &&
+      source.includes("closeView()"),
+    true,
+    "최초 입력 화면은 네이티브 뒤로가기 이벤트에서 closeView를 호출해 미니앱을 종료해야 합니다.",
+  );
+}
+
 function run(): void {
   testBirthInputsAreNotRenderedInBasicMode();
   testMainDescriptionRemovedAndBasicModeGuideVisible();
@@ -148,6 +158,7 @@ function run(): void {
   testLightModeIsForcedForTossNonGamePolicy();
   testRobotsRouteDisallowsAllCrawling();
   testRootRedirectsToFreeWhenPremiumDefaultIsOff();
+  testFirstInputPageHandlesNativeBackClose();
   console.log("[test:input-page-layout:toss] all tests passed");
 }
 

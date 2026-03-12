@@ -1,4 +1,8 @@
 import { toBlob } from "html-to-image";
+import {
+  saveBase64Data,
+  share as shareViaBridge,
+} from "@apps-in-toss/web-framework";
 
 interface ShareResultCardImageOptions {
   element: HTMLElement;
@@ -222,6 +226,48 @@ function openPreviewBlob(blob: Blob): boolean {
   return true;
 }
 
+function isAppsInTossWebView(): boolean {
+  if (typeof window === "undefined") {
+    return false;
+  }
+  const maybeWindow = window as Window & {
+    ReactNativeWebView?: {
+      postMessage?: unknown;
+    };
+  };
+  return typeof maybeWindow.ReactNativeWebView?.postMessage === "function";
+}
+
+function buildShareMessage(title: string): string {
+  if (typeof window === "undefined") {
+    return title;
+  }
+  const url = window.location.href;
+  return url ? `${title}\n${url}` : title;
+}
+
+function blobToBase64Data(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("blob read failed"));
+    reader.onload = () => {
+      const result = reader.result;
+      if (typeof result !== "string") {
+        reject(new Error("blob read result is not string"));
+        return;
+      }
+      const marker = "base64,";
+      const markerIndex = result.indexOf(marker);
+      if (markerIndex < 0) {
+        reject(new Error("base64 marker not found"));
+        return;
+      }
+      resolve(result.slice(markerIndex + marker.length));
+    };
+    reader.readAsDataURL(blob);
+  });
+}
+
 export async function shareResultCardImage(
   options: ShareResultCardImageOptions,
 ): Promise<ShareResultMode> {
@@ -247,7 +293,20 @@ export async function shareResultCardImage(
     canShare?: (data: ShareData) => boolean;
   };
   const canUseNativeShare = typeof navigatorWithCanShare.share === "function";
+  const appsInTossWebView = isAppsInTossWebView();
+  const shareMessage = buildShareMessage(options.title);
   let fileShareTimedOut = false;
+
+  if (appsInTossWebView) {
+    try {
+      await withShareTimeout(shareViaBridge({ message: shareMessage }));
+      return "native_text";
+    } catch (error) {
+      if (isAbortError(error)) {
+        return "native_text";
+      }
+    }
+  }
 
   if (canUseNativeShare) {
     try {
@@ -255,7 +314,7 @@ export async function shareResultCardImage(
         navigatorWithCanShare.share({
           files: [file],
           title: options.title,
-          text: options.title,
+          text: shareMessage,
         }),
       );
       return "native_file";
@@ -272,7 +331,7 @@ export async function shareResultCardImage(
       await withShareTimeout(
         navigatorWithCanShare.share({
           title: options.title,
-          text: options.title,
+          text: shareMessage,
           url: window.location.href,
         }),
       );
@@ -284,9 +343,23 @@ export async function shareResultCardImage(
     }
   }
 
-  if (isDesktopLikeEnvironment()) {
+  if (!isAppsInTossWebView() && isDesktopLikeEnvironment()) {
     openPreviewBlob(blob);
     return "preview";
+  }
+
+  if (appsInTossWebView) {
+    try {
+      const data = await blobToBase64Data(blob);
+      await saveBase64Data({
+        data,
+        fileName: options.fileName,
+        mimeType: "image/png",
+      });
+      return "download";
+    } catch (error) {
+      console.error("[share] saveBase64Data fallback failed", error);
+    }
   }
 
   downloadBlob(blob, options.fileName);

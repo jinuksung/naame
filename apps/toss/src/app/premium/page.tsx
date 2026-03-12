@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { closeView, graniteEvent } from "@apps-in-toss/web-framework";
 import {
   TdsPrimaryButton,
   TdsScreen,
@@ -108,6 +109,33 @@ export default function PremiumInputPage(): JSX.Element {
   const birthMonthRef = useRef<HTMLInputElement>(null);
   const birthDayRef = useRef<HTMLInputElement>(null);
   const birthMinuteRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    let removeListener: (() => void) | undefined;
+    try {
+      removeListener = graniteEvent.addEventListener("backEvent", {
+        onEvent: () => {
+          void closeView().catch((error) => {
+            console.error("[premium-input] closeView failed on backEvent", error);
+            if (window.history.length > 1) {
+              window.history.back();
+            }
+          });
+        },
+        onError: (error) => {
+          console.error("[premium-input] backEvent listener error", error);
+        },
+      });
+    } catch {
+      // Ignore when running outside apps-in-toss bridge environment.
+    }
+
+    return () => {
+      if (removeListener) {
+        removeListener();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") {

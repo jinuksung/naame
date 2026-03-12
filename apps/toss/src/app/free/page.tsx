@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { closeView, graniteEvent } from "@apps-in-toss/web-framework";
 import {
   TdsPrimaryButton,
   TdsScreen,
@@ -61,6 +62,33 @@ export default function InputPage(): JSX.Element {
   );
   const [gender, setGender] = useState(storeInput.gender);
   const [errors, setErrors] = useState<FormErrors>({});
+
+  useEffect(() => {
+    let removeListener: (() => void) | undefined;
+    try {
+      removeListener = graniteEvent.addEventListener("backEvent", {
+        onEvent: () => {
+          void closeView().catch((error) => {
+            console.error("[input] closeView failed on backEvent", error);
+            if (window.history.length > 1) {
+              window.history.back();
+            }
+          });
+        },
+        onError: (error) => {
+          console.error("[input] backEvent listener error", error);
+        },
+      });
+    } catch {
+      // Ignore when running outside apps-in-toss bridge environment.
+    }
+
+    return () => {
+      if (removeListener) {
+        removeListener();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const reading = normalizeHangulReadingWithLimit(surnameHangul, 2);
