@@ -32,6 +32,13 @@ function testLikedPageUsesMutedSavedAtTextAndShareStyleRemoveButton(): void {
     true,
     "찜한 이름 카드의 공유하기 버튼은 공유 카드 렌더와 이미지 공유 유틸을 사용해야 합니다.",
   );
+  assert.equal(
+    source.includes('graniteEvent.addEventListener("backEvent"') &&
+      source.includes("closeView") &&
+      source.includes("window.history.back()"),
+    true,
+    "찜한 이름 화면은 네비게이션 바 뒤로가기(backEvent) 수신 시 closeView를 호출하고 실패하면 history.back으로 폴백해야 합니다.",
+  );
 }
 
 function run(): void {

@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { closeView, graniteEvent } from "@apps-in-toss/web-framework";
 import { FreeResultShareCard } from "@/components/share/FreeResultShareCard";
 import {
   TdsCard,
@@ -65,6 +66,33 @@ function LikedPageContent(): JSX.Element {
       : resolveRecommendInputPath(window.location.pathname);
   const mode = searchParams.get("mode");
   const backPath = mode === "premium" ? "/premium" : recommendInputPath;
+
+  useEffect(() => {
+    let removeListener: (() => void) | undefined;
+    try {
+      removeListener = graniteEvent.addEventListener("backEvent", {
+        onEvent: () => {
+          void closeView().catch((error) => {
+            console.error("[liked] closeView failed on backEvent", error);
+            if (window.history.length > 1) {
+              window.history.back();
+            }
+          });
+        },
+        onError: (error) => {
+          console.error("[liked] backEvent listener error", error);
+        },
+      });
+    } catch {
+      // Ignore when running outside apps-in-toss bridge environment.
+    }
+
+    return () => {
+      if (removeListener) {
+        removeListener();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!hasHydrated) {
