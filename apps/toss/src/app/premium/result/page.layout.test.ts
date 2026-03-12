@@ -75,6 +75,16 @@ function testPremiumNameAndHanjaUseFreeCardDesign(): void {
     true,
     "프리미엄 결과 카드에 무료와 동일한 좋아요/싫어요 버튼 UI(feedback-row/feedback-btn)가 있어야 합니다.",
   );
+  assert.equal(
+    source.includes("liked rollback failed"),
+    false,
+    "프리미엄 좋아요 저장은 피드백 API 실패 시에도 롤백되지 않아야 합니다.",
+  );
+  assert.equal(
+    source.includes("좋아요는 저장됐어요. 서버 반영은 네트워크 상태에 따라 지연될 수 있어요."),
+    true,
+    "프리미엄 결과도 피드백 전송 실패 시 찜 저장 유지 안내 문구를 노출해야 합니다.",
+  );
 
   assert.equal(
     source.includes("{summary.pillars.year.hangul} ({summary.pillars.year.hanja})") &&
@@ -236,6 +246,26 @@ function testPremiumResultUsesTop5SingleAccordionAndShareRow(): void {
   );
 }
 
+function testPremiumResultPageHandlesNavigationBackEvent(): void {
+  const source = readFileSync(PREMIUM_RESULT_PAGE_PATH, "utf8");
+  assert.equal(
+    source.includes('graniteEvent.addEventListener("backEvent"'),
+    true,
+    "프리미엄 결과 화면은 네비게이션 바 뒤로가기(backEvent)를 수신해야 합니다.",
+  );
+  assert.equal(
+    source.includes('router.replace("/premium")') &&
+      source.includes("window.history.back()"),
+    true,
+    "프리미엄 결과 화면은 backEvent에서 입력 화면(/premium)으로 이동하고 실패 시 history.back으로 폴백해야 합니다.",
+  );
+  assert.equal(
+    source.includes("closeView"),
+    false,
+    "프리미엄 결과 화면의 backEvent는 앱 종료(closeView)를 호출하면 안 됩니다.",
+  );
+}
+
 function run(): void {
   testPremiumNameAndHanjaUseFreeCardDesign();
   testHanjaCardAreaIsCenterAligned();
@@ -245,6 +275,7 @@ function run(): void {
   testPremiumPillarsExplainWhatEachPillarMeans();
   testPremiumWeakSummaryUsesDynamicTop2OrTop3();
   testPremiumResultUsesTop5SingleAccordionAndShareRow();
+  testPremiumResultPageHandlesNavigationBackEvent();
   console.log("[test:premium-result-layout:toss] all tests passed");
 }
 

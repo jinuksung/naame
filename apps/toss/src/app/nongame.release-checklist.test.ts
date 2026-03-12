@@ -4,6 +4,8 @@ import path from "node:path";
 
 const APP_PAGE_PATH = path.resolve(__dirname, "free", "page.tsx");
 const LIKED_PAGE_PATH = path.resolve(__dirname, "liked", "page.tsx");
+const RESULT_PAGE_PATH = path.resolve(__dirname, "result", "page.tsx");
+const PREMIUM_RESULT_PAGE_PATH = path.resolve(__dirname, "premium", "result", "page.tsx");
 const LOADING_PAGE_PATH = path.resolve(__dirname, "loading", "page.tsx");
 const GLOBAL_STYLE_PATH = path.resolve(__dirname, "globals.css");
 const STORE_PATH = path.resolve(__dirname, "..", "store", "useRecommendStore.ts");
@@ -144,6 +146,44 @@ function testLikedPageHandlesNavigationBackEvent(): void {
   );
 }
 
+function testResultPagesHandleNavigationBackEvent(): void {
+  const freeResultSource = readFileSync(RESULT_PAGE_PATH, "utf8");
+  assert.equal(
+    freeResultSource.includes('graniteEvent.addEventListener("backEvent"'),
+    true,
+    "무료 결과 화면은 네비게이션 바 뒤로가기(backEvent)를 수신해야 합니다.",
+  );
+  assert.equal(
+    freeResultSource.includes('router.replace("/feature/recommend")') &&
+      freeResultSource.includes("window.history.back()"),
+    true,
+    "무료 결과 화면은 backEvent에서 입력 화면으로 이동하고 실패 시 history.back으로 폴백해야 합니다.",
+  );
+  assert.equal(
+    freeResultSource.includes("closeView"),
+    false,
+    "무료 결과 화면의 backEvent는 앱 종료(closeView)를 호출하면 안 됩니다.",
+  );
+
+  const premiumResultSource = readFileSync(PREMIUM_RESULT_PAGE_PATH, "utf8");
+  assert.equal(
+    premiumResultSource.includes('graniteEvent.addEventListener("backEvent"'),
+    true,
+    "프리미엄 결과 화면은 네비게이션 바 뒤로가기(backEvent)를 수신해야 합니다.",
+  );
+  assert.equal(
+    premiumResultSource.includes('router.replace("/premium")') &&
+      premiumResultSource.includes("window.history.back()"),
+    true,
+    "프리미엄 결과 화면은 backEvent에서 입력 화면으로 이동하고 실패 시 history.back으로 폴백해야 합니다.",
+  );
+  assert.equal(
+    premiumResultSource.includes("closeView"),
+    false,
+    "프리미엄 결과 화면의 backEvent는 앱 종료(closeView)를 호출하면 안 됩니다.",
+  );
+}
+
 function testLoadingExperienceExistsForSlowResponse(): void {
   const source = readFileSync(LOADING_PAGE_PATH, "utf8");
   assert.equal(
@@ -166,6 +206,7 @@ function run(): void {
   testLightModeIsForced();
   testInputStatePersistsInSessionScope();
   testLikedPageHandlesNavigationBackEvent();
+  testResultPagesHandleNavigationBackEvent();
   testLoadingExperienceExistsForSlowResponse();
   console.log("[test:nongame-release-checklist:toss] all tests passed");
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { graniteEvent } from "@apps-in-toss/web-framework";
 import {
   TdsCard,
   TdsPrimaryButton,
@@ -211,6 +212,38 @@ export default function PremiumResultPage(): JSX.Element {
       router.replace("/premium");
     }
   }, [hasHydrated, router, summary]);
+
+  useEffect(() => {
+    let removeListener: (() => void) | undefined;
+    try {
+      removeListener = graniteEvent.addEventListener("backEvent", {
+        onEvent: () => {
+          try {
+            router.replace("/premium");
+          } catch (error) {
+            console.error(
+              "[premium-result] router.replace failed on backEvent",
+              error,
+            );
+            if (window.history.length > 1) {
+              window.history.back();
+            }
+          }
+        },
+        onError: (error) => {
+          console.error("[premium-result] backEvent listener error", error);
+        },
+      });
+    } catch {
+      // Ignore when running outside apps-in-toss bridge environment.
+    }
+
+    return () => {
+      if (removeListener) {
+        removeListener();
+      }
+    };
+  }, [router]);
 
   useEffect(() => {
     if (typeof window === "undefined") {

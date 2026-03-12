@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { graniteEvent } from "@apps-in-toss/web-framework";
 import {
   TdsCard,
   TdsPrimaryButton,
@@ -166,6 +167,35 @@ export default function ResultPage(): JSX.Element {
       router.replace("/feature/recommend");
     }
   }, [hasHydrated, hasInput, router]);
+
+  useEffect(() => {
+    let removeListener: (() => void) | undefined;
+    try {
+      removeListener = graniteEvent.addEventListener("backEvent", {
+        onEvent: () => {
+          try {
+            router.replace("/feature/recommend");
+          } catch (error) {
+            console.error("[result] router.replace failed on backEvent", error);
+            if (window.history.length > 1) {
+              window.history.back();
+            }
+          }
+        },
+        onError: (error) => {
+          console.error("[result] backEvent listener error", error);
+        },
+      });
+    } catch {
+      // Ignore when running outside apps-in-toss bridge environment.
+    }
+
+    return () => {
+      if (removeListener) {
+        removeListener();
+      }
+    };
+  }, [router]);
 
   const top5 = useMemo(() => results.slice(0, 5), [results]);
   const top5Keys = useMemo(

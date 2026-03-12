@@ -79,6 +79,36 @@ function testFeedbackButtonsUseSplitLayoutWithEmoji(): void {
     true,
     "토스 결과 화면 상단 저장 안내 문구는 약한 강조 스타일(tds-save-hint)을 사용해야 합니다.",
   );
+  assert.equal(
+    source.includes("liked rollback failed"),
+    false,
+    "좋아요 저장은 피드백 API 실패와 분리되어야 하므로 롤백 로그가 남으면 안 됩니다.",
+  );
+  assert.equal(
+    source.includes("좋아요는 저장됐어요. 서버 반영은 네트워크 상태에 따라 지연될 수 있어요."),
+    true,
+    "피드백 전송이 실패해도 찜 저장은 유지되고 안내 문구가 보여야 합니다.",
+  );
+}
+
+function testResultPageHandlesNavigationBackEvent(): void {
+  const source = readFileSync(RESULT_PAGE_PATH, "utf8");
+  assert.equal(
+    source.includes('graniteEvent.addEventListener("backEvent"'),
+    true,
+    "결과 화면은 네비게이션 바 뒤로가기(backEvent)를 수신해야 합니다.",
+  );
+  assert.equal(
+    source.includes('router.replace("/feature/recommend")') &&
+      source.includes("window.history.back()"),
+    true,
+    "결과 화면은 backEvent에서 입력 화면(/feature/recommend)으로 이동하고 실패 시 history.back으로 폴백해야 합니다.",
+  );
+  assert.equal(
+    source.includes("closeView"),
+    false,
+    "결과 화면의 backEvent는 앱 종료(closeView)를 호출하면 안 됩니다.",
+  );
 }
 
 function testPremiumTeaserUsesTossStyledClasses(): void {
@@ -149,6 +179,7 @@ function testLocalAdminControlsArePresentWithVisibilityGuard(): void {
 function run(): void {
   testResultReasonLabelIsRenderedAsBold();
   testFeedbackButtonsUseSplitLayoutWithEmoji();
+  testResultPageHandlesNavigationBackEvent();
   testPremiumTeaserUsesTossStyledClasses();
   testLocalAdminControlsArePresentWithVisibilityGuard();
   console.log("[test:result-reason-render:toss] all tests passed");
