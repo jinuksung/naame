@@ -34,10 +34,15 @@ function testLikedPageUsesMutedSavedAtTextAndShareStyleRemoveButton(): void {
   );
   assert.equal(
     source.includes('graniteEvent.addEventListener("backEvent"') &&
-      source.includes("closeView") &&
+      source.includes("router.replace(backPath)") &&
       source.includes("window.history.back()"),
     true,
-    "찜한 이름 화면은 네비게이션 바 뒤로가기(backEvent) 수신 시 closeView를 호출하고 실패하면 history.back으로 폴백해야 합니다.",
+    "찜한 이름 화면은 네비게이션 바 뒤로가기(backEvent) 수신 시 입력 화면으로 이동하고 실패하면 history.back으로 폴백해야 합니다.",
+  );
+  assert.equal(
+    source.includes("closeView"),
+    false,
+    "찜한 이름 화면의 뒤로가기(backEvent)는 앱 종료(closeView)가 아니라 화면 이동을 수행해야 합니다.",
   );
 }
 

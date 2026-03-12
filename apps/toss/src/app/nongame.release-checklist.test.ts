@@ -3,6 +3,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 const APP_PAGE_PATH = path.resolve(__dirname, "free", "page.tsx");
+const LIKED_PAGE_PATH = path.resolve(__dirname, "liked", "page.tsx");
 const LOADING_PAGE_PATH = path.resolve(__dirname, "loading", "page.tsx");
 const GLOBAL_STYLE_PATH = path.resolve(__dirname, "globals.css");
 const STORE_PATH = path.resolve(__dirname, "..", "store", "useRecommendStore.ts");
@@ -124,6 +125,25 @@ function testInputStatePersistsInSessionScope(): void {
   );
 }
 
+function testLikedPageHandlesNavigationBackEvent(): void {
+  const source = readFileSync(LIKED_PAGE_PATH, "utf8");
+  assert.equal(
+    source.includes('graniteEvent.addEventListener("backEvent"'),
+    true,
+    "찜한 이름 화면은 네비게이션 바 뒤로가기(backEvent)를 수신해야 합니다.",
+  );
+  assert.equal(
+    source.includes("router.replace(backPath)") && source.includes("window.history.back()"),
+    true,
+    "찜한 이름 화면은 backEvent에서 입력 화면으로 이동하고 실패 시 history.back으로 폴백해야 합니다.",
+  );
+  assert.equal(
+    source.includes("closeView"),
+    false,
+    "찜한 이름 화면의 backEvent는 앱 종료(closeView)를 호출하면 안 됩니다.",
+  );
+}
+
 function testLoadingExperienceExistsForSlowResponse(): void {
   const source = readFileSync(LOADING_PAGE_PATH, "utf8");
   assert.equal(
@@ -145,6 +165,7 @@ function run(): void {
   testInputSubmitIsDisabledUntilRequiredFieldsAreFilled();
   testLightModeIsForced();
   testInputStatePersistsInSessionScope();
+  testLikedPageHandlesNavigationBackEvent();
   testLoadingExperienceExistsForSlowResponse();
   console.log("[test:nongame-release-checklist:toss] all tests passed");
 }

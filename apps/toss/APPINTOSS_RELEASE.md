@@ -13,7 +13,7 @@ Suggested features:
 
 ## 2. Local config
 
-Set environment variables before running Granite:
+Set environment variables before running AIT CLI:
 
 ```bash
 export APPS_IN_TOSS_APP_NAME=namefit
@@ -32,6 +32,18 @@ export NEXT_PUBLIC_NAMEFIT_API_BASE_URL='https://api.example.com'
 값이 없으면 빌드를 실패시켜 잘못된 배포를 막습니다.
 
 반복 입력을 줄이려면 `apps/toss/.env.production`에 기본값을 저장해두세요.
+
+## 2-1. SDK migration guardrail (2026-03 notice)
+
+- 기준 공지: SDK 2.x 마이그레이션, `granite build` -> `ait build`
+- 제한 일정: **2026-03-23** 이후 SDK 1.x 번들 업로드 제한
+- 현재 저장소 기준 적용값: `@apps-in-toss/web-framework@2.0.2`
+
+React Native 프로젝트를 함께 운영한다면 아래 마이그레이션 명령도 실행해 주세요.
+
+```bash
+npx ait migrate react-native-0-84-0
+```
 
 ## 3. Build and package
 
@@ -98,6 +110,7 @@ Automated gates:
 - 필수 입력 전 제출 버튼 비활성화
 - 입력값 session scope 복원(sessionStorage)
 - 응답 지연 시 로딩 안내 화면 제공
+- `찜한 이름` 화면에서 네비게이션 바 뒤로가기(backEvent) 처리 보장
 
 Run:
 

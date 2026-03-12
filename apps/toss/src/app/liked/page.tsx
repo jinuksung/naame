@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { closeView, graniteEvent } from "@apps-in-toss/web-framework";
+import { graniteEvent } from "@apps-in-toss/web-framework";
 import { FreeResultShareCard } from "@/components/share/FreeResultShareCard";
 import {
   TdsCard,
@@ -72,12 +72,14 @@ function LikedPageContent(): JSX.Element {
     try {
       removeListener = graniteEvent.addEventListener("backEvent", {
         onEvent: () => {
-          void closeView().catch((error) => {
-            console.error("[liked] closeView failed on backEvent", error);
+          try {
+            router.replace(backPath);
+          } catch (error) {
+            console.error("[liked] router.replace failed on backEvent", error);
             if (window.history.length > 1) {
               window.history.back();
             }
-          });
+          }
         },
         onError: (error) => {
           console.error("[liked] backEvent listener error", error);
@@ -92,7 +94,7 @@ function LikedPageContent(): JSX.Element {
         removeListener();
       }
     };
-  }, []);
+  }, [backPath, router]);
 
   useEffect(() => {
     if (!hasHydrated) {
